@@ -4,753 +4,1343 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>SuperInvestors — 13F Tracker</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
-:root {
-  --bg: #f3f4f8;
-  --surface: #ffffff;
-  --surface2: #f8f9fc;
-  --surface3: #eef0f6;
-  --border: #e2e5ef;
-  --border2: #d0d4e4;
-  --text: #111827;
-  --text2: #4b5563;
-  --text3: #9ca3af;
-  --accent: #2563eb;
-  --accent2: #1d4ed8;
-  --accent-bg: #eff6ff;
-  --buy: #16a34a;
-  --buy-bg: #f0fdf4;
-  --buy-border: #bbf7d0;
-  --sell: #dc2626;
-  --sell-bg: #fef2f2;
-  --sell-border: #fecaca;
-  --new: #7c3aed;
-  --new-bg: #f5f3ff;
-  --new-border: #ddd6fe;
-  --unch: #6b7280;
-  --unch-bg: #f9fafb;
-  --unch-border: #e5e7eb;
-  --shadow: 0 1px 3px rgba(0,0,0,.08), 0 1px 2px rgba(0,0,0,.05);
-  --shadow2: 0 4px 16px rgba(0,0,0,.08);
-  --teal: #0d9488;
-  --teal-bg: #f0fdfa;
-}
-* { box-sizing: border-box; margin: 0; padding: 0; }
-body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; min-height: 100vh; font-size: 14px; line-height: 1.5; }
-a { text-decoration: none; }
-button { font-family: inherit; }
+  :root {
+    --bg: #0a0b0d;
+    --surface: #111316;
+    --surface2: #161a1f;
+    --border: #1e2429;
+    --border2: #252d35;
+    --text: #e2e8f0;
+    --text2: #8b9aaa;
+    --text3: #4a5568;
+    --accent: #00d4aa;
+    --accent2: #0095ff;
+    --buy: #00d4aa;
+    --sell: #ff4757;
+    --hold: #f5a623;
+    --mono: 'IBM Plex Mono', monospace;
+    --sans: 'IBM Plex Sans', sans-serif;
+  }
 
-/* ── SHELL ── */
-.shell { display: grid; grid-template-columns: 240px 1fr; min-height: 100vh; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
 
-/* ── SIDEBAR ── */
-.sidebar {
-  background: var(--surface);
-  border-right: 1px solid var(--border);
-  display: flex; flex-direction: column;
-  position: fixed; top: 0; left: 0; bottom: 0; width: 240px;
-  overflow: hidden; z-index: 50;
-}
-.sb-logo {
-  padding: 16px 16px 14px;
-  border-bottom: 1px solid var(--border);
-  display: flex; align-items: center; gap: 9px;
-  flex-shrink: 0;
-}
-.sb-logo-mark {
-  width: 28px; height: 28px;
-  background: linear-gradient(135deg, #2563eb, #7c3aed);
-  border-radius: 8px;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 13px; font-weight: 700; color: white;
-}
-.sb-logo-text { font-size: 14px; font-weight: 700; color: var(--text); letter-spacing: -.01em; }
-.sb-logo-sub { font-size: 9px; color: var(--text3); font-family: 'Roboto Mono', monospace; letter-spacing: .06em; margin-top: 1px; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
 
-.sb-search { padding: 10px 12px; border-bottom: 1px solid var(--border); flex-shrink: 0; }
-.sb-search-wrap { position: relative; }
-.sb-search-ico { position: absolute; left: 9px; top: 50%; transform: translateY(-50%); color: var(--text3); font-size: 13px; pointer-events: none; }
-.sb-input {
-  width: 100%; background: var(--surface2); border: 1px solid var(--border);
-  border-radius: 8px; padding: 7px 10px 7px 28px;
-  font-family: inherit; font-size: 12px; color: var(--text); outline: none;
-  transition: border-color .2s, box-shadow .2s;
-}
-.sb-input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(37,99,235,.1); }
-.sb-input::placeholder { color: var(--text3); }
+  /* Subtle scanline texture */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.03) 2px, rgba(0,0,0,0.03) 4px);
+    pointer-events: none;
+    z-index: 9999;
+  }
 
-.sb-list { overflow-y: auto; flex: 1; }
-.sb-list::-webkit-scrollbar { width: 3px; }
-.sb-list::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
+  /* HEADER */
+  header {
+    border-bottom: 1px solid var(--border);
+    padding: 20px 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    background: rgba(10,11,13,0.95);
+    backdrop-filter: blur(12px);
+    z-index: 100;
+  }
 
-.sb-item {
-  padding: 10px 14px; border-bottom: 1px solid var(--border);
-  display: flex; align-items: center; gap: 10px;
-  cursor: pointer; transition: background .1s; position: relative;
-}
-.sb-item::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; background: var(--accent); opacity: 0; transition: opacity .15s; border-radius: 0 2px 2px 0; }
-.sb-item:hover { background: var(--surface2); }
-.sb-item:hover::before { opacity: .3; }
-.sb-item.active { background: var(--accent-bg); }
-.sb-item.active::before { opacity: 1; }
-.sb-ava { width: 30px; height: 30px; border-radius: 8px; background: linear-gradient(135deg, #eff6ff, #e0e7ff); display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; color: var(--accent); flex-shrink: 0; }
-.sb-inf { flex: 1; min-width: 0; }
-.sb-name { font-size: 12px; font-weight: 600; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.sb-firm { font-size: 10px; color: var(--text3); margin-top: 1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.sb-tag { font-size: 9px; padding: 2px 6px; border-radius: 4px; background: var(--surface3); color: var(--text3); border: 1px solid var(--border); flex-shrink: 0; font-weight: 500; }
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-family: var(--mono);
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
 
-/* ── MAIN ── */
-.main { margin-left: 240px; overflow-y: auto; }
+  .logo-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--accent);
+    animation: pulse 2s ease-in-out infinite;
+  }
 
-/* ── STATES ── */
-.centered { min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; color: var(--text3); font-size: 13px; }
-.spinner { width: 28px; height: 28px; border: 2px solid var(--border2); border-top-color: var(--accent); border-radius: 50%; animation: spin .7s linear infinite; }
-@keyframes spin { to { transform: rotate(360deg); } }
-.error-box { margin: 24px; background: var(--sell-bg); border: 1px solid var(--sell-border); border-radius: 10px; padding: 16px 20px; font-size: 13px; color: var(--sell); line-height: 1.8; }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(0.8); }
+  }
 
-/* ── INVESTOR HEADER ── */
-.inv-hdr {
-  background: var(--surface);
-  border-bottom: 1px solid var(--border);
-  padding: 24px 32px 0;
-  position: sticky; top: 0; z-index: 40;
-  box-shadow: var(--shadow);
-}
-.hdr-top { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 12px; gap: 16px; }
-.hdr-fund { font-size: 26px; font-weight: 700; letter-spacing: -.02em; color: var(--text); }
-.hdr-manager { font-size: 13px; color: var(--text2); margin-top: 2px; }
-.hdr-meta { display: flex; align-items: center; gap: 6px; margin-top: 6px; flex-wrap: wrap; }
-.hdr-pill {
-  font-size: 11px; color: var(--text2); padding: 2px 8px;
-  border: 1px solid var(--border2); border-radius: 5px;
-  background: var(--surface2); font-family: 'Roboto Mono', monospace;
-  letter-spacing: .03em;
-}
-.hdr-btns { display: flex; gap: 8px; flex-shrink: 0; }
-.btn { font-size: 12px; font-weight: 500; padding: 7px 16px; border-radius: 8px; cursor: pointer; border: 1px solid var(--border2); background: var(--surface2); color: var(--text2); transition: all .15s; white-space: nowrap; }
-.btn:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-bg); }
-.btn.primary { background: var(--accent); border-color: var(--accent); color: white; }
-.btn.primary:hover { background: var(--accent2); border-color: var(--accent2); }
+  .header-meta {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text3);
+    letter-spacing: 0.05em;
+  }
 
-/* ── KPI CARDS ── */
-.kpi-row { display: grid; grid-template-columns: repeat(4,1fr); gap: 16px; padding: 16px 0; border-top: 1px solid var(--border); }
-.kpi-card {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  padding: 16px 18px;
-  box-shadow: var(--shadow);
-}
-.kpi-lbl { font-size: 11px; font-weight: 500; color: var(--text2); margin-bottom: 6px; }
-.kpi-val { font-size: 26px; font-weight: 700; letter-spacing: -.02em; color: var(--text); line-height: 1; }
-.kpi-sub { font-size: 11px; color: var(--text3); margin-top: 4px; }
-.kpi-val.green { color: var(--buy); }
-.kpi-val.red { color: var(--sell); }
+  /* LAYOUT */
+  .container {
+    display: grid;
+    grid-template-columns: 300px 1fr;
+    height: calc(100vh - 62px);
+  }
 
-/* ── QUARTER NAV ── */
-.q-nav { display: flex; gap: 6px; padding: 10px 0 0; overflow-x: auto; border-top: 1px solid var(--border); }
-.q-nav::-webkit-scrollbar { display: none; }
-.q-btn { font-size: 11px; font-weight: 500; padding: 5px 13px; border-radius: 6px; border: 1px solid var(--border2); background: var(--surface2); color: var(--text2); cursor: pointer; transition: all .15s; white-space: nowrap; flex-shrink: 0; }
-.q-btn:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-bg); }
-.q-btn.active { background: var(--accent); border-color: var(--accent); color: white; font-weight: 600; }
+  /* SIDEBAR */
+  .sidebar {
+    border-right: 1px solid var(--border);
+    overflow-y: auto;
+    background: var(--surface);
+  }
 
-/* ── TABS ── */
-.tab-row { display: flex; border-top: 1px solid var(--border); margin: 0 -32px; padding: 0 32px; margin-top: 8px; }
-.tab { font-size: 12px; font-weight: 500; color: var(--text3); padding: 10px 16px; cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -1px; transition: all .15s; white-space: nowrap; }
-.tab:hover { color: var(--text2); }
-.tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+  .sidebar::-webkit-scrollbar { width: 4px; }
+  .sidebar::-webkit-scrollbar-track { background: transparent; }
+  .sidebar::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
 
-/* ── PAGE ── */
-.page { padding: 24px 32px; }
+  .sidebar-header {
+    padding: 20px 20px 12px;
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    background: var(--surface);
+    z-index: 10;
+  }
 
-/* ── TWO COL ── */
-.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 24px; }
+  .sidebar-title {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--text3);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    margin-bottom: 12px;
+  }
 
-/* ── CARDS ── */
-.card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; box-shadow: var(--shadow); }
-.card-hdr { padding: 14px 18px 12px; border-bottom: 1px solid var(--border); }
-.card-title { font-size: 13px; font-weight: 600; color: var(--text); }
-.card-sub { font-size: 11px; color: var(--text3); margin-top: 2px; }
+  .search-box {
+    width: 100%;
+    background: var(--bg);
+    border: 1px solid var(--border2);
+    border-radius: 4px;
+    padding: 8px 12px;
+    color: var(--text);
+    font-family: var(--mono);
+    font-size: 12px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .search-box:focus { border-color: var(--accent); }
+  .search-box::placeholder { color: var(--text3); }
 
-/* ── GLANCE TABLE ── */
-.g-tbl { width: 100%; border-collapse: collapse; }
-.g-tbl th { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: .08em; color: var(--text3); padding: 8px 14px; background: var(--surface2); border-bottom: 1px solid var(--border); text-align: left; }
-.g-tbl td { padding: 9px 14px; border-bottom: 1px solid var(--border); font-size: 12px; vertical-align: middle; }
-.g-tbl tr:last-child td { border-bottom: none; }
-.g-tbl tbody tr:hover { background: var(--surface2); }
-.ticker-wrap { display: flex; align-items: center; gap: 7px; }
-.co-logo { width: 20px; height: 20px; border-radius: 5px; object-fit: contain; background: var(--surface3); flex-shrink: 0; }
-.ticker { font-family: 'Roboto Mono', monospace; font-size: 11px; font-weight: 600; color: var(--text); }
-.co-name { font-size: 11px; color: var(--text2); max-width: 110px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.val-cell { font-size: 12px; font-weight: 500; color: var(--text); white-space: nowrap; }
+  /* INVESTOR CARD */
+  .investor-item {
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--border);
+    cursor: pointer;
+    transition: all 0.15s;
+    position: relative;
+    overflow: hidden;
+  }
 
-/* ── ALLOCATION BARS ── */
-.alloc-body { padding: 10px 18px 14px; }
-.alloc-row { display: grid; grid-template-columns: 90px 1fr 48px; align-items: center; gap: 10px; padding: 5px 0; }
-.alloc-name { font-size: 12px; color: var(--text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.alloc-bar-bg { background: var(--surface3); border-radius: 4px; height: 7px; overflow: hidden; }
-.alloc-bar { height: 100%; border-radius: 4px; background: var(--teal); transition: width .4s ease; }
-.alloc-pct { font-family: 'Roboto Mono', monospace; font-size: 11px; color: var(--text2); text-align: right; font-weight: 500; }
-.alloc-footer { padding: 10px 18px; border-top: 1px solid var(--border); display: flex; gap: 20px; font-size: 11px; color: var(--text3); }
-.alloc-footer b { color: var(--text2); font-weight: 600; }
+  .investor-item::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 2px;
+    background: var(--accent);
+    transform: scaleY(0);
+    transition: transform 0.2s;
+  }
 
-.view-all { padding: 9px 16px; border-top: 1px solid var(--border); font-size: 11px; color: var(--accent); cursor: pointer; text-align: right; transition: color .15s; }
-.view-all:hover { color: var(--accent2); }
+  .investor-item:hover { background: rgba(0,212,170,0.04); }
+  .investor-item:hover::before { transform: scaleY(1); }
+  .investor-item.active { background: rgba(0,212,170,0.08); }
+  .investor-item.active::before { transform: scaleY(1); }
 
-/* ── SECTION ── */
-.section-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; flex-wrap: wrap; gap: 10px; }
-.section-title { font-size: 15px; font-weight: 700; color: var(--text); }
-.filter-row { display: flex; gap: 5px; flex-wrap: wrap; }
-.f-btn { font-size: 11px; font-weight: 500; padding: 4px 12px; border-radius: 20px; border: 1px solid var(--border2); background: var(--surface); color: var(--text2); cursor: pointer; transition: all .15s; }
-.f-btn:hover { border-color: var(--border2); background: var(--surface2); }
-.f-btn.f-all { background: var(--text); color: white; border-color: var(--text); }
-.f-btn.f-new { background: var(--new-bg); color: var(--new); border-color: var(--new-border); }
-.f-btn.f-added { background: var(--buy-bg); color: var(--buy); border-color: var(--buy-border); }
-.f-btn.f-reduced { background: var(--sell-bg); color: var(--sell); border-color: var(--sell-border); }
-.f-btn.f-unchanged { background: var(--unch-bg); color: var(--unch); border-color: var(--unch-border); }
-.f-cnt { opacity: .6; font-size: 10px; margin-left: 2px; }
+  .inv-name {
+    font-weight: 500;
+    font-size: 14px;
+    margin-bottom: 3px;
+    color: var(--text);
+  }
 
-/* ── MAIN TABLE ── */
-.tbl-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; overflow-x: auto; box-shadow: var(--shadow); margin-bottom: 24px; }
-table { width: 100%; border-collapse: collapse; }
-thead { background: var(--surface2); }
-th { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: .08em; color: var(--text3); padding: 10px 14px; text-align: left; white-space: nowrap; cursor: pointer; user-select: none; transition: color .15s; }
-th:hover { color: var(--text2); }
-th.sorted { color: var(--accent); }
-td { padding: 11px 14px; border-bottom: 1px solid var(--border); font-size: 12px; vertical-align: middle; white-space: nowrap; }
-tr:last-child td { border-bottom: none; }
-tbody tr:hover { background: var(--surface2); }
+  .inv-firm {
+    font-size: 11px;
+    color: var(--text2);
+    font-family: var(--mono);
+    margin-bottom: 8px;
+  }
 
-.stock-wrap { display: flex; align-items: center; gap: 8px; }
-.s-logo { width: 22px; height: 22px; border-radius: 6px; object-fit: contain; background: var(--surface3); flex-shrink: 0; }
-.s-ticker { font-size: 13px; font-weight: 600; color: var(--text); }
-.s-name { font-size: 10px; color: var(--text3); margin-top: 1px; }
-.num { font-family: 'Roboto Mono', monospace; font-size: 12px; color: var(--text2); }
-.num.bold { color: var(--text); font-weight: 500; }
-.price-block { font-family: 'Roboto Mono', monospace; }
-.price-v { font-size: 12px; color: var(--text); font-weight: 500; }
-.price-c { font-size: 10px; margin-top: 1px; }
-.price-c.up { color: var(--buy); }
-.price-c.dn { color: var(--sell); }
+  .inv-stats {
+    display: flex;
+    gap: 12px;
+  }
 
-/* ── BADGES ── */
-.badge { display: inline-flex; align-items: center; gap: 3px; padding: 3px 9px; border-radius: 20px; font-size: 10px; font-weight: 600; white-space: nowrap; }
-.b-new { background: var(--new-bg); color: var(--new); border: 1px solid var(--new-border); }
-.b-added { background: var(--buy-bg); color: var(--buy); border: 1px solid var(--buy-border); }
-.b-reduced { background: var(--sell-bg); color: var(--sell); border: 1px solid var(--sell-border); }
-.b-unchanged { background: var(--unch-bg); color: var(--unch); border: 1px solid var(--unch-border); }
-.b-sold { background: var(--sell-bg); color: var(--sell); border: 1px solid var(--sell-border); }
+  .inv-stat {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--text3);
+  }
 
-/* ── MOVES GRID ── */
-.moves-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 24px; }
-.move-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; box-shadow: var(--shadow); }
-.move-hdr { padding: 12px 16px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
-.move-title { font-size: 12px; font-weight: 600; }
-.move-title.c-new { color: var(--new); }
-.move-title.c-sold { color: var(--sell); }
-.move-title.c-buy { color: var(--buy); }
-.move-cnt { font-size: 11px; color: var(--text3); background: var(--surface2); padding: 2px 7px; border-radius: 10px; border: 1px solid var(--border); }
-.move-row { padding: 10px 16px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; transition: background .1s; }
-.move-row:last-child { border-bottom: none; }
-.move-row:hover { background: var(--surface2); }
-.move-l { display: flex; align-items: center; gap: 8px; }
-.move-logo { width: 26px; height: 26px; border-radius: 7px; object-fit: contain; background: var(--surface3); flex-shrink: 0; }
-.move-n { font-size: 12px; font-weight: 600; color: var(--text); }
-.move-s { font-size: 10px; color: var(--text3); margin-top: 1px; font-family: 'Roboto Mono', monospace; }
-.move-r { text-align: right; }
-.move-v { font-size: 12px; font-weight: 500; color: var(--text); font-family: 'Roboto Mono', monospace; }
-.move-d { font-size: 10px; margin-top: 1px; font-weight: 600; }
-.move-d.pos { color: var(--buy); }
-.move-d.neg { color: var(--sell); }
-.move-d.neu { color: var(--new); }
-.no-move { padding: 20px 16px; text-align: center; font-size: 12px; color: var(--text3); }
+  .inv-stat span {
+    color: var(--text2);
+    font-weight: 500;
+  }
 
-/* ── BAR ── */
-.mini-bar-bg { background: var(--surface3); border-radius: 3px; height: 4px; width: 72px; }
-.mini-bar { height: 4px; border-radius: 3px; background: var(--teal); }
+  /* MAIN PANEL */
+  .main {
+    overflow-y: auto;
+    background: var(--bg);
+  }
 
-/* ── LOADING PREV ── */
-.load-prev { display: flex; align-items: center; gap: 8px; padding: 16px; font-size: 12px; color: var(--text3); justify-content: center; }
-.spin-sm { width: 14px; height: 14px; border: 1.5px solid var(--border2); border-top-color: var(--accent); border-radius: 50%; animation: spin .7s linear infinite; flex-shrink: 0; }
+  .main::-webkit-scrollbar { width: 4px; }
+  .main::-webkit-scrollbar-track { background: transparent; }
+  .main::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
 
-/* ── ANIMATIONS ── */
-.fade { animation: fadeIn .22s ease-out; }
-@keyframes fadeIn { from { opacity:0; transform:translateY(5px); } to { opacity:1; transform:translateY(0); } }
+  /* EMPTY STATE */
+  .empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    gap: 16px;
+    color: var(--text3);
+    font-family: var(--mono);
+    font-size: 12px;
+    text-align: center;
+  }
 
-/* ── RESPONSIVE ── */
-@media(max-width:900px){
-  .shell { grid-template-columns: 1fr; }
-  .sidebar { position: relative; width: 100%; height: 200px; }
-  .main { margin-left: 0; }
-  .two-col { grid-template-columns: 1fr; }
-  .moves-grid { grid-template-columns: 1fr; }
-  .kpi-row { grid-template-columns: repeat(2,1fr); }
-  .page { padding: 16px; }
-  .inv-hdr { padding: 16px 16px 0; }
-}
+  .empty-icon {
+    font-size: 48px;
+    opacity: 0.3;
+  }
+
+  /* INVESTOR DETAIL */
+  .detail-header {
+    padding: 32px 40px 24px;
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    background: rgba(10,11,13,0.95);
+    backdrop-filter: blur(12px);
+    z-index: 10;
+  }
+
+  .detail-name {
+    font-size: 28px;
+    font-weight: 600;
+    margin-bottom: 4px;
+    letter-spacing: -0.02em;
+  }
+
+  .detail-meta {
+    display: flex;
+    gap: 24px;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+
+  .detail-firm {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+
+  .detail-cik {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text3);
+  }
+
+  .quarter-badge {
+    background: var(--surface2);
+    border: 1px solid var(--border2);
+    border-radius: 3px;
+    padding: 3px 8px;
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--text2);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  .filing-nav {
+    display: flex;
+    gap: 8px;
+    margin-top: 16px;
+    overflow-x: auto;
+    padding-bottom: 4px;
+  }
+
+  .filing-btn {
+    background: var(--surface);
+    border: 1px solid var(--border2);
+    border-radius: 4px;
+    padding: 6px 14px;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text2);
+    cursor: pointer;
+    transition: all 0.15s;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .filing-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .filing-btn.active { background: var(--accent); border-color: var(--accent); color: var(--bg); font-weight: 600; }
+
+  /* TABS */
+  .tabs {
+    display: flex;
+    gap: 0;
+    border-bottom: 1px solid var(--border);
+    padding: 0 40px;
+    background: var(--surface);
+  }
+
+  .tab {
+    padding: 14px 20px;
+    font-family: var(--mono);
+    font-size: 11px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text3);
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -1px;
+    transition: all 0.15s;
+  }
+
+  .tab:hover { color: var(--text2); }
+  .tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+
+  /* CONTENT AREA */
+  .content-area {
+    padding: 32px 40px;
+  }
+
+  /* SUMMARY CARDS */
+  .summary-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 32px;
+  }
+
+  .summary-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 20px;
+  }
+
+  .summary-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--text3);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 8px;
+  }
+
+  .summary-value {
+    font-family: var(--mono);
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--text);
+  }
+
+  .summary-sub {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text3);
+    margin-top: 4px;
+  }
+
+  /* TABLE */
+  .table-wrap {
+    overflow-x: auto;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: var(--mono);
+    font-size: 12px;
+  }
+
+  thead {
+    background: var(--surface2);
+    border-bottom: 1px solid var(--border2);
+  }
+
+  th {
+    padding: 12px 16px;
+    text-align: left;
+    font-size: 10px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text3);
+    white-space: nowrap;
+    cursor: pointer;
+    user-select: none;
+    transition: color 0.15s;
+  }
+  th:hover { color: var(--text2); }
+
+  td {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: middle;
+    white-space: nowrap;
+  }
+
+  tr:last-child td { border-bottom: none; }
+
+  tbody tr {
+    transition: background 0.1s;
+  }
+  tbody tr:hover { background: rgba(255,255,255,0.02); }
+
+  /* CHANGE BADGES */
+  .badge-new {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: rgba(0,212,170,0.12);
+    color: var(--buy);
+    border: 1px solid rgba(0,212,170,0.25);
+    border-radius: 3px;
+    padding: 2px 7px;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  .badge-sold {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: rgba(255,71,87,0.12);
+    color: var(--sell);
+    border: 1px solid rgba(255,71,87,0.25);
+    border-radius: 3px;
+    padding: 2px 7px;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  .badge-increased {
+    background: rgba(0,212,170,0.08);
+    color: var(--buy);
+    border: 1px solid rgba(0,212,170,0.15);
+    border-radius: 3px;
+    padding: 2px 6px;
+    font-size: 10px;
+  }
+
+  .badge-reduced {
+    background: rgba(255,71,87,0.08);
+    color: var(--sell);
+    border: 1px solid rgba(255,71,87,0.15);
+    border-radius: 3px;
+    padding: 2px 6px;
+    font-size: 10px;
+  }
+
+  .badge-unchanged {
+    color: var(--text3);
+    font-size: 10px;
+  }
+
+  /* VALUE BAR */
+  .value-bar-wrap {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .value-bar {
+    height: 3px;
+    background: var(--accent);
+    border-radius: 2px;
+    opacity: 0.6;
+    min-width: 2px;
+  }
+
+  /* TICKER */
+  .ticker-symbol {
+    color: var(--accent2);
+    font-weight: 600;
+  }
+
+  /* LOADING */
+  .loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 80px 40px;
+    gap: 16px;
+    color: var(--text3);
+    font-family: var(--mono);
+    font-size: 12px;
+  }
+
+  .spinner {
+    width: 32px;
+    height: 32px;
+    border: 2px solid var(--border2);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .loading-log {
+    font-size: 11px;
+    color: var(--text3);
+    text-align: center;
+    max-width: 320px;
+    line-height: 1.6;
+  }
+
+  /* ERROR */
+  .error-box {
+    background: rgba(255,71,87,0.08);
+    border: 1px solid rgba(255,71,87,0.2);
+    border-radius: 6px;
+    padding: 20px 24px;
+    margin: 32px 40px;
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--sell);
+    line-height: 1.7;
+  }
+
+  /* MOVES */
+  .moves-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    margin-bottom: 32px;
+  }
+
+  .moves-section {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    overflow: hidden;
+  }
+
+  .moves-header {
+    padding: 14px 20px;
+    border-bottom: 1px solid var(--border);
+    font-family: var(--mono);
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .moves-header.buy { color: var(--buy); }
+  .moves-header.sell { color: var(--sell); }
+
+  .moves-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+  }
+  .buy .moves-dot { background: var(--buy); }
+  .sell .moves-dot { background: var(--sell); }
+
+  .move-item {
+    padding: 12px 20px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: background 0.1s;
+  }
+
+  .move-item:last-child { border-bottom: none; }
+  .move-item:hover { background: rgba(255,255,255,0.02); }
+
+  .move-ticker { font-weight: 600; font-size: 13px; font-family: var(--mono); }
+  .move-ticker.buy { color: var(--buy); }
+  .move-ticker.sell { color: var(--sell); }
+
+  .move-name { font-size: 11px; color: var(--text2); margin-top: 1px; }
+  .move-value { font-family: var(--mono); font-size: 11px; color: var(--text2); text-align: right; }
+  .move-shares { font-size: 10px; color: var(--text3); }
+
+  .no-data {
+    padding: 24px 20px;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text3);
+    text-align: center;
+  }
+
+  /* RESPONSIVE */
+  @media (max-width: 900px) {
+    .container { grid-template-columns: 1fr; }
+    .sidebar { height: 260px; }
+    .summary-grid { grid-template-columns: repeat(2, 1fr); }
+    .moves-grid { grid-template-columns: 1fr; }
+    .content-area { padding: 20px; }
+    .detail-header { padding: 20px; }
+  }
+
+  /* ANIMATIONS */
+  .fade-in {
+    animation: fadeIn 0.3s ease-out;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .stagger > * {
+    animation: fadeIn 0.3s ease-out both;
+  }
+  .stagger > *:nth-child(1) { animation-delay: 0ms; }
+  .stagger > *:nth-child(2) { animation-delay: 50ms; }
+  .stagger > *:nth-child(3) { animation-delay: 100ms; }
+  .stagger > *:nth-child(4) { animation-delay: 150ms; }
+
+  .sec-link {
+    color: var(--text3);
+    font-size: 10px;
+    text-decoration: none;
+    font-family: var(--mono);
+    padding: 2px 6px;
+    border: 1px solid var(--border2);
+    border-radius: 3px;
+    transition: all 0.15s;
+  }
+  .sec-link:hover { color: var(--accent); border-color: var(--accent); }
+
+  .sort-indicator { opacity: 0.5; font-size: 9px; }
+  .sort-indicator.active { opacity: 1; color: var(--accent); }
+
+  /* Tooltip */
+  .tooltip { position: relative; }
+  .tooltip::after {
+    content: attr(data-tip);
+    position: absolute;
+    bottom: calc(100% + 6px);
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--surface2);
+    border: 1px solid var(--border2);
+    color: var(--text2);
+    font-size: 10px;
+    padding: 4px 8px;
+    border-radius: 4px;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s;
+    font-family: var(--mono);
+  }
+  .tooltip:hover::after { opacity: 1; }
 </style>
 </head>
 <body>
-<div class="shell">
 
-<!-- SIDEBAR -->
-<aside class="sidebar">
-  <div class="sb-logo">
-    <div class="sb-logo-mark">S</div>
-    <div>
-      <div class="sb-logo-text">SuperInvestors</div>
-      <div class="sb-logo-sub">SEC 13F · LIVE DATA</div>
+<header>
+  <div class="logo">
+    <div class="logo-dot"></div>
+    SuperInvestors 13F
+  </div>
+  <div class="header-meta">SEC EDGAR · LIVE DATA · 13F-HR</div>
+</header>
+
+<div class="container">
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-title">Institutional Managers</div>
+      <input type="text" class="search-box" placeholder="Cerca investitore..." id="searchBox">
     </div>
-  </div>
-  <div class="sb-search">
-    <div class="sb-search-wrap">
-      <span class="sb-search-ico">⌕</span>
-      <input class="sb-input" id="searchBox" type="text" placeholder="Cerca investitore...">
+    <div id="investorList"></div>
+  </aside>
+
+  <main class="main" id="mainPanel">
+    <div class="empty-state">
+      <div class="empty-icon">◈</div>
+      <div>Seleziona un superinvestor</div>
+      <div style="font-size:10px;color:var(--text3);margin-top:4px;">Dati live da SEC EDGAR 13F filings</div>
     </div>
-  </div>
-  <div class="sb-list" id="sbList"></div>
-</aside>
-
-<!-- MAIN -->
-<main class="main" id="main">
-  <div class="centered">
-    <div style="font-size:36px">🔍</div>
-    <div style="font-weight:600;color:#374151">Seleziona un investitore</div>
-    <div>Dati live da SEC EDGAR 13F-HR filings</div>
-  </div>
-</main>
-
+  </main>
 </div>
-<script>
-// ─── CONFIG ───────────────────────────────────────────────────────────────────
-const FMP = 'gpuffaoLp9CqzZUWxUHMVPTvo3I9xQAq';
 
+<script>
+// ─── SUPERINVESTORS DATA ───────────────────────────────────────────────────
 const INVESTORS = [
-  { name:"Warren Buffett",        firm:"Berkshire Hathaway",     cik:"0001067983", style:"Value" },
-  { name:"Bill Ackman",           firm:"Pershing Square",         cik:"0001336528", style:"Activist" },
-  { name:"Seth Klarman",          firm:"Baupost Group",           cik:"0001061768", style:"Value" },
-  { name:"Stanley Druckenmiller", firm:"Duquesne Family Office",  cik:"0001536411", style:"Macro" },
-  { name:"Michael Burry",         firm:"Scion Asset Mgmt",        cik:"0001649339", style:"Contrarian" },
-  { name:"George Soros",          firm:"Soros Fund Management",   cik:"0001029160", style:"Macro" },
-  { name:"Ken Griffin",           firm:"Citadel Advisors",        cik:"0001423053", style:"Quant" },
-  { name:"David Tepper",          firm:"Appaloosa Mgmt",          cik:"0001656456", style:"Macro/Value" },
-  { name:"Steve Cohen",           firm:"Point72 Asset Mgmt",      cik:"0001603466", style:"Multi-Strat" },
-  { name:"Ray Dalio",             firm:"Bridgewater Associates",  cik:"0001350694", style:"Macro" },
-  { name:"Carl Icahn",            firm:"Icahn Capital Mgmt",      cik:"0000921669", style:"Activist" },
-  { name:"Israel Englander",      firm:"Millennium Management",   cik:"0001273087", style:"Multi-Strat" },
-  { name:"John Paulson",          firm:"Paulson & Co.",           cik:"0001035674", style:"Event-Driven" },
-  { name:"Dan Loeb",              firm:"Third Point",             cik:"0001040273", style:"Activist" },
-  { name:"David Einhorn",         firm:"Greenlight Capital",      cik:"0001079114", style:"Value/Short" },
-  { name:"Chase Coleman",         firm:"Tiger Global Mgmt",       cik:"0001167483", style:"Growth/Tech" },
-  { name:"Philippe Laffont",      firm:"Coatue Management",       cik:"0001135730", style:"Tech/Growth" },
+  { name: "Warren Buffett",    firm: "Berkshire Hathaway",     cik: "0001067983", style: "Value" },
+  { name: "Bill Ackman",       firm: "Pershing Square Capital", cik: "0001336528", style: "Activist" },
+  { name: "David Einhorn",     firm: "Greenlight Capital",     cik: "0001079114", style: "Value/Short" },
+  { name: "Seth Klarman",      firm: "Baupost Group",          cik: "0000786347", style: "Value" },
+  { name: "Stanley Druckenmiller", firm: "Duquesne Family Office", cik: "0000813672", style: "Macro" },
+  { name: "Michael Burry",     firm: "Scion Asset Mgmt",       cik: "0001649339", style: "Contrarian" },
+  { name: "George Soros",      firm: "Soros Fund Mgmt",        cik: "0000823768", style: "Macro" },
+  { name: "Ken Griffin",       firm: "Citadel Advisors",       cik: "0001423298", style: "Quant/Multi" },
+  { name: "David Tepper",      firm: "Appaloosa Mgmt",         cik: "0001656456", style: "Macro/Value" },
+  { name: "Steve Cohen",       firm: "Point72 Asset Mgmt",     cik: "0001603466", style: "Multi-Strategy" },
+  { name: "Ray Dalio",         firm: "Bridgewater Associates", cik: "0001350694", style: "Macro" },
+  { name: "Carl Icahn",        firm: "Icahn Capital Mgmt",     cik: "0000813414", style: "Activist" },
+  { name: "Israel Englander",  firm: "Millennium Management",  cik: "0001273931", style: "Multi-Strategy" },
+  { name: "John Paulson",      firm: "Paulson & Co.",          cik: "0001035674", style: "Event-Driven" },
+  { name: "Dan Loeb",          firm: "Third Point",            cik: "0001040273", style: "Activist" },
+  { name: "Jeff Yass",         firm: "Susquehanna Int'l",      cik: "0001388771", style: "Quant" },
+  { name: "Chase Coleman",     firm: "Tiger Global Mgmt",      cik: "0001167483", style: "Growth/Tech" },
+  { name: "Philippe Laffont",  firm: "Coatue Management",      cik: "0001418819", style: "Tech/Growth" },
 ];
 
-// ─── STATE ────────────────────────────────────────────────────────────────────
-let INV=null, FILINGS=[], HOLDINGS={}, PRICES={};
-let fidx=0, tab='overview', filt='all', sortK='value', sortD='desc';
+// ─── STATE ─────────────────────────────────────────────────────────────────
+let activeInvestor = null;
+let activeFilingIdx = 0;
+let filingHistory = [];
+let allHoldings = {}; // cache: accessionNo -> holdings array
+let currentTab = 'portfolio';
+let sortCol = 'value';
+let sortDir = 'desc';
 
-// ─── UTILS ────────────────────────────────────────────────────────────────────
-const $=id=>document.getElementById(id);
-const money=v=>{if(!v&&v!==0)return'—';if(v>=1e9)return`$${(v/1e9).toFixed(2)}B`;if(v>=1e6)return`$${(v/1e6).toFixed(1)}M`;if(v>=1e3)return`$${(v/1e3).toFixed(0)}K`;return`$${v}`;};
-const shs=v=>{if(!v&&v!==0)return'—';if(v>=1e6)return`${(v/1e6).toFixed(2)}M`;if(v>=1e3)return`${(v/1e3).toFixed(1)}K`;return`${v}`;};
-const pct=v=>v==null?'—':`${v>0?'+':''}${v.toFixed(1)}%`;
-const cikN=c=>c.replace(/^0+/,'');
-const fmtA=a=>a.replace(/-/g,'');
-const ini=n=>n.split(' ').map(w=>w[0]).join('').substring(0,2).toUpperCase();
-const getQ=p=>{if(!p)return'?';const m=parseInt(p.substring(5,7));if(m<=3)return 1;if(m<=6)return 2;if(m<=9)return 3;return 4;};
-const sec=(url,m='GET')=>fetch(`/api/sec?url=${encodeURIComponent(url)}`,{method:m});
-
-// ─── LOGO ─────────────────────────────────────────────────────────────────────
-const LOGOS={
-  'APPLE':'apple.com','MICROSOFT':'microsoft.com','AMAZON':'amazon.com','AMAZON COM':'amazon.com',
-  'ALPHABET':'google.com','GOOGLE':'google.com','META PLATFORMS':'meta.com','META ':'meta.com',
-  'NVIDIA':'nvidia.com','TESLA':'tesla.com','BERKSHIRE':'berkshirehathaway.com',
-  'JPMORGAN':'jpmorganchase.com','JP MORGAN':'jpmorganchase.com',
-  'BANK OF AMERICA':'bankofamerica.com','WELLS FARGO':'wellsfargo.com',
-  'GOLDMAN SACHS':'goldmansachs.com','GOLDMAN':'goldmansachs.com',
-  'VISA':'visa.com','MASTERCARD':'mastercard.com','PAYPAL':'paypal.com',
-  'NETFLIX':'netflix.com','DISNEY':'disney.com','UBER':'uber.com',
-  'AIRBNB':'airbnb.com','SALESFORCE':'salesforce.com','ORACLE':'oracle.com',
-  'INTEL':'intel.com','AMD ':'amd.com','QUALCOMM':'qualcomm.com',
-  'EXXON':'exxonmobil.com','CHEVRON':'chevron.com',
-  'COCA-COLA':'coca-cola.com','COCA COLA':'coca-cola.com',
-  'JOHNSON':'jnj.com','PFIZER':'pfizer.com',
-  'UNITEDHEALTH':'unitedhealthgroup.com','UNITED HEALTH':'unitedhealthgroup.com',
-  'HOME DEPOT':'homedepot.com','WALMART':'walmart.com','TARGET':'target.com',
-  'COSTCO':'costco.com','ALIBABA':'alibaba.com',
-  'TAIWAN SEMI':'tsmc.com','TAIWAN SEMICONDUCTOR':'tsmc.com',
-  'BROOKFIELD':'brookfield.com','HILTON':'hilton.com',
-  'RESTAURANT BRANDS':'rbi.com','HERTZ':'hertz.com','HOWARD HUGHES':'howardhughes.com',
-  'CITIGROUP':'citi.com','MORGAN STANLEY':'morganstanley.com',
-  'BLACKROCK':'blackrock.com','VERIZON':'verizon.com',
-  'COMCAST':'comcast.com','ADOBE':'adobe.com','SPOTIFY':'spotify.com',
-  'AMERICAN EXPRESS':'americanexpress.com','DAVITA':'davita.com',
-  'CHARTER COMM':'charter.com','SEAPORT':'seaportentertainment.com',
+// ─── UTILS ────────────────────────────────────────────────────────────────
+const fmt = {
+  money: v => {
+    if (!v && v !== 0) return '—';
+    if (v >= 1e9) return `$${(v/1e9).toFixed(2)}B`;
+    if (v >= 1e6) return `$${(v/1e6).toFixed(1)}M`;
+    if (v >= 1e3) return `$${(v/1e3).toFixed(0)}K`;
+    return `$${v}`;
+  },
+  shares: v => {
+    if (!v && v !== 0) return '—';
+    if (v >= 1e6) return `${(v/1e6).toFixed(2)}M`;
+    if (v >= 1e3) return `${(v/1e3).toFixed(0)}K`;
+    return `${v}`;
+  },
+  pct: v => v === null ? '—' : `${v > 0 ? '+' : ''}${v.toFixed(1)}%`
 };
-function getLogo(name){const u=name.toUpperCase();for(const[k,v]of Object.entries(LOGOS))if(u.includes(k))return`/api/logo?domain=${v}`;return null;}
-function logoImg(name,sz=22){const l=getLogo(name);const r=Math.round(sz*.27);return l?`<img style="width:${sz}px;height:${sz}px;border-radius:${r}px;object-fit:contain;background:#f1f5f9;flex-shrink:0" src="${l}" onerror="this.style.display='none'" loading="lazy">`:`<div style="width:${sz}px;height:${sz}px;border-radius:${r}px;background:#f1f5f9;flex-shrink:0"></div>`;}
 
-// ─── FMP ──────────────────────────────────────────────────────────────────────
-async function findTicker(name){
-  const k='T_'+name; if(PRICES[k]!==undefined)return PRICES[k];
-  try{const r=await fetch(`/api/fmp/search?query=${encodeURIComponent(name)}`);const d=await r.json();if(d&&d[0]?.symbol){PRICES[k]=d[0].symbol;return d[0].symbol;}}catch{}
-  PRICES[k]=null;return null;
-}
-async function getPrice(ticker){
-  if(!ticker||PRICES[ticker]!==undefined)return PRICES[ticker]||null;
-  try{const r=await fetch(`/api/fmp/quote/${ticker}`);const d=await r.json();if(d&&d[0]){PRICES[ticker]={price:d[0].price,chg:d[0].changesPercentage};return PRICES[ticker];}}catch{}
-  PRICES[ticker]=null;return null;
-}
-async function loadPrices(rows){
-  for(const h of rows){
-    const t=await findTicker(h.name);if(!t)continue;
-    const p=await getPrice(t);if(!p)continue;
-    const el=document.getElementById('pr_'+(h.cusip||h.name.replace(/\s/g,'')));
-    if(el){const up=p.chg>=0;el.innerHTML=`<div class="price-v">$${p.price.toFixed(2)}</div><div class="price-c ${up?'up':'dn'}">${up?'▲':'▼'} ${Math.abs(p.chg).toFixed(2)}%</div>`;}
-  }
+function cikNum(cik) {
+  return cik.replace(/^0+/, '');
 }
 
-// ─── SIDEBAR ──────────────────────────────────────────────────────────────────
-function renderSB(f=''){
-  const fl=INVESTORS.filter(i=>i.name.toLowerCase().includes(f.toLowerCase())||i.firm.toLowerCase().includes(f.toLowerCase()));
-  $('sbList').innerHTML=fl.map(i=>`
-    <div class="sb-item ${INV?.cik===i.cik?'active':''}" onclick="pick('${i.cik}')">
-      <div class="sb-ava">${ini(i.name)}</div>
-      <div class="sb-inf"><div class="sb-name">${i.name}</div><div class="sb-firm">${i.firm}</div></div>
-      <div class="sb-tag">${i.style}</div>
-    </div>`).join('');
+function formatAccession(accNo) {
+  return accNo.replace(/-/g, '');
 }
 
-// ─── PICK ─────────────────────────────────────────────────────────────────────
-async function pick(cik){
-  INV=INVESTORS.find(i=>i.cik===cik);fidx=0;FILINGS=[];HOLDINGS={};tab='overview';filt='all';
-  renderSB($('searchBox').value);
-  $('main').innerHTML=`<div class="centered"><div class="spinner"></div><div>Caricamento ${INV.name}...</div></div>`;
+// ─── RENDER INVESTOR LIST ─────────────────────────────────────────────────
+function renderList(filter = '') {
+  const list = document.getElementById('investorList');
+  const filtered = INVESTORS.filter(inv =>
+    inv.name.toLowerCase().includes(filter.toLowerCase()) ||
+    inv.firm.toLowerCase().includes(filter.toLowerCase())
+  );
+  list.innerHTML = filtered.map((inv, i) => `
+    <div class="investor-item ${activeInvestor?.cik === inv.cik ? 'active' : ''}"
+         onclick="selectInvestor('${inv.cik}')">
+      <div class="inv-name">${inv.name}</div>
+      <div class="inv-firm">${inv.firm}</div>
+      <div class="inv-stats">
+        <div class="inv-stat">CIK <span>${cikNum(inv.cik)}</span></div>
+        <div class="inv-stat">Style <span>${inv.style}</span></div>
+      </div>
+    </div>
+  `).join('');
+}
+
+// ─── SELECT INVESTOR ──────────────────────────────────────────────────────
+async function selectInvestor(cik) {
+  activeInvestor = INVESTORS.find(i => i.cik === cik);
+  activeFilingIdx = 0;
+  filingHistory = [];
+  allHoldings = {};
+  currentTab = 'portfolio';
+  renderList(document.getElementById('searchBox').value);
+  showLoading(`Caricamento filing di ${activeInvestor.name}...`);
   await loadFilings(cik);
 }
 
-// ─── LOAD FILINGS ─────────────────────────────────────────────────────────────
-async function loadFilings(cik){
-  try{
-    const pk='CIK'+cik.replace(/^0+/,'').padStart(10,'0');
-    const r=await sec(`https://data.sec.gov/submissions/${pk}.json`);
-    if(!r.ok)throw new Error(`HTTP ${r.status} — submissions API`);
-    const d=await r.json();
-    const forms=d.filings?.recent?.form||[],acc=d.filings?.recent?.accessionNumber||[];
-    const dates=d.filings?.recent?.filingDate||[],periods=d.filings?.recent?.reportDate||[];
-    const f13=[];for(let i=0;i<forms.length;i++)if(forms[i]==='13F-HR')f13.push({acc:acc[i],date:dates[i],period:periods[i]||dates[i]});
-    if(!f13.length){showErr('Nessun filing 13F-HR trovato.',cik);return;}
-    FILINGS=f13.slice(0,8);await loadH(cik,0);
-  }catch(e){showErr(e.message,cik);}
+function showLoading(msg = 'Caricamento...') {
+  document.getElementById('mainPanel').innerHTML = `
+    <div class="loading">
+      <div class="spinner"></div>
+      <div class="loading-log">${msg}</div>
+    </div>`;
 }
 
-// ─── LOAD HOLDINGS ────────────────────────────────────────────────────────────
-async function loadH(cik,idx){
-  $('main').innerHTML=`<div class="centered"><div class="spinner"></div><div>Download holdings...</div></div>`;
-  const f=FILINGS[idx];
-  if(HOLDINGS[f.acc]){fidx=idx;render(cik,idx);return;}
-  try{
-    const ca=fmtA(f.acc),ci=cikN(cik);
-    const xu=await findXml(ci,ca,f.acc);
-    const xr=await sec(xu);if(!xr.ok)throw new Error(`HTTP ${xr.status}`);
-    const xt=await xr.text();
-    const h=parseXml(xt);if(!h.length)throw new Error('Nessun holding (formato non supportato)');
-    HOLDINGS[f.acc]=h;fidx=idx;render(cik,idx);
-    // pre-load prev quarter
-    if(idx===0&&FILINGS[1]&&!HOLDINGS[FILINGS[1].acc]){
-      const pf=FILINGS[1],pca=fmtA(pf.acc),cap=cik,capH=h;
-      findXml(cikN(cik),pca,pf.acc).then(u=>sec(u)).then(r=>r.text()).then(t=>{
-        const ph=parseXml(t);if(ph.length){HOLDINGS[pf.acc]=ph;if(INV?.cik===cap&&fidx===0)render(cap,0);}
-      }).catch(()=>{});
-    }
-  }catch(e){showErr(e.message,cik);}
+function showError(msg) {
+  document.getElementById('mainPanel').innerHTML = `
+    <div class="error-box">
+      ⚠ Errore SEC EDGAR:<br><br>${msg}<br><br>
+      <span style="color:var(--text3)">La SEC applica rate limiting (10 req/s). Aspetta qualche secondo e riprova.</span>
+    </div>`;
 }
 
-function showErr(msg,cik){$('main').innerHTML=`<div class="error-box">⚠ ${msg}<br><br><a href="https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=${cikN(cik)}&type=13F-HR" target="_blank" style="color:var(--accent)">Apri su SEC EDGAR ↗</a></div>`;}
+// ─── LOAD FILINGS (SUBMISSIONS API) ──────────────────────────────────────
+async function loadFilings(cik) {
+  try {
+    // CORS: SEC allows direct fetch
+    const url = `/api/sec?url=https://data.sec.gov/submissions/${cik}.json`;
+    const res = await fetch(url, { headers: { 'User-Agent': 'SuperinvestorTracker admin@example.com' } });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const data = await res.json();
 
-// ─── FIND XML ─────────────────────────────────────────────────────────────────
-async function findXml(ci,ca,acc){
-  const base=`https://www.sec.gov/Archives/edgar/data/${ci}/${ca}`;
+    // Find 13F-HR filings
+    const forms = data.filings?.recent?.form || [];
+    const accNos = data.filings?.recent?.accessionNumber || [];
+    const dates = data.filings?.recent?.filingDate || [];
+    const periods = data.filings?.recent?.reportDate || [];
 
-  // Strategy 1: HTML index page (most reliable - always lists actual filenames)
-  try{
-    const r=await sec(`${base}/${acc}-index.htm`);
-    if(r.ok){
-      const html=await r.text();
-      // Find row with "INFORMATION TABLE" type and extract XML link
-      const rows=[...html.matchAll(/<tr[^>]*>[\s\S]*?<\/tr>/gi)];
-      for(const row of rows){
-        if(/INFORMATION TABLE/i.test(row[0])){
-          const m=row[0].match(/href="([^"]+\.xml)"/i);
-          if(m){const fname=m[1].split('/').pop();return`${base}/${fname}`;}
-        }
+    const filings13f = [];
+    for (let i = 0; i < forms.length; i++) {
+      if (forms[i] === '13F-HR') {
+        filings13f.push({
+          accessionNo: accNos[i],
+          date: dates[i],
+          period: periods[i] || dates[i],
+          primaryDoc: (data.filings?.recent?.primaryDocument || [])[i] || ''
+        });
       }
-      // Fallback: any XML that is not the primary doc
-      const allXml=[...html.matchAll(/href="([^"]*\.xml)"/gi)];
-      const infoXml=allXml.find(m=>!/primary/i.test(m[1]));
-      if(infoXml)return`${base}/${infoXml[1].split('/').pop()}`;
-      if(allXml.length)return`${base}/${allXml[allXml.length-1][1].split('/').pop()}`;
     }
-  }catch{}
 
-  // Strategy 2: JSON index
-  try{
-    const r=await sec(`${base}/${acc}-index.json`);
-    if(r.ok){
-      const d=await r.json();const it=d.directory?.item||[];
-      let f=it.find(x=>x.type==='INFORMATION TABLE');
-      if(!f)f=it.find(x=>x.name?.toLowerCase().endsWith('.xml')&&!x.name.toLowerCase().includes('primary'));
-      if(f?.name)return`${base}/${f.name}`;
+    if (filings13f.length === 0) {
+      showError(`Nessun filing 13F-HR trovato per ${activeInvestor.name}.<br>CIK: ${cikNum(cik)}`);
+      return;
     }
-  }catch{}
 
-  // Strategy 3: Common names
-  for(const n of['infotable.xml','form13fInfoTable.xml','informationtable.xml','InfoTable.xml','xslForm13F_X02.xml']){
-    try{const r=await sec(`${base}/${n}`,'HEAD');if(r.ok)return`${base}/${n}`;}catch{}
+    filingHistory = filings13f.slice(0, 8); // last 8 quarters
+    activeFilingIdx = 0;
+
+    await loadHoldings(cik, activeFilingIdx);
+  } catch (e) {
+    showError(e.message);
+  }
+}
+
+// ─── LOAD HOLDINGS (XML PARSER) ──────────────────────────────────────────
+async function loadHoldings(cik, idx) {
+  showLoading(`Parsing 13F-HR filing...`);
+  const filing = filingHistory[idx];
+  const cached = allHoldings[filing.accessionNo];
+  if (cached) {
+    renderDetail(cik, idx, cached);
+    return;
   }
 
-  // Strategy 4: Full bundle
-  return`${base}/${acc}.txt`;
+  try {
+    const cleanAcc = formatAccession(filing.accessionNo);  // remove dashes
+    const cidx = cikNum(cik);                               // remove leading zeros
+
+    // Step 1: Get the filing index page (HTML) to find the XML info table filename
+    // Correct URL format: /Archives/edgar/data/{cik}/{accession-no-dashes}/{accession-with-dashes}-index.htm
+    const indexUrl = `https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=${cidx}&type=13F-HR&dateb=&owner=include&count=1&search_text=`;
+    
+    // Actually use the correct index JSON endpoint
+    // Format: /Archives/edgar/data/{cik}/{accession_nodashes}/
+    // We can get the file listing via the submissions API primaryDocument field
+    // OR use the EDGAR filing viewer API
+    
+    const xmlUrl = await findXmlUrl(cidx, cleanAcc, filing.accessionNo);
+    if (!xmlUrl) throw new Error('Impossibile trovare il file XML del 13F');
+
+    showLoading(`Download dati holdings...`);
+    const xmlRes = await fetch(xmlUrl, {
+      headers: { 'User-Agent': 'SuperinvestorTracker research@example.com' }
+    });
+    if (!xmlRes.ok) throw new Error(`Fetch XML fallito (HTTP ${xmlRes.status})`);
+    const xmlText = await xmlRes.text();
+
+    const holdings = parseXML13F(xmlText);
+    if (holdings.length === 0) throw new Error('Nessun holding nel documento (formato non riconosciuto)');
+
+    allHoldings[filing.accessionNo] = holdings;
+    renderDetail(cik, idx, holdings);
+
+  } catch (e) {
+    showError(`${e.message}<br><br>
+      <a href="https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=${cikNum(cik)}&type=13F-HR&dateb=&owner=include&count=10"
+         target="_blank" style="color:var(--accent2)">Apri filing su EDGAR ↗</a>`);
+  }
 }
 
-// ─── PARSE XML ────────────────────────────────────────────────────────────────
-function parseXml(raw){
-  let x=raw;
-  if(raw.includes('<SEQUENCE>')||raw.includes('-----BEGIN PRIVACY')){const m=raw.match(/<informationTable[\s\S]*?<\/informationTable>/i)||raw.match(/<infoTable[\s\S]*?<\/infoTable>/i);if(m)x=m[0];else{const s=[...raw.matchAll(/<\?xml/gi)].map(a=>a.index);if(s.length)x=raw.substring(s.length>1?s[s.length-1]:s[0]);}}
-  const c=x.replace(/<\?xml[^>]*\?>/g,'').replace(/\s+xmlns(?::[a-zA-Z0-9_]+)?="[^"]*"/g,'').replace(/\s+xsi:[a-zA-Z:]+="[^"]*"/g,'').replace(/<([a-zA-Z0-9_]+):/g,'<').replace(/<\/([a-zA-Z0-9_]+):/g,'</');
-  const doc=new DOMParser().parseFromString(c,'text/xml');
-  const entries=doc.querySelectorAll('infoTable');if(!entries.length)return[];
-  const h=[];entries.forEach(e=>{const g=t=>e.querySelector(t)?.textContent?.trim()||'';const name=g('nameOfIssuer'),cusip=g('cusip'),value=parseInt(g('value')||'0',10)*1000,shares=parseInt(g('sshPrnamt')||'0',10),type=g('sshPrnamtType')||'SH',pc=g('putCall')||'';if(name&&value>0)h.push({name,cusip,value,shares,type,pc});});
-  return h.sort((a,b)=>b.value-a.value);
-}
+// ─── FIND XML URL ─────────────────────────────────────────────────────────
+async function findXmlUrl(cidx, cleanAcc, accessionNo) {
+  const base = `https://www.sec.gov/Archives/edgar/data/${cidx}/${cleanAcc}`;
+  const headers = { 'User-Agent': 'SuperinvestorTracker research@example.com' };
 
-// ─── COMPUTE MOVES ────────────────────────────────────────────────────────────
-function getMoves(curr,prev){
-  if(!prev||!prev.length)return null;
-  const pm={},cm={};prev.forEach(h=>{pm[h.cusip||h.name]=h;});curr.forEach(h=>{cm[h.cusip||h.name]=h;});
-  const newP=curr.filter(h=>!pm[h.cusip||h.name]);
-  const closed=prev.filter(h=>!cm[h.cusip||h.name]);
-  const changed=curr.filter(h=>{const p=pm[h.cusip||h.name];return p&&h.shares!==p.shares;});
-  const inc=changed.filter(h=>h.shares>pm[h.cusip||h.name].shares).map(h=>({...h,prevS:pm[h.cusip||h.name].shares}));
-  const red=changed.filter(h=>h.shares<pm[h.cusip||h.name].shares).map(h=>({...h,prevS:pm[h.cusip||h.name].shares}));
-  return{newP,closed,inc,red};
-}
-function ct(h,pm){if(!pm)return'new';const k=h.cusip||h.name;if(!pm[k])return'new';if(h.shares>pm[k].shares)return'inc';if(h.shares<pm[k].shares)return'red';return'unch';}
+  // Strategy 1: EDGAR index JSON — this is the most reliable
+  // Correct URL: /Archives/edgar/data/{cik_no_zeros}/{acc_no_dashes}/{acc_with_dashes}-index.json
+  try {
+    const idxUrl = `${base}/${accessionNo}-index.json`;
+    const r = await fetch(idxUrl, { headers });
+    if (r.ok) {
+      const data = await r.json();
+      // The response has data.directory.item[] with {name, type, ...}
+      const items = data.directory?.item || [];
+      // First, look for the explicit INFORMATION TABLE type
+      let xmlFile = items.find(f => f.type === 'INFORMATION TABLE');
+      // Then look for XML with 'infotable' or '13f' in name
+      if (!xmlFile) xmlFile = items.find(f =>
+        f.name?.toLowerCase().endsWith('.xml') && (
+          f.name.toLowerCase().includes('infotable') ||
+          f.name.toLowerCase().includes('information') ||
+          f.name.toLowerCase().includes('13f')
+        )
+      );
+      // Any XML that's not the cover page (primary doc is usually htm/html)
+      if (!xmlFile) xmlFile = items.find(f =>
+        f.name?.toLowerCase().endsWith('.xml') &&
+        !f.name.toLowerCase().includes('primary')
+      );
+      if (xmlFile?.name) return `${base}/${xmlFile.name}`;
+    }
+  } catch {}
 
-// ─── RENDER ───────────────────────────────────────────────────────────────────
-function render(cik,idx){
-  const inv=INV,f=FILINGS[idx],h=HOLDINGS[f.acc];
-  const total=h.reduce((s,x)=>s+x.value,0);
-  const prevF=FILINGS[idx+1],prevH=prevF?HOLDINGS[prevF.acc]:null;
-  const mv=getMoves(h,prevH);
-  const pm=prevH?Object.fromEntries(prevH.map(x=>[x.cusip||x.name,x])):null;
-  const enr=h.map(x=>({...x,weight:total>0?(x.value/total*100):0,ct_:ct(x,pm),prevS:pm?.[x.cusip||x.name]?.shares||0}));
-  const newCnt=enr.filter(x=>x.ct_==='new').length;
-  const exitCnt=mv?.closed?.length||0;
-  const top10=enr.slice(0,10).reduce((s,x)=>s+x.weight,0);
-  const mvTot=mv?(mv.newP.length+mv.closed.length+mv.inc.length+mv.red.length):0;
-  const counts={all:enr.length,new:enr.filter(x=>x.ct_==='new').length,added:enr.filter(x=>x.ct_==='inc').length,reduced:enr.filter(x=>x.ct_==='red').length,unchanged:enr.filter(x=>x.ct_==='unch').length};
-
-  $('main').innerHTML=`<div class="fade">
-    <div class="inv-hdr">
-      <div class="hdr-top">
-        <div>
-          <div class="hdr-fund">${inv.firm}</div>
-          <div class="hdr-manager">Managed by ${inv.name}</div>
-          <div class="hdr-meta">
-            <span class="hdr-pill">Latest report: Q${getQ(f.period)} ${f.period?.substring(0,4)||''}</span>
-            <span class="hdr-pill">Filed: ${f.date}</span>
-            <span class="hdr-pill">Holdings ${h.length}</span>
-          </div>
-        </div>
-        <div class="hdr-btns">
-          <a href="https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=${cikN(cik)}&type=13F-HR" target="_blank" class="btn">View on SEC</a>
-          <button class="btn primary" onclick="swTab('moves','${cik}',${idx})">View latest changes</button>
-        </div>
-      </div>
-      <div class="kpi-row">
-        <div class="kpi-card"><div class="kpi-lbl">Portfolio Value</div><div class="kpi-val">${money(total)}</div><div class="kpi-sub">Reported equity holdings</div></div>
-        <div class="kpi-card"><div class="kpi-lbl">Holdings</div><div class="kpi-val">${h.length}</div><div class="kpi-sub">Current reported positions</div></div>
-        <div class="kpi-card"><div class="kpi-lbl">New Entries</div><div class="kpi-val ${newCnt>0?'green':''}">${prevH?newCnt:'—'}</div><div class="kpi-sub">Opened this quarter</div></div>
-        <div class="kpi-card"><div class="kpi-lbl">New Exits</div><div class="kpi-val ${exitCnt>0?'red':''}">${prevH?exitCnt:'—'}</div><div class="kpi-sub">Fully sold this quarter</div></div>
-      </div>
-      <div class="q-nav">
-        ${FILINGS.map((qf,i)=>`<button class="q-btn ${i===idx?'active':''}" onclick="go(${i})">Q${getQ(qf.period)} ${qf.period?.substring(0,4)||''}</button>`).join('')}
-      </div>
-      <div class="tab-row">
-        <div class="tab ${tab==='overview'?'active':''}" onclick="swTab('overview','${cik}',${idx})">Overview</div>
-        <div class="tab ${tab==='portfolio'?'active':''}" onclick="swTab('portfolio','${cik}',${idx})">Portfolio</div>
-        <div class="tab ${tab==='moves'?'active':''}" onclick="swTab('moves','${cik}',${idx})">Buys & Sells${mv?` (${mvTot})`:''}</div>
-      </div>
-    </div>
-    <div class="page">
-      ${tab==='overview'?renderOverview(enr,total,mv,prevH,counts):tab==='moves'?renderMoves(mv,prevH):renderPortfolioFull(enr,total,counts)}
-    </div>
-  </div>`;
-}
-
-// ─── OVERVIEW ─────────────────────────────────────────────────────────────────
-function renderOverview(enr,total,mv,prevH,counts){
-  const top8=enr.slice(0,8);
-  const maxW=enr[0]?.weight||1;
-  const top5=enr.slice(0,5).reduce((s,h)=>s+h.weight,0);
-  const top10=enr.slice(0,10).reduce((s,h)=>s+h.weight,0);
-
-  const glanceRows=top8.map(h=>{
-    const chg=h.prevS>0?((h.shares-h.prevS)/h.prevS*100):null;
-    return`<tr>
-      <td><div class="ticker-wrap">${logoImg(h.name,20)}<div class="ticker">${h.name.split(' ')[0].substring(0,6)}</div></div></td>
-      <td><div class="co-name">${h.name.substring(0,20)}</div></td>
-      <td class="val-cell">${money(h.value)}</td>
-      <td>${badge(h.ct_,chg)}</td>
-    </tr>`;
-  }).join('');
-
-  const allocRows=top8.map(h=>`
-    <div class="alloc-row">
-      <div class="alloc-name">${h.name.split(' ')[0]}</div>
-      <div class="alloc-bar-bg"><div class="alloc-bar" style="width:${Math.round(h.weight/maxW*100)}%"></div></div>
-      <div class="alloc-pct">${h.weight.toFixed(1)}%</div>
-    </div>`).join('');
-
-  // Changed this quarter
-  const changed=enr.filter(h=>h.ct_!=='unch').slice(0,10);
-  setTimeout(()=>loadPrices(changed),200);
-
-  const changedRows=changed.length
-    ? changed.map(h=>{
-        const chg=h.prevS>0?((h.shares-h.prevS)/h.prevS*100):null;
-        const pid='pr_'+(h.cusip||h.name.replace(/\W/g,''));
-        return`<tr>
-          <td><div class="stock-wrap">${logoImg(h.name,22)}<div><div class="s-ticker">${h.name.split(' ').slice(0,2).join(' ').substring(0,16)}</div><div class="s-name">${h.name.substring(0,22)}</div></div></div></td>
-          <td><span class="num">${shs(h.shares)}</span></td>
-          <td><span class="num bold">${money(h.value)}</span></td>
-          <td><span class="num">${h.weight.toFixed(2)}%</span></td>
-          <td>${badge(h.ct_,chg)}</td>
-          <td><div class="price-block" id="${pid}"><div class="price-v" style="color:#9ca3af">—</div></div></td>
-        </tr>`;
-      }).join('')
-    : `<tr><td colspan="6" style="padding:20px;text-align:center;font-size:12px;color:var(--text3)">${prevH?'Nessun movimento questo trimestre':'Caricamento dati trimestre precedente...'}</td></tr>`;
-
-  return`
-    <div class="two-col">
-      <div class="card">
-        <div class="card-hdr"><div class="card-title">Portfolio at a glance</div><div class="card-sub">Largest reported positions by portfolio weight</div></div>
-        <table class="g-tbl"><thead><tr><th>Ticker</th><th>Company</th><th>Market Value</th><th>Activity</th></tr></thead><tbody>${glanceRows}</tbody></table>
-        <div class="view-all" onclick="swTabDirect('portfolio')">View full portfolio →</div>
-      </div>
-      <div class="card">
-        <div class="card-hdr"><div class="card-title">Top Holdings Allocation</div><div class="card-sub">Top to holdings as portfolio %</div></div>
-        <div class="alloc-body">${allocRows}</div>
-        <div class="alloc-footer"><span>Top 5: <b>${top5.toFixed(1)}%</b></span><span>Top 10: <b>${top10.toFixed(1)}%</b></span></div>
-      </div>
-    </div>
-
-    <div class="section-top">
-      <div class="section-title">What changed this quarter</div>
-      <div class="filter-row">${filterBtns(counts,true)}</div>
-    </div>
-    <div class="tbl-card">
-      <table>
-        <thead><tr><th>Stock</th><th>Shares</th><th>Reported Value</th><th>% of Portfolio</th><th>Activity</th><th>Current Price</th></tr></thead>
-        <tbody>${changedRows}</tbody>
-      </table>
-    </div>`;
-}
-
-// ─── PORTFOLIO FULL ───────────────────────────────────────────────────────────
-function renderPortfolioFull(enr,total,counts){
-  let fl=enr;
-  if(filt==='new')fl=enr.filter(h=>h.ct_==='new');
-  else if(filt==='added')fl=enr.filter(h=>h.ct_==='inc');
-  else if(filt==='reduced')fl=enr.filter(h=>h.ct_==='red');
-  else if(filt==='unchanged')fl=enr.filter(h=>h.ct_==='unch');
-  const sorted=[...fl].sort((a,b)=>{const av=a[sortK]??0,bv=b[sortK]??0;return sortD==='desc'?bv-av:av-bv;});
-  const maxV=enr[0]?.value||1;
-  const si=k=>`<span style="opacity:.5;font-size:9px;margin-left:2px">${sortK===k?(sortD==='desc'?'↓':'↑'):'↕'}</span>`;
-  setTimeout(()=>loadPrices(sorted.slice(0,20)),200);
-  return`
-    <div class="section-top" style="margin-bottom:14px">
-      <div class="section-title">Portfolio Holdings</div>
-      <div class="filter-row">${filterBtns(counts,false)}</div>
-    </div>
-    <div class="tbl-card">
-      <table>
-        <thead><tr>
-          <th style="width:30px">#</th>
-          <th>Stock</th>
-          <th onclick="srt('value')" class="${sortK==='value'?'sorted':''}">Reported Value${si('value')}</th>
-          <th onclick="srt('shares')" class="${sortK==='shares'?'sorted':''}">Shares${si('shares')}</th>
-          <th onclick="srt('weight')" class="${sortK==='weight'?'sorted':''}">% Portfolio${si('weight')}</th>
-          <th>Bar</th>
-          <th>Activity</th>
-          <th>Current Price</th>
-        </tr></thead>
-        <tbody>${sorted.map((h,i)=>{
-          const chg=h.prevS>0?((h.shares-h.prevS)/h.prevS*100):null;
-          const pid='pr_'+(h.cusip||h.name.replace(/\W/g,''));
-          return`<tr>
-            <td style="color:var(--text3);font-size:11px">${i+1}</td>
-            <td><div class="stock-wrap">${logoImg(h.name,22)}<div><div class="s-ticker">${h.name.split(' ').slice(0,2).join(' ').substring(0,18)}</div>${h.cusip?`<div class="s-name">${h.cusip}</div>`:''}</div></div></td>
-            <td><span class="num bold">${money(h.value)}</span></td>
-            <td><span class="num">${shs(h.shares)}</span></td>
-            <td><span class="num">${h.weight.toFixed(2)}%</span></td>
-            <td><div class="mini-bar-bg"><div class="mini-bar" style="width:${Math.round(h.value/maxV*72)}px"></div></div></td>
-            <td>${badge(h.ct_,chg)}</td>
-            <td><div class="price-block" id="${pid}"><div class="price-v" style="color:#9ca3af">—</div></div></td>
-          </tr>`;
-        }).join('')}</tbody>
-      </table>
-    </div>`;
-}
-
-// ─── MOVES ────────────────────────────────────────────────────────────────────
-function renderMoves(mv,prevH){
-  if(!prevH)return`<div class="load-prev"><div class="spin-sm"></div>Caricamento trimestre precedente in background...</div>`;
-  if(!mv)return`<div style="padding:24px;text-align:center;font-size:12px;color:var(--text3)">Nessun dato.</div>`;
-  const mrow=(h,type)=>{
-    const chg=h.prevS>0?((h.shares-h.prevS)/h.prevS*100):null;
-    const delta=type==='new'?`<div class="move-d neu">New Position</div>`:type==='closed'?`<div class="move-d neg">Full Exit</div>`:type==='inc'?`<div class="move-d pos">▲ ${chg!=null?Math.abs(chg).toFixed(1)+'%':''}</div>`:`<div class="move-d neg">▼ ${chg!=null?Math.abs(chg).toFixed(1)+'%':''}</div>`;
-    const sub=type==='inc'||type==='red'?`${shs(h.prevS)} → ${shs(h.shares)} sh`:`${shs(h.shares)} sh`;
-    return`<div class="move-row"><div class="move-l">${logoImg(h.name,26)}<div><div class="move-n">${h.name.substring(0,24)}</div><div class="move-s">${sub}</div></div></div><div class="move-r"><div class="move-v">${money(h.value)}</div>${delta}</div></div>`;
-  };
-  const card=(title,cls,items,type)=>`<div class="move-card"><div class="move-hdr"><div class="move-title ${cls}">${title}</div><div class="move-cnt">${items.length}</div></div>${items.length?items.slice(0,12).map(h=>mrow(h,type)).join(''):'<div class="no-move">Nessun movimento</div>'}</div>`;
-  return`<div class="moves-grid">
-    ${card('✦ New Positions','c-new',mv.newP,'new')}
-    ${card('✕ Full Exits','c-sold',mv.closed,'closed')}
-    ${card('▲ Added','c-buy',mv.inc,'inc')}
-    ${card('▼ Reduced','c-sold',mv.red,'red')}
-  </div>`;
-}
-
-// ─── HELPERS ──────────────────────────────────────────────────────────────────
-function badge(ct_,chg){
-  if(ct_==='new')return`<span class="badge b-new">✦ New</span>`;
-  if(ct_==='inc')return`<span class="badge b-added">▲ ${chg!=null?pct(chg):'Added'}</span>`;
-  if(ct_==='red')return`<span class="badge b-reduced">▼ ${chg!=null?pct(chg):'Reduced'}</span>`;
-  return`<span class="badge b-unchanged">Unchanged</span>`;
-}
-function filterBtns(counts,isOverview){
-  const f=isOverview?'all':filt;
-  const btns=[
-    ['all','f-all',counts.all],
-    ['new','f-new',counts.new],
-    ['added','f-added',counts.added],
-    ['reduced','f-reduced',counts.reduced],
-    ['unchanged','f-unchanged',counts.unchanged]
+  // Strategy 2: Try common filenames with HEAD requests (fast, no body download)
+  const commonNames = [
+    'infotable.xml',
+    'form13fInfoTable.xml',
+    'informationtable.xml',
+    'InfoTable.xml',
+    'information_table.xml',
+    'xslForm13F_X02.xml',
+    `${accessionNo}_infotable.xml`,
   ];
-  return btns.map(([k,cls,cnt])=>`<button class="f-btn ${f===k?cls:''}" onclick="setF('${k}')">${k.charAt(0).toUpperCase()+k.slice(1)} <span class="f-cnt">${cnt}</span></button>`).join('');
-}
-function swTab(t,cik,idx){tab=t;render(cik,idx);}
-function swTabDirect(t){tab=t;render(INV.cik,fidx);}
-function setF(f){filt=f;tab='portfolio';render(INV.cik,fidx);}
-function srt(k){if(sortK===k)sortD=sortD==='desc'?'asc':'desc';else{sortK=k;sortD='desc';}render(INV.cik,fidx);}
-async function go(idx){tab='overview';filt='all';await loadH(INV.cik,idx);}
+  for (const name of commonNames) {
+    try {
+      const r = await fetch(`${base}/${name}`, { headers, method: 'HEAD' });
+      if (r.ok) return `${base}/${name}`;
+    } catch {}
+  }
 
-// ─── INIT ─────────────────────────────────────────────────────────────────────
-$('searchBox').addEventListener('input',e=>renderSB(e.target.value));
-renderSB();
+  // Strategy 3: Parse the HTML index page (more reliable than JSON for older filings)
+  try {
+    const htmlIdx = `${base}/${accessionNo}-index.htm`;
+    const r = await fetch(htmlIdx, { headers });
+    if (r.ok) {
+      const html = await r.text();
+      const rows = [...html.matchAll(/<tr[^>]*>.*?<\/tr>/gis)];
+      for (const row of rows) {
+        const text = row[0];
+        if (/information.?table/i.test(text) || /infotable/i.test(text)) {
+          const hrefMatch = text.match(/href="([^"]+\.xml)"/i);
+          if (hrefMatch) {
+            const fname = hrefMatch[1].split('/').pop();
+            return `${base}/${fname}`;
+          }
+        }
+      }
+      // Fallback: any XML link
+      const allXml = [...html.matchAll(/href="([^"]*\.xml)"/gi)];
+      if (allXml.length > 0) {
+        // Prefer not the first doc (usually cover page)
+        const target = allXml.length > 1 ? allXml[1] : allXml[0];
+        return `${base}/${target[1].split('/').pop()}`;
+      }
+    }
+  } catch {}
+
+  // Strategy 4: Full submission bundle (always exists, but is large)
+  return `${base}/${accessionNo}.txt`;
+}
+
+// ─── PARSE 13F XML ─────────────────────────────────────────────────────────
+function parseXML13F(rawText) {
+  // If this is a full submission .txt bundle, extract the XML section
+  let xmlText = rawText;
+  if (rawText.includes('<SEQUENCE>') || rawText.includes('-----BEGIN PRIVACY-ENHANCED MESSAGE-----')) {
+    // Extract the information table XML portion
+    const xmlStart = rawText.indexOf('<?xml');
+    const infoMatch = rawText.match(/<informationTable[\s\S]*?<\/informationTable>/i) ||
+                      rawText.match(/<infoTable[\s\S]*?<\/infoTable>/i);
+    if (infoMatch) {
+      xmlText = infoMatch[0];
+    } else if (xmlStart !== -1) {
+      // Find the last XML block (info table is usually second)
+      const allXmlStarts = [...rawText.matchAll(/<\?xml/gi)].map(m => m.index);
+      if (allXmlStarts.length > 1) {
+        xmlText = rawText.substring(allXmlStarts[allXmlStarts.length - 1]);
+      } else {
+        xmlText = rawText.substring(xmlStart);
+      }
+    }
+  }
+
+  const parser = new DOMParser();
+
+  // Strip namespace prefixes so querySelector works uniformly
+  const clean = xmlText
+    .replace(/<\?xml[^>]*\?>/g, '')
+    .replace(/\sxmlns[^=]*="[^"]*"/g, '')
+    .replace(/<([a-zA-Z0-9_]+):/g, '<')
+    .replace(/<\/([a-zA-Z0-9_]+):/g, '</');
+
+  const doc = parser.parseFromString(clean, 'text/xml');
+
+  const entries = doc.querySelectorAll('infoTable');
+  if (entries.length > 0) {
+    const holdings = [];
+    entries.forEach(entry => {
+      const get = tag => entry.querySelector(tag)?.textContent?.trim() || '';
+      const name = get('nameOfIssuer');
+      const cusip = get('cusip');
+      // value in 13F is in thousands of dollars
+      const rawVal = parseInt(get('value') || '0', 10);
+      const value = rawVal * 1000;
+      const shares = parseInt(get('sshPrnamt') || '0', 10);
+      const type = get('sshPrnamtType') || 'SH';
+      const putcall = get('putCall') || '';
+
+      if (name && value > 0) {
+        holdings.push({ name, cusip, value, shares, type, putcall, ticker: '' });
+      }
+    });
+    return holdings.sort((a, b) => b.value - a.value);
+  }
+
+  // Try informationTable > infoTable (some variants)
+  const entries2 = doc.querySelectorAll('InfoTable, INFOTABLE');
+  if (entries2.length > 0) {
+    const holdings = [];
+    entries2.forEach(entry => {
+      const get = tag => {
+        const el = entry.querySelector(tag) || entry.querySelector(tag.toUpperCase()) || entry.querySelector(tag.toLowerCase());
+        return el?.textContent?.trim() || '';
+      };
+      const name = get('nameOfIssuer') || get('ISSUERNAME');
+      const value = parseInt(get('value') || get('VALUE') || '0', 10) * 1000;
+      const shares = parseInt(get('sshPrnamt') || get('SHRSORPRNAMT') || '0', 10);
+      if (name && value > 0) holdings.push({ name, value, shares, type: 'SH', cusip: get('cusip') || get('CUSIP') || '', ticker: '' });
+    });
+    if (holdings.length > 0) return holdings.sort((a, b) => b.value - a.value);
+  }
+
+  return [];
+}
+
+// ─── COMPUTE MOVES ─────────────────────────────────────────────────────────
+function computeMoves(current, previous) {
+  if (!previous || previous.length === 0) return { newPos: [], closed: [], increased: [], reduced: [] };
+
+  const prevMap = {};
+  previous.forEach(h => { prevMap[h.cusip || h.name] = h; });
+  const currMap = {};
+  current.forEach(h => { currMap[h.cusip || h.name] = h; });
+
+  const newPos = current.filter(h => !prevMap[h.cusip || h.name]);
+  const closed = previous.filter(h => !currMap[h.cusip || h.name]);
+  const changed = current.filter(h => {
+    const prev = prevMap[h.cusip || h.name];
+    return prev && h.shares !== prev.shares;
+  });
+  const increased = changed.filter(h => h.shares > prevMap[h.cusip || h.name].shares)
+    .map(h => ({ ...h, prevShares: prevMap[h.cusip || h.name].shares, prevValue: prevMap[h.cusip || h.name].value }));
+  const reduced = changed.filter(h => h.shares < prevMap[h.cusip || h.name].shares)
+    .map(h => ({ ...h, prevShares: prevMap[h.cusip || h.name].shares, prevValue: prevMap[h.cusip || h.name].value }));
+
+  return { newPos, closed, increased, reduced };
+}
+
+// ─── RENDER DETAIL ─────────────────────────────────────────────────────────
+function renderDetail(cik, idx, holdings) {
+  activeFilingIdx = idx;
+  const inv = activeInvestor;
+  const filing = filingHistory[idx];
+  const totalValue = holdings.reduce((s, h) => s + h.value, 0);
+
+  // Compare with previous quarter
+  const prevFiling = filingHistory[idx + 1];
+  const prevHoldings = prevFiling ? allHoldings[prevFiling.accessionNo] : null;
+  const moves = computeMoves(holdings, prevHoldings);
+
+  // Add portfolio weight + change info to each holding
+  const enriched = holdings.map(h => {
+    const weight = totalValue > 0 ? (h.value / totalValue * 100) : 0;
+    const prev = prevHoldings?.find(p => (p.cusip && p.cusip === h.cusip) || p.name === h.name);
+    let change = null;
+    let changeType = 'unchanged';
+    if (!prev) changeType = 'new';
+    else if (h.shares > prev.shares) { change = ((h.shares - prev.shares) / prev.shares * 100); changeType = 'increased'; }
+    else if (h.shares < prev.shares) { change = ((h.shares - prev.shares) / prev.shares * 100); changeType = 'reduced'; }
+    return { ...h, weight, change, changeType };
+  });
+
+  const maxValue = enriched[0]?.value || 1;
+
+  const html = `
+    <div class="fade-in">
+      <div class="detail-header">
+        <div class="detail-name">${inv.name}</div>
+        <div class="detail-meta" style="margin-top:6px;">
+          <span class="detail-firm">${inv.firm}</span>
+          <span class="detail-cik">CIK: ${cikNum(cik)}</span>
+          <span class="quarter-badge">${inv.style}</span>
+          <a href="https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=${cikNum(cik)}&type=13F-HR" target="_blank" class="sec-link">SEC EDGAR ↗</a>
+        </div>
+        <div class="filing-nav">
+          ${filingHistory.map((f, i) => `
+            <button class="filing-btn ${i === idx ? 'active' : ''}"
+                    onclick="switchFiling(${i})"
+                    title="${f.date}">
+              Q${getQuarter(f.period)} ${f.period?.substring(0,4) || ''}
+            </button>
+          `).join('')}
+        </div>
+      </div>
+
+      <div class="tabs">
+        <div class="tab ${currentTab==='portfolio'?'active':''}" onclick="switchTab('portfolio', ${cik ? `'${cik}'` : 'null'}, ${idx})">Portfolio</div>
+        <div class="tab ${currentTab==='moves'?'active':''}" onclick="switchTab('moves', '${cik}', ${idx})">Movimenti ${prevHoldings ? `(${moves.newPos.length+moves.closed.length+moves.increased.length+moves.reduced.length})` : ''}</div>
+      </div>
+
+      <div class="content-area">
+        ${currentTab === 'portfolio' ? renderPortfolioTab(enriched, totalValue, maxValue, holdings.length) : renderMovesTab(moves, totalValue)}
+      </div>
+    </div>
+  `;
+
+  document.getElementById('mainPanel').innerHTML = html;
+}
+
+function getQuarter(period) {
+  if (!period) return '?';
+  const m = parseInt(period.substring(5, 7));
+  if (m <= 3) return 1;
+  if (m <= 6) return 2;
+  if (m <= 9) return 3;
+  return 4;
+}
+
+function switchTab(tab, cik, idx) {
+  currentTab = tab;
+  const holdings = allHoldings[filingHistory[idx].accessionNo];
+  if (holdings) renderDetail(cik, idx, holdings);
+}
+
+async function switchFiling(idx) {
+  // Load previous filing too if needed for comparison
+  if (filingHistory[idx + 1] && !allHoldings[filingHistory[idx + 1].accessionNo]) {
+    // Load silently in background
+    const cik = activeInvestor.cik;
+    const filing = filingHistory[idx + 1];
+    try {
+      const cidx = cikNum(cik);
+      const cleanAcc = formatAccession(filing.accessionNo);
+      const indexUrl = `https://www.sec.gov/Archives/edgar/data/${cidx}/${cleanAcc}/${filing.accessionNo}-index.json`;
+      const res = await fetch(indexUrl, { headers: { 'User-Agent': 'SuperinvestorTracker admin@example.com' } });
+      if (res.ok) {
+        const idx_data = await res.json();
+        const docs = idx_data.documents || [];
+        const xmlDoc = docs.find(d => d.type === 'INFORMATION TABLE' || (d.document?.endsWith('.xml')));
+        if (xmlDoc) {
+          const xmlRes = await fetch(`https://www.sec.gov/Archives/edgar/data/${cidx}/${cleanAcc}/${xmlDoc.document}`, { headers: { 'User-Agent': 'SuperinvestorTracker admin@example.com' } });
+          if (xmlRes.ok) {
+            const xml = await xmlRes.text();
+            const h = parseXML13F(xml);
+            if (h.length > 0) allHoldings[filing.accessionNo] = h;
+          }
+        }
+      }
+    } catch {}
+  }
+  await loadHoldings(activeInvestor.cik, idx);
+}
+
+// ─── RENDER PORTFOLIO TAB ──────────────────────────────────────────────────
+function renderPortfolioTab(enriched, totalValue, maxValue, count) {
+  const sorted = [...enriched].sort((a, b) => {
+    const av = a[sortCol] ?? 0, bv = b[sortCol] ?? 0;
+    return sortDir === 'desc' ? (bv - av) : (av - bv);
+  });
+
+  const si = col => `<span class="sort-indicator ${sortCol===col?'active':''}">
+    ${sortCol===col ? (sortDir==='desc'?'↓':'↑') : '↕'}</span>`;
+
+  return `
+    <div class="summary-grid stagger">
+      <div class="summary-card">
+        <div class="summary-label">Portfolio Value</div>
+        <div class="summary-value">${fmt.money(totalValue)}</div>
+        <div class="summary-sub">${count} posizioni</div>
+      </div>
+      <div class="summary-card">
+        <div class="summary-label">Top Holding</div>
+        <div class="summary-value" style="font-size:16px">${enriched[0]?.name?.substring(0,18) || '—'}</div>
+        <div class="summary-sub">${fmt.money(enriched[0]?.value)} · ${enriched[0]?.weight?.toFixed(1)}%</div>
+      </div>
+      <div class="summary-card">
+        <div class="summary-label">Top 5 Concentration</div>
+        <div class="summary-value">${enriched.slice(0,5).reduce((s,h)=>s+h.weight,0).toFixed(1)}%</div>
+        <div class="summary-sub">prime 5 posizioni</div>
+      </div>
+      <div class="summary-card">
+        <div class="summary-label">Top 10 Concentration</div>
+        <div class="summary-value">${enriched.slice(0,10).reduce((s,h)=>s+h.weight,0).toFixed(1)}%</div>
+        <div class="summary-sub">prime 10 posizioni</div>
+      </div>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th style="width:32px">#</th>
+            <th>Emittente</th>
+            <th onclick="setSort('value')" class="tooltip" data-tip="Market value $">Value ${si('value')}</th>
+            <th onclick="setSort('shares')" class="tooltip" data-tip="Numero azioni">Shares ${si('shares')}</th>
+            <th onclick="setSort('weight')" class="tooltip" data-tip="Peso % portafoglio">Weight ${si('weight')}</th>
+            <th>Barra</th>
+            <th>Var. QoQ</th>
+            <th>Tipo</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${sorted.map((h, i) => `
+            <tr>
+              <td style="color:var(--text3);font-size:11px">${i+1}</td>
+              <td>
+                <div style="font-weight:500;font-size:13px">${h.name}</div>
+                ${h.cusip ? `<div style="font-size:10px;color:var(--text3);font-family:var(--mono)">${h.cusip}</div>` : ''}
+              </td>
+              <td style="font-weight:500">${fmt.money(h.value)}</td>
+              <td>${fmt.shares(h.shares)}</td>
+              <td style="color:${h.weight>5?'var(--text)':'var(--text2)'}">${h.weight.toFixed(2)}%</td>
+              <td>
+                <div class="value-bar" style="width:${Math.round(h.value/maxValue*120)}px"></div>
+              </td>
+              <td>${changeCell(h)}</td>
+              <td style="color:var(--text3);font-size:10px">${h.type || 'SH'}</td>
+            </tr>
+          `).join('')}
+        </tbody>
+      </table>
+    </div>
+  `;
+}
+
+function changeCell(h) {
+  switch(h.changeType) {
+    case 'new': return '<span class="badge-new">▲ NEW</span>';
+    case 'increased': return `<span class="badge-increased">▲ ${fmt.pct(h.change)}</span>`;
+    case 'reduced': return `<span class="badge-reduced">▼ ${fmt.pct(h.change)}</span>`;
+    default: return '<span class="badge-unchanged">—</span>';
+  }
+}
+
+function setSort(col) {
+  if (sortCol === col) sortDir = sortDir === 'desc' ? 'asc' : 'desc';
+  else { sortCol = col; sortDir = 'desc'; }
+  const holdings = allHoldings[filingHistory[activeFilingIdx].accessionNo];
+  if (holdings) renderDetail(activeInvestor.cik, activeFilingIdx, holdings);
+}
+
+// ─── RENDER MOVES TAB ─────────────────────────────────────────────────────
+function renderMovesTab(moves, totalValue) {
+  const hasPrev = moves.newPos || moves.closed;
+
+  if (!hasPrev) {
+    return `<div class="no-data" style="padding:60px">
+      Seleziona un quarter precedente per vedere i movimenti comparati.
+    </div>`;
+  }
+
+  const moveCard = (title, items, cls) => `
+    <div class="moves-section">
+      <div class="moves-header ${cls}">
+        <div class="moves-dot"></div>
+        ${title} <span style="opacity:0.5">(${items.length})</span>
+      </div>
+      ${items.length === 0
+        ? '<div class="no-data">Nessun movimento</div>'
+        : items.map(h => `
+          <div class="move-item">
+            <div>
+              <div class="move-ticker ${cls}">${h.ticker || h.name?.substring(0,8) || '—'}</div>
+              <div class="move-name">${h.name?.substring(0,30) || ''}</div>
+            </div>
+            <div class="move-value">
+              <div>${fmt.money(h.value)}</div>
+              <div class="move-shares">${fmt.shares(h.shares)} sh</div>
+            </div>
+          </div>
+        `).join('')
+      }
+    </div>
+  `;
+
+  const changeCard = (title, items, cls) => `
+    <div class="moves-section">
+      <div class="moves-header ${cls}">
+        <div class="moves-dot"></div>
+        ${title} <span style="opacity:0.5">(${items.length})</span>
+      </div>
+      ${items.length === 0
+        ? '<div class="no-data">Nessun movimento</div>'
+        : items.map(h => {
+            const chg = ((h.shares - h.prevShares) / h.prevShares * 100);
+            return `
+              <div class="move-item">
+                <div>
+                  <div class="move-ticker ${cls}">${h.name?.substring(0,16) || '—'}</div>
+                  <div class="move-name">${fmt.shares(h.prevShares)} → ${fmt.shares(h.shares)} sh</div>
+                </div>
+                <div class="move-value">
+                  <div>${fmt.money(h.value)}</div>
+                  <div class="move-shares">${cls==='buy'?'▲':'▼'} ${Math.abs(chg).toFixed(1)}%</div>
+                </div>
+              </div>
+            `;
+          }).join('')
+      }
+    </div>
+  `;
+
+  return `
+    <div style="margin-bottom:32px;font-family:var(--mono);font-size:11px;color:var(--text3)">
+      Confronto con il quarter precedente. Carica entrambi i filing per il dettaglio completo.
+    </div>
+    <div class="moves-grid">
+      ${moveCard('NUOVE POSIZIONI', moves.newPos, 'buy')}
+      ${moveCard('POSIZIONI CHIUSE', moves.closed, 'sell')}
+      ${changeCard('AUMENTATE', moves.increased, 'buy')}
+      ${changeCard('RIDOTTE', moves.reduced, 'sell')}
+    </div>
+  `;
+}
+
+// ─── INIT ──────────────────────────────────────────────────────────────────
+document.getElementById('searchBox').addEventListener('input', e => {
+  renderList(e.target.value);
+});
+
+renderList();
 </script>
 </body>
 </html>
