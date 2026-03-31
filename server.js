@@ -25,14 +25,14 @@ async function rateLimitedFetch(url, method = 'GET') {
   return fetch(url, { method, headers: SEC_HEADERS });
 }
 
-// ── SEC PROXY ──────────────────────────────────────────────────────────────
+// SEC PROXY
 app.get('/api/sec', async (req, res) => {
   const { url } = req.query;
   if (!url) return res.status(400).json({ error: 'Missing url' });
   if (!url.startsWith('https://data.sec.gov/') && !url.startsWith('https://www.sec.gov/')) {
     return res.status(403).json({ error: 'Only SEC URLs allowed' });
   }
-  console.log(`SEC → ${url.replace('https://','').substring(0,80)}`);
+  console.log('SEC ->', url.replace('https://','').substring(0, 80));
   try {
     const r = await rateLimitedFetch(url);
     const ct = r.headers.get('content-type') || 'text/plain';
@@ -40,7 +40,6 @@ app.get('/api/sec', async (req, res) => {
     const body = await r.buffer();
     res.status(r.status).send(body);
   } catch (e) {
-    console.error('SEC error:', e.message);
     res.status(500).json({ error: e.message });
   }
 });
@@ -56,29 +55,7 @@ app.head('/api/sec', async (req, res) => {
   } catch { res.status(500).end(); }
 });
 
-// ── FMP PROXY (evita CORS e key esposta) ──────────────────────────────────
-const FMP_KEY = process.env.FMP_KEY || 'gpuffaoLp9CqzZUWxUHMVPTvo3I9xQAq';
-
-app.get('/api/fmp/search', async (req, res) => {
-  const { query } = req.query;
-  if (!query) return res.status(400).json({ error: 'Missing query' });
-  try {
-    const r = await fetch(`https://financialmodelingprep.com/api/v3/search?query=${encodeURIComponent(query)}&limit=1&apikey=${FMP_KEY}`);
-    const d = await r.json();
-    res.json(d);
-  } catch (e) { res.status(500).json({ error: e.message }); }
-});
-
-app.get('/api/fmp/quote/:ticker', async (req, res) => {
-  const { ticker } = req.params;
-  try {
-    const r = await fetch(`https://financialmodelingprep.com/api/v3/quote-short/${ticker}?apikey=${FMP_KEY}`);
-    const d = await r.json();
-    res.json(d);
-  } catch (e) { res.status(500).json({ error: e.message }); }
-});
-
-// ── CLEARBIT LOGO PROXY ───────────────────────────────────────────────────
+// LOGO PROXY
 app.get('/api/logo', async (req, res) => {
   const { domain } = req.query;
   if (!domain) return res.status(400).end();
@@ -93,15 +70,18 @@ app.get('/api/logo', async (req, res) => {
   } catch { res.status(404).end(); }
 });
 
-// ── TEST ───────────────────────────────────────────────────────────────────
+// TEST
 app.get('/api/test', async (req, res) => {
   try {
     const r = await fetch('https://data.sec.gov/submissions/CIK0001067983.json', { headers: SEC_HEADERS });
     const d = await r.json();
-    res.json({ ok: true, name: d.name });
-  } catch (e) { res.json({ ok: false, error: e.message }); }
+    res.json({ ok: true, name: d.name, logo_endpoint: true });
+  } catch (e) {
+    res.json({ ok: false, error: e.message });
+  }
 });
 
 app.listen(PORT, () => {
-  console.log(`\n✅  SuperInvestors → http://localhost:${PORT}\n`);
+  console.log(`\n✅ SuperInvestors running at http://localhost:${PORT}`);
+  console.log(`   /api/test  /api/sec  /api/logo\n`);
 });
