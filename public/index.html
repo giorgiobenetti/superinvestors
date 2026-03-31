@@ -8,32 +8,39 @@
     />
     <title>SuperInvestors — 13F Tracker</title>
     <link
-      href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&family=DM+Mono:wght@300;400;500&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Roboto+Mono:wght@400;500&display=swap"
       rel="stylesheet"
     />
     <style>
       :root {
-        --bg: #07090e;
-        --surface: #0c0f18;
-        --surface2: #111520;
-        --surface3: #161c2c;
-        --border: #1c2338;
-        --border2: #222a40;
-        --text: #e4eaf6;
-        --text2: #7b8db0;
-        --text3: #384660;
-        --accent: #3b82f6;
-        --accent2: #60a5fa;
-        --buy: #22c55e;
-        --buy2: #16a34a;
-        --sell: #f43f5e;
-        --sell2: #e11d48;
-        --new: #a78bfa;
-        --gold: #f59e0b;
-        --teal: #14b8a6;
-        --display: "Syne", sans-serif;
-        --body: "DM Sans", sans-serif;
-        --mono: "DM Mono", monospace;
+        --bg: #f3f4f8;
+        --surface: #ffffff;
+        --surface2: #f8f9fc;
+        --surface3: #eef0f6;
+        --border: #e2e5ef;
+        --border2: #d0d4e4;
+        --text: #111827;
+        --text2: #4b5563;
+        --text3: #9ca3af;
+        --accent: #2563eb;
+        --accent2: #1d4ed8;
+        --accent-bg: #eff6ff;
+        --buy: #16a34a;
+        --buy-bg: #f0fdf4;
+        --buy-border: #bbf7d0;
+        --sell: #dc2626;
+        --sell-bg: #fef2f2;
+        --sell-border: #fecaca;
+        --new: #7c3aed;
+        --new-bg: #f5f3ff;
+        --new-border: #ddd6fe;
+        --unch: #6b7280;
+        --unch-bg: #f9fafb;
+        --unch-border: #e5e7eb;
+        --shadow: 0 1px 3px rgba(0, 0, 0, 0.08), 0 1px 2px rgba(0, 0, 0, 0.05);
+        --shadow2: 0 4px 16px rgba(0, 0, 0, 0.08);
+        --teal: #0d9488;
+        --teal-bg: #f0fdfa;
       }
       * {
         box-sizing: border-box;
@@ -43,16 +50,23 @@
       body {
         background: var(--bg);
         color: var(--text);
-        font-family: var(--body);
+        font-family: "Inter", sans-serif;
         min-height: 100vh;
+        font-size: 14px;
+        line-height: 1.5;
+      }
+      a {
+        text-decoration: none;
+      }
+      button {
+        font-family: inherit;
       }
 
-      /* ── APP SHELL ── */
+      /* ── SHELL ── */
       .shell {
         display: grid;
-        grid-template-columns: 260px 1fr;
-        height: 100vh;
-        overflow: hidden;
+        grid-template-columns: 240px 1fr;
+        min-height: 100vh;
       }
 
       /* ── SIDEBAR ── */
@@ -61,92 +75,101 @@
         border-right: 1px solid var(--border);
         display: flex;
         flex-direction: column;
+        position: fixed;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        width: 240px;
         overflow: hidden;
+        z-index: 50;
       }
-
-      .sidebar-brand {
-        padding: 16px;
+      .sb-logo {
+        padding: 16px 16px 14px;
         border-bottom: 1px solid var(--border);
         display: flex;
         align-items: center;
-        gap: 10px;
+        gap: 9px;
         flex-shrink: 0;
       }
-      .brand-mark {
-        width: 30px;
-        height: 30px;
-        background: linear-gradient(135deg, var(--accent), #818cf8);
-        border-radius: 9px;
+      .sb-logo-mark {
+        width: 28px;
+        height: 28px;
+        background: linear-gradient(135deg, #2563eb, #7c3aed);
+        border-radius: 8px;
         display: flex;
         align-items: center;
         justify-content: center;
-        font-family: var(--display);
-        font-size: 14px;
-        font-weight: 800;
+        font-size: 13px;
+        font-weight: 700;
         color: white;
       }
-      .brand-name {
-        font-family: var(--display);
+      .sb-logo-text {
         font-size: 14px;
         font-weight: 700;
-        letter-spacing: 0.03em;
+        color: var(--text);
+        letter-spacing: -0.01em;
       }
-      .brand-sub {
-        font-family: var(--mono);
+      .sb-logo-sub {
         font-size: 9px;
         color: var(--text3);
-        letter-spacing: 0.08em;
+        font-family: "Roboto Mono", monospace;
+        letter-spacing: 0.06em;
+        margin-top: 1px;
       }
 
-      .sidebar-search {
-        padding: 12px;
+      .sb-search {
+        padding: 10px 12px;
         border-bottom: 1px solid var(--border);
         flex-shrink: 0;
       }
-      .search-input {
-        width: 100%;
-        background: var(--surface2);
-        border: 1px solid var(--border2);
-        border-radius: 8px;
-        padding: 7px 12px 7px 30px;
-        color: var(--text);
-        font-family: var(--body);
-        font-size: 12px;
-        outline: none;
-        transition: border-color 0.2s;
-      }
-      .search-input:focus {
-        border-color: var(--accent);
-      }
-      .search-input::placeholder {
-        color: var(--text3);
-      }
-      .search-wrap {
+      .sb-search-wrap {
         position: relative;
       }
-      .search-ico {
+      .sb-search-ico {
         position: absolute;
         left: 9px;
         top: 50%;
         transform: translateY(-50%);
         color: var(--text3);
-        font-size: 12px;
+        font-size: 13px;
         pointer-events: none;
       }
+      .sb-input {
+        width: 100%;
+        background: var(--surface2);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 7px 10px 7px 28px;
+        font-family: inherit;
+        font-size: 12px;
+        color: var(--text);
+        outline: none;
+        transition:
+          border-color 0.2s,
+          box-shadow 0.2s;
+      }
+      .sb-input:focus {
+        border-color: var(--accent);
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+      }
+      .sb-input::placeholder {
+        color: var(--text3);
+      }
 
-      .inv-list {
+      .sb-list {
         overflow-y: auto;
         flex: 1;
       }
-      .inv-list::-webkit-scrollbar {
-        width: 2px;
+      .sb-list::-webkit-scrollbar {
+        width: 3px;
       }
-      .inv-list::-webkit-scrollbar-thumb {
+      .sb-list::-webkit-scrollbar-thumb {
         background: var(--border2);
+        border-radius: 2px;
       }
 
-      .inv-row {
-        padding: 10px 12px;
+      .sb-item {
+        padding: 10px 14px;
         border-bottom: 1px solid var(--border);
         display: flex;
         align-items: center;
@@ -155,48 +178,48 @@
         transition: background 0.1s;
         position: relative;
       }
-      .inv-row::before {
+      .sb-item::before {
         content: "";
         position: absolute;
         left: 0;
         top: 0;
         bottom: 0;
-        width: 2px;
+        width: 3px;
         background: var(--accent);
         opacity: 0;
         transition: opacity 0.15s;
+        border-radius: 0 2px 2px 0;
       }
-      .inv-row:hover {
-        background: rgba(59, 130, 246, 0.05);
+      .sb-item:hover {
+        background: var(--surface2);
       }
-      .inv-row:hover::before {
-        opacity: 0.4;
+      .sb-item:hover::before {
+        opacity: 0.3;
       }
-      .inv-row.active {
-        background: rgba(59, 130, 246, 0.1);
+      .sb-item.active {
+        background: var(--accent-bg);
       }
-      .inv-row.active::before {
+      .sb-item.active::before {
         opacity: 1;
       }
-      .inv-ava {
-        width: 32px;
-        height: 32px;
-        border-radius: 9px;
-        background: var(--surface3);
+      .sb-ava {
+        width: 30px;
+        height: 30px;
+        border-radius: 8px;
+        background: linear-gradient(135deg, #eff6ff, #e0e7ff);
         display: flex;
         align-items: center;
         justify-content: center;
-        font-family: var(--display);
-        font-size: 12px;
+        font-size: 11px;
         font-weight: 700;
-        color: var(--text2);
+        color: var(--accent);
         flex-shrink: 0;
       }
-      .inv-inf {
+      .sb-inf {
         flex: 1;
         min-width: 0;
       }
-      .inv-n {
+      .sb-name {
         font-size: 12px;
         font-weight: 600;
         color: var(--text);
@@ -204,52 +227,45 @@
         overflow: hidden;
         text-overflow: ellipsis;
       }
-      .inv-f {
-        font-family: var(--mono);
-        font-size: 9px;
+      .sb-firm {
+        font-size: 10px;
         color: var(--text3);
         margin-top: 1px;
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
       }
-      .tag {
-        font-family: var(--mono);
-        font-size: 8px;
-        padding: 1px 5px;
-        border-radius: 3px;
+      .sb-tag {
+        font-size: 9px;
+        padding: 2px 6px;
+        border-radius: 4px;
         background: var(--surface3);
         color: var(--text3);
+        border: 1px solid var(--border);
         flex-shrink: 0;
+        font-weight: 500;
       }
 
       /* ── MAIN ── */
       .main {
+        margin-left: 240px;
         overflow-y: auto;
-        background: var(--bg);
-      }
-      .main::-webkit-scrollbar {
-        width: 3px;
-      }
-      .main::-webkit-scrollbar-thumb {
-        background: var(--border2);
       }
 
       /* ── STATES ── */
       .centered {
-        height: 100%;
+        min-height: 100vh;
         display: flex;
         flex-direction: column;
         align-items: center;
         justify-content: center;
         gap: 12px;
         color: var(--text3);
-        font-family: var(--mono);
-        font-size: 12px;
+        font-size: 13px;
       }
       .spinner {
-        width: 26px;
-        height: 26px;
+        width: 28px;
+        height: 28px;
         border: 2px solid var(--border2);
         border-top-color: var(--accent);
         border-radius: 50%;
@@ -260,14 +276,13 @@
           transform: rotate(360deg);
         }
       }
-      .error {
+      .error-box {
         margin: 24px;
-        background: rgba(244, 63, 94, 0.08);
-        border: 1px solid rgba(244, 63, 94, 0.2);
+        background: var(--sell-bg);
+        border: 1px solid var(--sell-border);
         border-radius: 10px;
-        padding: 18px 20px;
-        font-family: var(--mono);
-        font-size: 11px;
+        padding: 16px 20px;
+        font-size: 13px;
         color: var(--sell);
         line-height: 1.8;
       }
@@ -276,108 +291,104 @@
       .inv-hdr {
         background: var(--surface);
         border-bottom: 1px solid var(--border);
-        padding: 20px 28px 0;
+        padding: 24px 32px 0;
         position: sticky;
         top: 0;
-        z-index: 100;
+        z-index: 40;
+        box-shadow: var(--shadow);
       }
-
       .hdr-top {
         display: flex;
         align-items: flex-start;
         justify-content: space-between;
-        margin-bottom: 14px;
-      }
-      .hdr-left {
+        margin-bottom: 12px;
+        gap: 16px;
       }
       .hdr-fund {
-        font-family: var(--display);
         font-size: 26px;
-        font-weight: 800;
-        letter-spacing: -0.03em;
+        font-weight: 700;
+        letter-spacing: -0.02em;
         color: var(--text);
-        line-height: 1;
       }
       .hdr-manager {
         font-size: 13px;
         color: var(--text2);
-        margin-top: 4px;
+        margin-top: 2px;
       }
       .hdr-meta {
         display: flex;
         align-items: center;
-        gap: 8px;
+        gap: 6px;
         margin-top: 6px;
         flex-wrap: wrap;
       }
       .hdr-pill {
-        font-family: var(--mono);
-        font-size: 9px;
-        color: var(--text3);
-        padding: 2px 7px;
+        font-size: 11px;
+        color: var(--text2);
+        padding: 2px 8px;
         border: 1px solid var(--border2);
-        border-radius: 4px;
-        letter-spacing: 0.05em;
+        border-radius: 5px;
+        background: var(--surface2);
+        font-family: "Roboto Mono", monospace;
+        letter-spacing: 0.03em;
       }
-      .hdr-right {
+      .hdr-btns {
         display: flex;
         gap: 8px;
+        flex-shrink: 0;
       }
-      .hdr-btn {
-        font-family: var(--mono);
-        font-size: 10px;
-        padding: 6px 14px;
-        border-radius: 7px;
-        border: 1px solid var(--border2);
-        background: transparent;
-        color: var(--text2);
+      .btn {
+        font-size: 12px;
+        font-weight: 500;
+        padding: 7px 16px;
+        border-radius: 8px;
         cursor: pointer;
-        text-decoration: none;
+        border: 1px solid var(--border2);
+        background: var(--surface2);
+        color: var(--text2);
         transition: all 0.15s;
         white-space: nowrap;
       }
-      .hdr-btn:hover {
+      .btn:hover {
         border-color: var(--accent);
-        color: var(--accent2);
+        color: var(--accent);
+        background: var(--accent-bg);
       }
-      .hdr-btn.primary {
+      .btn.primary {
         background: var(--accent);
         border-color: var(--accent);
         color: white;
-        font-weight: 500;
       }
-      .hdr-btn.primary:hover {
-        background: #2563eb;
-        border-color: #2563eb;
+      .btn.primary:hover {
+        background: var(--accent2);
+        border-color: var(--accent2);
       }
 
       /* ── KPI CARDS ── */
       .kpi-row {
         display: grid;
         grid-template-columns: repeat(4, 1fr);
-        gap: 1px;
-        background: var(--border);
+        gap: 16px;
+        padding: 16px 0;
         border-top: 1px solid var(--border);
-        border-bottom: 1px solid var(--border);
-        margin: 0 -28px;
       }
       .kpi-card {
         background: var(--surface);
-        padding: 16px 20px;
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 16px 18px;
+        box-shadow: var(--shadow);
       }
       .kpi-lbl {
-        font-family: var(--mono);
-        font-size: 9px;
-        letter-spacing: 0.12em;
-        text-transform: uppercase;
-        color: var(--text3);
+        font-size: 11px;
+        font-weight: 500;
+        color: var(--text2);
         margin-bottom: 6px;
       }
       .kpi-val {
-        font-family: var(--display);
-        font-size: 28px;
-        font-weight: 800;
-        letter-spacing: -0.03em;
+        font-size: 26px;
+        font-weight: 700;
+        letter-spacing: -0.02em;
         color: var(--text);
         line-height: 1;
       }
@@ -396,8 +407,8 @@
       /* ── QUARTER NAV ── */
       .q-nav {
         display: flex;
-        gap: 5px;
-        padding: 10px 0;
+        gap: 6px;
+        padding: 10px 0 0;
         overflow-x: auto;
         border-top: 1px solid var(--border);
       }
@@ -405,13 +416,13 @@
         display: none;
       }
       .q-btn {
-        font-family: var(--mono);
-        font-size: 10px;
-        padding: 4px 11px;
-        border-radius: 5px;
+        font-size: 11px;
+        font-weight: 500;
+        padding: 5px 13px;
+        border-radius: 6px;
         border: 1px solid var(--border2);
-        background: transparent;
-        color: var(--text3);
+        background: var(--surface2);
+        color: var(--text2);
         cursor: pointer;
         transition: all 0.15s;
         white-space: nowrap;
@@ -419,30 +430,32 @@
       }
       .q-btn:hover {
         border-color: var(--accent);
-        color: var(--accent2);
+        color: var(--accent);
+        background: var(--accent-bg);
       }
       .q-btn.active {
         background: var(--accent);
         border-color: var(--accent);
         color: white;
+        font-weight: 600;
       }
 
       /* ── TABS ── */
       .tab-row {
         display: flex;
         border-top: 1px solid var(--border);
-        padding: 0;
+        margin: 0 -32px;
+        padding: 0 32px;
+        margin-top: 8px;
       }
       .tab {
-        font-family: var(--mono);
-        font-size: 10px;
+        font-size: 12px;
         font-weight: 500;
-        text-transform: uppercase;
-        letter-spacing: 0.08em;
         color: var(--text3);
-        padding: 11px 18px;
+        padding: 10px 16px;
         cursor: pointer;
         border-bottom: 2px solid transparent;
+        margin-bottom: -1px;
         transition: all 0.15s;
         white-space: nowrap;
       }
@@ -450,16 +463,16 @@
         color: var(--text2);
       }
       .tab.active {
-        color: var(--accent2);
+        color: var(--accent);
         border-bottom-color: var(--accent);
       }
 
-      /* ── PAGE CONTENT ── */
+      /* ── PAGE ── */
       .page {
-        padding: 24px 28px;
+        padding: 24px 32px;
       }
 
-      /* ── TWO COL LAYOUT ── */
+      /* ── TWO COL ── */
       .two-col {
         display: grid;
         grid-template-columns: 1fr 1fr;
@@ -467,20 +480,21 @@
         margin-bottom: 24px;
       }
 
+      /* ── CARDS ── */
       .card {
         background: var(--surface);
         border: 1px solid var(--border);
-        border-radius: 12px;
+        border-radius: 10px;
         overflow: hidden;
+        box-shadow: var(--shadow);
       }
       .card-hdr {
-        padding: 14px 18px;
+        padding: 14px 18px 12px;
         border-bottom: 1px solid var(--border);
       }
       .card-title {
-        font-family: var(--display);
         font-size: 13px;
-        font-weight: 700;
+        font-weight: 600;
         color: var(--text);
       }
       .card-sub {
@@ -490,182 +504,203 @@
       }
 
       /* ── GLANCE TABLE ── */
-      .glance-table {
+      .g-tbl {
         width: 100%;
         border-collapse: collapse;
       }
-      .glance-table th {
-        font-family: var(--mono);
-        font-size: 9px;
+      .g-tbl th {
+        font-size: 10px;
+        font-weight: 600;
         text-transform: uppercase;
-        letter-spacing: 0.1em;
+        letter-spacing: 0.08em;
         color: var(--text3);
         padding: 8px 14px;
-        text-align: left;
         background: var(--surface2);
         border-bottom: 1px solid var(--border);
+        text-align: left;
       }
-      .glance-table td {
-        padding: 10px 14px;
+      .g-tbl td {
+        padding: 9px 14px;
         border-bottom: 1px solid var(--border);
         font-size: 12px;
         vertical-align: middle;
       }
-      .glance-table tr:last-child td {
+      .g-tbl tr:last-child td {
         border-bottom: none;
       }
-      .glance-table tbody tr:hover {
-        background: rgba(255, 255, 255, 0.02);
+      .g-tbl tbody tr:hover {
+        background: var(--surface2);
       }
-
-      .ticker-cell {
+      .ticker-wrap {
         display: flex;
         align-items: center;
-        gap: 8px;
+        gap: 7px;
       }
-      .company-logo {
-        width: 22px;
-        height: 22px;
-        border-radius: 6px;
+      .co-logo {
+        width: 20px;
+        height: 20px;
+        border-radius: 5px;
         object-fit: contain;
         background: var(--surface3);
         flex-shrink: 0;
       }
       .ticker {
-        font-family: var(--mono);
+        font-family: "Roboto Mono", monospace;
         font-size: 11px;
-        font-weight: 500;
-        color: var(--accent2);
+        font-weight: 600;
+        color: var(--text);
       }
       .co-name {
         font-size: 11px;
         color: var(--text2);
-        margin-top: 1px;
+        max-width: 110px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+      .val-cell {
+        font-size: 12px;
+        font-weight: 500;
+        color: var(--text);
+        white-space: nowrap;
       }
 
       /* ── ALLOCATION BARS ── */
-      .alloc-list {
-        padding: 8px 18px 14px;
+      .alloc-body {
+        padding: 10px 18px 14px;
       }
       .alloc-row {
         display: grid;
-        grid-template-columns: 90px 1fr 52px;
+        grid-template-columns: 90px 1fr 48px;
         align-items: center;
         gap: 10px;
-        padding: 6px 0;
+        padding: 5px 0;
       }
       .alloc-name {
-        font-size: 11px;
+        font-size: 12px;
         color: var(--text);
-        white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
+        white-space: nowrap;
       }
-      .alloc-bar-wrap {
+      .alloc-bar-bg {
         background: var(--surface3);
-        border-radius: 3px;
-        height: 6px;
-        position: relative;
+        border-radius: 4px;
+        height: 7px;
         overflow: hidden;
       }
       .alloc-bar {
         height: 100%;
-        border-radius: 3px;
+        border-radius: 4px;
         background: var(--teal);
         transition: width 0.4s ease;
       }
       .alloc-pct {
-        font-family: var(--mono);
+        font-family: "Roboto Mono", monospace;
         font-size: 11px;
         color: var(--text2);
         text-align: right;
+        font-weight: 500;
       }
-
       .alloc-footer {
         padding: 10px 18px;
         border-top: 1px solid var(--border);
-        font-family: var(--mono);
-        font-size: 10px;
-        color: var(--text3);
         display: flex;
-        gap: 16px;
+        gap: 20px;
+        font-size: 11px;
+        color: var(--text3);
       }
-      .alloc-footer span {
+      .alloc-footer b {
         color: var(--text2);
+        font-weight: 600;
       }
 
-      /* ── CHANGED SECTION ── */
-      .section-hdr {
+      .view-all {
+        padding: 9px 16px;
+        border-top: 1px solid var(--border);
+        font-size: 11px;
+        color: var(--accent);
+        cursor: pointer;
+        text-align: right;
+        transition: color 0.15s;
+      }
+      .view-all:hover {
+        color: var(--accent2);
+      }
+
+      /* ── SECTION ── */
+      .section-top {
         display: flex;
         align-items: center;
         justify-content: space-between;
         margin-bottom: 14px;
+        flex-wrap: wrap;
+        gap: 10px;
       }
       .section-title {
-        font-family: var(--display);
         font-size: 15px;
         font-weight: 700;
         color: var(--text);
       }
-
       .filter-row {
         display: flex;
         gap: 5px;
-        align-items: center;
         flex-wrap: wrap;
       }
       .f-btn {
-        font-family: var(--mono);
-        font-size: 10px;
+        font-size: 11px;
+        font-weight: 500;
         padding: 4px 12px;
         border-radius: 20px;
         border: 1px solid var(--border2);
-        background: transparent;
-        color: var(--text3);
+        background: var(--surface);
+        color: var(--text2);
         cursor: pointer;
         transition: all 0.15s;
       }
       .f-btn:hover {
-        color: var(--text2);
+        border-color: var(--border2);
+        background: var(--surface2);
       }
       .f-btn.f-all {
-        background: var(--surface3);
-        color: var(--text);
-        border-color: var(--border2);
+        background: var(--text);
+        color: white;
+        border-color: var(--text);
       }
       .f-btn.f-new {
-        background: rgba(167, 139, 250, 0.12);
+        background: var(--new-bg);
         color: var(--new);
-        border-color: rgba(167, 139, 250, 0.3);
+        border-color: var(--new-border);
       }
       .f-btn.f-added {
-        background: rgba(34, 197, 94, 0.1);
+        background: var(--buy-bg);
         color: var(--buy);
-        border-color: rgba(34, 197, 94, 0.25);
+        border-color: var(--buy-border);
       }
       .f-btn.f-reduced {
-        background: rgba(244, 63, 94, 0.08);
+        background: var(--sell-bg);
         color: var(--sell);
-        border-color: rgba(244, 63, 94, 0.2);
+        border-color: var(--sell-border);
       }
       .f-btn.f-unchanged {
-        background: rgba(71, 85, 105, 0.15);
-        color: var(--text3);
-        border-color: rgba(71, 85, 105, 0.3);
+        background: var(--unch-bg);
+        color: var(--unch);
+        border-color: var(--unch-border);
       }
       .f-cnt {
-        opacity: 0.5;
-        font-size: 9px;
-        margin-left: 3px;
+        opacity: 0.6;
+        font-size: 10px;
+        margin-left: 2px;
       }
 
       /* ── MAIN TABLE ── */
-      .tbl-wrap {
+      .tbl-card {
         background: var(--surface);
         border: 1px solid var(--border);
-        border-radius: 12px;
+        border-radius: 10px;
         overflow: hidden;
         overflow-x: auto;
+        box-shadow: var(--shadow);
         margin-bottom: 24px;
       }
       table {
@@ -676,11 +711,10 @@
         background: var(--surface2);
       }
       th {
-        font-family: var(--mono);
-        font-size: 9px;
-        font-weight: 500;
+        font-size: 10px;
+        font-weight: 600;
         text-transform: uppercase;
-        letter-spacing: 0.1em;
+        letter-spacing: 0.08em;
         color: var(--text3);
         padding: 10px 14px;
         text-align: left;
@@ -693,7 +727,7 @@
         color: var(--text2);
       }
       th.sorted {
-        color: var(--accent2);
+        color: var(--accent);
       }
       td {
         padding: 11px 14px;
@@ -706,15 +740,15 @@
         border-bottom: none;
       }
       tbody tr:hover {
-        background: rgba(255, 255, 255, 0.02);
+        background: var(--surface2);
       }
 
-      .stock-cell {
+      .stock-wrap {
         display: flex;
         align-items: center;
         gap: 8px;
       }
-      .stock-logo {
+      .s-logo {
         width: 22px;
         height: 22px;
         border-radius: 6px;
@@ -722,33 +756,41 @@
         background: var(--surface3);
         flex-shrink: 0;
       }
-      .stock-ticker {
-        font-family: var(--mono);
-        font-size: 12px;
+      .s-ticker {
+        font-size: 13px;
         font-weight: 600;
         color: var(--text);
       }
-      .stock-name {
+      .s-name {
         font-size: 10px;
         color: var(--text3);
         margin-top: 1px;
       }
-
-      .price-cell {
-        font-family: var(--mono);
+      .num {
+        font-family: "Roboto Mono", monospace;
         font-size: 12px;
+        color: var(--text2);
       }
-      .price-val {
+      .num.bold {
         color: var(--text);
+        font-weight: 500;
       }
-      .price-chg {
+      .price-block {
+        font-family: "Roboto Mono", monospace;
+      }
+      .price-v {
+        font-size: 12px;
+        color: var(--text);
+        font-weight: 500;
+      }
+      .price-c {
         font-size: 10px;
         margin-top: 1px;
       }
-      .price-chg.up {
+      .price-c.up {
         color: var(--buy);
       }
-      .price-chg.dn {
+      .price-c.dn {
         color: var(--sell);
       }
 
@@ -756,68 +798,37 @@
       .badge {
         display: inline-flex;
         align-items: center;
-        gap: 2px;
-        padding: 2px 8px;
+        gap: 3px;
+        padding: 3px 9px;
         border-radius: 20px;
-        font-family: var(--mono);
-        font-size: 9px;
+        font-size: 10px;
         font-weight: 600;
-        letter-spacing: 0.04em;
-        text-transform: uppercase;
+        white-space: nowrap;
       }
       .b-new {
-        background: rgba(167, 139, 250, 0.12);
+        background: var(--new-bg);
         color: var(--new);
-        border: 1px solid rgba(167, 139, 250, 0.25);
+        border: 1px solid var(--new-border);
       }
       .b-added {
-        background: rgba(34, 197, 94, 0.1);
+        background: var(--buy-bg);
         color: var(--buy);
-        border: 1px solid rgba(34, 197, 94, 0.2);
+        border: 1px solid var(--buy-border);
       }
       .b-reduced {
-        background: rgba(244, 63, 94, 0.08);
+        background: var(--sell-bg);
         color: var(--sell);
-        border: 1px solid rgba(244, 63, 94, 0.18);
+        border: 1px solid var(--sell-border);
       }
       .b-unchanged {
-        background: rgba(71, 85, 105, 0.12);
-        color: var(--text3);
-        border: 1px solid rgba(71, 85, 105, 0.25);
+        background: var(--unch-bg);
+        color: var(--unch);
+        border: 1px solid var(--unch-border);
       }
       .b-sold {
-        background: rgba(244, 63, 94, 0.15);
+        background: var(--sell-bg);
         color: var(--sell);
-        border: 1px solid rgba(244, 63, 94, 0.3);
-      }
-
-      .num {
-        font-family: var(--mono);
-        font-size: 12px;
-      }
-      .num.muted {
-        color: var(--text2);
-      }
-      .num.green {
-        color: var(--buy);
-      }
-      .num.red {
-        color: var(--sell);
-      }
-
-      /* ── VIEW ALL ── */
-      .view-all {
-        text-align: right;
-        padding: 10px 18px;
-        border-top: 1px solid var(--border);
-        font-family: var(--mono);
-        font-size: 10px;
-        color: var(--text3);
-        cursor: pointer;
-        transition: color 0.15s;
-      }
-      .view-all:hover {
-        color: var(--accent2);
+        border: 1px solid var(--sell-border);
       }
 
       /* ── MOVES GRID ── */
@@ -830,39 +841,37 @@
       .move-card {
         background: var(--surface);
         border: 1px solid var(--border);
-        border-radius: 12px;
+        border-radius: 10px;
         overflow: hidden;
+        box-shadow: var(--shadow);
       }
-      .move-card-hdr {
+      .move-hdr {
         padding: 12px 16px;
         border-bottom: 1px solid var(--border);
         display: flex;
         align-items: center;
         justify-content: space-between;
       }
-      .move-card-title {
-        font-family: var(--mono);
-        font-size: 10px;
+      .move-title {
+        font-size: 12px;
         font-weight: 600;
-        text-transform: uppercase;
-        letter-spacing: 0.08em;
       }
-      .move-card-title.c-new {
+      .move-title.c-new {
         color: var(--new);
       }
-      .move-card-title.c-sold {
+      .move-title.c-sold {
         color: var(--sell);
       }
-      .move-card-title.c-added {
+      .move-title.c-buy {
         color: var(--buy);
       }
-      .move-card-title.c-reduced {
-        color: var(--sell);
-      }
       .move-cnt {
-        font-family: var(--mono);
-        font-size: 10px;
+        font-size: 11px;
         color: var(--text3);
+        background: var(--surface2);
+        padding: 2px 7px;
+        border-radius: 10px;
+        border: 1px solid var(--border);
       }
       .move-row {
         padding: 10px 16px;
@@ -876,9 +885,9 @@
         border-bottom: none;
       }
       .move-row:hover {
-        background: rgba(255, 255, 255, 0.02);
+        background: var(--surface2);
       }
-      .move-left {
+      .move-l {
         display: flex;
         align-items: center;
         gap: 8px;
@@ -893,27 +902,28 @@
       }
       .move-n {
         font-size: 12px;
-        font-weight: 500;
+        font-weight: 600;
         color: var(--text);
       }
       .move-s {
-        font-family: var(--mono);
         font-size: 10px;
         color: var(--text3);
         margin-top: 1px;
+        font-family: "Roboto Mono", monospace;
       }
       .move-r {
         text-align: right;
       }
       .move-v {
-        font-family: var(--mono);
         font-size: 12px;
+        font-weight: 500;
         color: var(--text);
+        font-family: "Roboto Mono", monospace;
       }
       .move-d {
-        font-family: var(--mono);
         font-size: 10px;
         margin-top: 1px;
+        font-weight: 600;
       }
       .move-d.pos {
         color: var(--buy);
@@ -927,16 +937,48 @@
       .no-move {
         padding: 20px 16px;
         text-align: center;
-        font-family: var(--mono);
-        font-size: 11px;
+        font-size: 12px;
         color: var(--text3);
+      }
+
+      /* ── BAR ── */
+      .mini-bar-bg {
+        background: var(--surface3);
+        border-radius: 3px;
+        height: 4px;
+        width: 72px;
+      }
+      .mini-bar {
+        height: 4px;
+        border-radius: 3px;
+        background: var(--teal);
+      }
+
+      /* ── LOADING PREV ── */
+      .load-prev {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 16px;
+        font-size: 12px;
+        color: var(--text3);
+        justify-content: center;
+      }
+      .spin-sm {
+        width: 14px;
+        height: 14px;
+        border: 1.5px solid var(--border2);
+        border-top-color: var(--accent);
+        border-radius: 50%;
+        animation: spin 0.7s linear infinite;
+        flex-shrink: 0;
       }
 
       /* ── ANIMATIONS ── */
       .fade {
-        animation: fi 0.25s ease-out;
+        animation: fadeIn 0.22s ease-out;
       }
-      @keyframes fi {
+      @keyframes fadeIn {
         from {
           opacity: 0;
           transform: translateY(5px);
@@ -947,31 +989,18 @@
         }
       }
 
-      .spin-sm {
-        width: 12px;
-        height: 12px;
-        border: 1px solid var(--border2);
-        border-top-color: var(--accent);
-        border-radius: 50%;
-        animation: spin 0.7s linear infinite;
-      }
-      .loading-row {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        padding: 16px;
-        font-family: var(--mono);
-        font-size: 10px;
-        color: var(--text3);
-      }
-
       /* ── RESPONSIVE ── */
       @media (max-width: 900px) {
         .shell {
           grid-template-columns: 1fr;
         }
         .sidebar {
+          position: relative;
+          width: 100%;
           height: 200px;
+        }
+        .main {
+          margin-left: 0;
         }
         .two-col {
           grid-template-columns: 1fr;
@@ -995,18 +1024,18 @@
     <div class="shell">
       <!-- SIDEBAR -->
       <aside class="sidebar">
-        <div class="sidebar-brand">
-          <div class="brand-mark">S</div>
+        <div class="sb-logo">
+          <div class="sb-logo-mark">S</div>
           <div>
-            <div class="brand-name">SuperInvestors</div>
-            <div class="brand-sub">SEC 13F · LIVE DATA</div>
+            <div class="sb-logo-text">SuperInvestors</div>
+            <div class="sb-logo-sub">SEC 13F · LIVE DATA</div>
           </div>
         </div>
-        <div class="sidebar-search">
-          <div class="search-wrap">
-            <span class="search-ico">⌕</span>
+        <div class="sb-search">
+          <div class="sb-search-wrap">
+            <span class="sb-search-ico">⌕</span>
             <input
-              class="search-input"
+              class="sb-input"
               id="searchBox"
               type="text"
               placeholder="Cerca investitore..."
@@ -1014,8 +1043,8 @@
           </div>
         </div>
         <div
-          class="inv-list"
-          id="invList"
+          class="sb-list"
+          id="sbList"
         ></div>
       </aside>
 
@@ -1025,8 +1054,11 @@
         id="main"
       >
         <div class="centered">
-          <div style="font-size: 36px; opacity: 0.15">◈</div>
-          <div>Seleziona un investitore</div>
+          <div style="font-size: 36px">🔍</div>
+          <div style="font-weight: 600; color: #374151">
+            Seleziona un investitore
+          </div>
+          <div>Dati live da SEC EDGAR 13F-HR filings</div>
         </div>
       </main>
     </div>
@@ -1146,7 +1178,7 @@
         PRICES = {};
       let fidx = 0,
         tab = "overview",
-        filter = "all",
+        filt = "all",
         sortK = "value",
         sortD = "desc";
 
@@ -1159,7 +1191,7 @@
         if (v >= 1e3) return `$${(v / 1e3).toFixed(0)}K`;
         return `$${v}`;
       };
-      const shares = (v) => {
+      const shs = (v) => {
         if (!v && v !== 0) return "—";
         if (v >= 1e6) return `${(v / 1e6).toFixed(2)}M`;
         if (v >= 1e3) return `${(v / 1e3).toFixed(1)}K`;
@@ -1168,7 +1200,7 @@
       const pct = (v) =>
         v == null ? "—" : `${v > 0 ? "+" : ""}${v.toFixed(1)}%`;
       const cikN = (c) => c.replace(/^0+/, "");
-      const fmtAcc = (a) => a.replace(/-/g, "");
+      const fmtA = (a) => a.replace(/-/g, "");
       const ini = (n) =>
         n
           .split(" ")
@@ -1184,16 +1216,15 @@
         if (m <= 9) return 3;
         return 4;
       };
+      const sec = (url, m = "GET") =>
+        fetch(`/api/sec?url=${encodeURIComponent(url)}`, { method: m });
 
-      function sec(url, m = "GET") {
-        return fetch(`/api/sec?url=${encodeURIComponent(url)}`, { method: m });
-      }
-
-      // ─── LOGO MAP ─────────────────────────────────────────────────────────────────
-      const LOGO_MAP = {
+      // ─── LOGO ─────────────────────────────────────────────────────────────────────
+      const LOGOS = {
         APPLE: "apple.com",
         MICROSOFT: "microsoft.com",
         AMAZON: "amazon.com",
+        "AMAZON COM": "amazon.com",
         ALPHABET: "google.com",
         GOOGLE: "google.com",
         "META PLATFORMS": "meta.com",
@@ -1217,13 +1248,13 @@
         SALESFORCE: "salesforce.com",
         ORACLE: "oracle.com",
         INTEL: "intel.com",
-        AMD: "amd.com",
+        "AMD ": "amd.com",
         QUALCOMM: "qualcomm.com",
         EXXON: "exxonmobil.com",
         CHEVRON: "chevron.com",
         "COCA-COLA": "coca-cola.com",
         "COCA COLA": "coca-cola.com",
-        "JOHNSON & JOHNSON": "jnj.com",
+        JOHNSON: "jnj.com",
         PFIZER: "pfizer.com",
         UNITEDHEALTH: "unitedhealthgroup.com",
         "UNITED HEALTH": "unitedhealthgroup.com",
@@ -1239,7 +1270,6 @@
         "RESTAURANT BRANDS": "rbi.com",
         HERTZ: "hertz.com",
         "HOWARD HUGHES": "howardhughes.com",
-        SEAPORT: "seaportentertainment.com",
         CITIGROUP: "citi.com",
         "MORGAN STANLEY": "morganstanley.com",
         BLACKROCK: "blackrock.com",
@@ -1248,29 +1278,42 @@
         ADOBE: "adobe.com",
         SPOTIFY: "spotify.com",
         "AMERICAN EXPRESS": "americanexpress.com",
-        "AMERICAN EXP": "americanexpress.com",
         DAVITA: "davita.com",
         "CHARTER COMM": "charter.com",
-        "AMAZON COM": "amazon.com",
-        "SEAPORT ENTMT": "seaportentertainment.com",
+        SEAPORT: "seaportentertainment.com",
       };
-
-      function logo(name) {
+      function getLogo(name) {
         const u = name.toUpperCase();
-        for (const [k, v] of Object.entries(LOGO_MAP))
+        for (const [k, v] of Object.entries(LOGOS))
           if (u.includes(k)) return `https://logo.clearbit.com/${v}`;
         return null;
       }
-
       function logoImg(name, sz = 22) {
-        const l = logo(name);
+        const l = getLogo(name);
+        const r = Math.round(sz * 0.27);
         return l
-          ? `<img style="width:${sz}px;height:${sz}px;border-radius:${Math.round(sz * 0.27)}px;object-fit:contain;background:var(--surface3);flex-shrink:0" src="${l}" onerror="this.style.display='none'" loading="lazy">`
-          : `<div style="width:${sz}px;height:${sz}px;border-radius:${Math.round(sz * 0.27)}px;background:var(--surface3);flex-shrink:0"></div>`;
+          ? `<img style="width:${sz}px;height:${sz}px;border-radius:${r}px;object-fit:contain;background:#f1f5f9;flex-shrink:0" src="${l}" onerror="this.style.display='none'" loading="lazy">`
+          : `<div style="width:${sz}px;height:${sz}px;border-radius:${r}px;background:#f1f5f9;flex-shrink:0"></div>`;
       }
 
-      // ─── FMP PRICES ───────────────────────────────────────────────────────────────
-      async function fetchPrice(ticker) {
+      // ─── FMP ──────────────────────────────────────────────────────────────────────
+      async function findTicker(name) {
+        const k = "T_" + name;
+        if (PRICES[k] !== undefined) return PRICES[k];
+        try {
+          const r = await fetch(
+            `https://financialmodelingprep.com/api/v3/search?query=${encodeURIComponent(name)}&limit=1&apikey=${FMP}`,
+          );
+          const d = await r.json();
+          if (d && d[0]?.symbol) {
+            PRICES[k] = d[0].symbol;
+            return d[0].symbol;
+          }
+        } catch {}
+        PRICES[k] = null;
+        return null;
+      }
+      async function getPrice(ticker) {
         if (!ticker || PRICES[ticker] !== undefined)
           return PRICES[ticker] || null;
         try {
@@ -1286,71 +1329,53 @@
         PRICES[ticker] = null;
         return null;
       }
-
-      // ─── TICKER EXTRACTION (best-effort from CUSIP/name) ─────────────────────────
-      // FMP allows search by company name
-      async function findTicker(name) {
-        const key = "TICKER_" + name;
-        if (PRICES[key] !== undefined) return PRICES[key];
-        try {
-          const r = await fetch(
-            `https://financialmodelingprep.com/api/v3/search?query=${encodeURIComponent(name)}&limit=1&apikey=${FMP}`,
+      async function loadPrices(rows) {
+        for (const h of rows) {
+          const t = await findTicker(h.name);
+          if (!t) continue;
+          const p = await getPrice(t);
+          if (!p) continue;
+          const el = document.getElementById(
+            "pr_" + (h.cusip || h.name.replace(/\s/g, "")),
           );
-          const d = await r.json();
-          if (d && d[0] && d[0].symbol) {
-            PRICES[key] = d[0].symbol;
-            return d[0].symbol;
+          if (el) {
+            const up = p.chg >= 0;
+            el.innerHTML = `<div class="price-v">$${p.price.toFixed(2)}</div><div class="price-c ${up ? "up" : "dn"}">${up ? "▲" : "▼"} ${Math.abs(p.chg).toFixed(2)}%</div>`;
           }
-        } catch {}
-        PRICES[key] = null;
-        return null;
+        }
       }
 
       // ─── SIDEBAR ──────────────────────────────────────────────────────────────────
-      function renderSidebar(f = "") {
-        const list = $("invList");
-        const filtered = INVESTORS.filter(
+      function renderSB(f = "") {
+        const fl = INVESTORS.filter(
           (i) =>
             i.name.toLowerCase().includes(f.toLowerCase()) ||
             i.firm.toLowerCase().includes(f.toLowerCase()),
         );
-        list.innerHTML = filtered
+        $("sbList").innerHTML = fl
           .map(
             (i) => `
-    <div class="inv-row ${INV?.cik === i.cik ? "active" : ""}" onclick="pick('${i.cik}')">
-      <div class="inv-ava">${ini(i.name)}</div>
-      <div class="inv-inf">
-        <div class="inv-n">${i.name}</div>
-        <div class="inv-f">${i.firm}</div>
-      </div>
-      <div class="tag">${i.style}</div>
+    <div class="sb-item ${INV?.cik === i.cik ? "active" : ""}" onclick="pick('${i.cik}')">
+      <div class="sb-ava">${ini(i.name)}</div>
+      <div class="sb-inf"><div class="sb-name">${i.name}</div><div class="sb-firm">${i.firm}</div></div>
+      <div class="sb-tag">${i.style}</div>
     </div>`,
           )
           .join("");
       }
 
-      // ─── SELECT ────────────────────────────────────────────────────────────────────
+      // ─── PICK ─────────────────────────────────────────────────────────────────────
       async function pick(cik) {
         INV = INVESTORS.find((i) => i.cik === cik);
         fidx = 0;
         FILINGS = [];
         HOLDINGS = {};
         tab = "overview";
-        filter = "all";
-        sortK = "value";
-        sortD = "desc";
-        renderSidebar($("searchBox").value);
-        loading("Caricamento " + INV.name + "...");
+        filt = "all";
+        renderSB($("searchBox").value);
+        $("main").innerHTML =
+          `<div class="centered"><div class="spinner"></div><div>Caricamento ${INV.name}...</div></div>`;
         await loadFilings(cik);
-      }
-
-      function loading(msg = "Caricamento...") {
-        $("main").innerHTML =
-          `<div class="centered"><div class="spinner"></div><div>${msg}</div></div>`;
-      }
-      function err(msg, cik) {
-        $("main").innerHTML =
-          `<div class="error">⚠ ${msg}<br><br><a href="https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=${cikN(cik)}&type=13F-HR" target="_blank" style="color:var(--accent2)">Apri su SEC EDGAR ↗</a></div>`;
       }
 
       // ─── LOAD FILINGS ─────────────────────────────────────────────────────────────
@@ -1373,19 +1398,20 @@
                 period: periods[i] || dates[i],
               });
           if (!f13.length) {
-            err("Nessun filing 13F-HR trovato.", cik);
+            showErr("Nessun filing 13F-HR trovato.", cik);
             return;
           }
           FILINGS = f13.slice(0, 8);
-          await loadHoldings(cik, 0);
+          await loadH(cik, 0);
         } catch (e) {
-          err(e.message, cik);
+          showErr(e.message, cik);
         }
       }
 
       // ─── LOAD HOLDINGS ────────────────────────────────────────────────────────────
-      async function loadHoldings(cik, idx) {
-        loading("Download holdings...");
+      async function loadH(cik, idx) {
+        $("main").innerHTML =
+          `<div class="centered"><div class="spinner"></div><div>Download holdings...</div></div>`;
         const f = FILINGS[idx];
         if (HOLDINGS[f.acc]) {
           fidx = idx;
@@ -1393,26 +1419,25 @@
           return;
         }
         try {
-          const ca = fmtAcc(f.acc),
+          const ca = fmtA(f.acc),
             ci = cikN(cik);
-          const xmlUrl = await findXml(ci, ca, f.acc);
-          const xr = await sec(xmlUrl);
+          const xu = await findXml(ci, ca, f.acc);
+          const xr = await sec(xu);
           if (!xr.ok) throw new Error(`HTTP ${xr.status}`);
           const xt = await xr.text();
           const h = parseXml(xt);
           if (!h.length)
-            throw new Error("Nessun holding trovato (formato non supportato)");
+            throw new Error("Nessun holding (formato non supportato)");
           HOLDINGS[f.acc] = h;
           fidx = idx;
           render(cik, idx);
-          // background prev quarter
+          // pre-load prev quarter
           if (idx === 0 && FILINGS[1] && !HOLDINGS[FILINGS[1].acc]) {
             const pf = FILINGS[1],
-              pca = fmtAcc(pf.acc),
-              ci2 = cikN(cik),
+              pca = fmtA(pf.acc),
               cap = cik,
               capH = h;
-            findXml(ci2, pca, pf.acc)
+            findXml(cikN(cik), pca, pf.acc)
               .then((u) => sec(u))
               .then((r) => r.text())
               .then((t) => {
@@ -1425,8 +1450,13 @@
               .catch(() => {});
           }
         } catch (e) {
-          err(e.message, cik);
+          showErr(e.message, cik);
         }
+      }
+
+      function showErr(msg, cik) {
+        $("main").innerHTML =
+          `<div class="error-box">⚠ ${msg}<br><br><a href="https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=${cikN(cik)}&type=13F-HR" target="_blank" style="color:var(--accent)">Apri su SEC EDGAR ↗</a></div>`;
       }
 
       // ─── FIND XML ─────────────────────────────────────────────────────────────────
@@ -1436,17 +1466,17 @@
           const r = await sec(`${base}/${acc}-index.json`);
           if (r.ok) {
             const d = await r.json();
-            const items = d.directory?.item || [];
-            let f = items.find((x) => x.type === "INFORMATION TABLE");
+            const it = d.directory?.item || [];
+            let f = it.find((x) => x.type === "INFORMATION TABLE");
             if (!f)
-              f = items.find(
+              f = it.find(
                 (x) =>
                   x.name?.toLowerCase().endsWith(".xml") &&
                   (x.name.toLowerCase().includes("infotable") ||
                     x.name.toLowerCase().includes("information")),
               );
             if (!f)
-              f = items.find(
+              f = it.find(
                 (x) =>
                   x.name?.toLowerCase().endsWith(".xml") &&
                   !x.name.toLowerCase().includes("primary"),
@@ -1512,19 +1542,19 @@
         entries.forEach((e) => {
           const g = (t) => e.querySelector(t)?.textContent?.trim() || "";
           const name = g("nameOfIssuer"),
-            cusip = g("cusip");
-          const value = parseInt(g("value") || "0", 10) * 1000;
-          const shs = parseInt(g("sshPrnamt") || "0", 10);
-          const type = g("sshPrnamtType") || "SH",
+            cusip = g("cusip"),
+            value = parseInt(g("value") || "0", 10) * 1000,
+            shares = parseInt(g("sshPrnamt") || "0", 10),
+            type = g("sshPrnamtType") || "SH",
             pc = g("putCall") || "";
           if (name && value > 0)
-            h.push({ name, cusip, value, shares: shs, type, pc });
+            h.push({ name, cusip, value, shares, type, pc });
         });
         return h.sort((a, b) => b.value - a.value);
       }
 
       // ─── COMPUTE MOVES ────────────────────────────────────────────────────────────
-      function moves(curr, prev) {
+      function getMoves(curr, prev) {
         if (!prev || !prev.length) return null;
         const pm = {},
           cm = {};
@@ -1548,8 +1578,7 @@
           .map((h) => ({ ...h, prevS: pm[h.cusip || h.name].shares }));
         return { newP, closed, inc, red };
       }
-
-      function chType(h, pm) {
+      function ct(h, pm) {
         if (!pm) return "new";
         const k = h.cusip || h.name;
         if (!pm[k]) return "new";
@@ -1561,50 +1590,50 @@
       // ─── RENDER ───────────────────────────────────────────────────────────────────
       function render(cik, idx) {
         const inv = INV,
-          filing = FILINGS[idx],
-          h = HOLDINGS[filing.acc];
+          f = FILINGS[idx],
+          h = HOLDINGS[f.acc];
         const total = h.reduce((s, x) => s + x.value, 0);
-        const prevFiling = FILINGS[idx + 1],
-          prevH = prevFiling ? HOLDINGS[prevFiling.acc] : null;
-        const mv = moves(h, prevH);
+        const prevF = FILINGS[idx + 1],
+          prevH = prevF ? HOLDINGS[prevF.acc] : null;
+        const mv = getMoves(h, prevH);
         const pm = prevH
           ? Object.fromEntries(prevH.map((x) => [x.cusip || x.name, x]))
           : null;
-        const enriched = h.map((x) => ({
+        const enr = h.map((x) => ({
           ...x,
           weight: total > 0 ? (x.value / total) * 100 : 0,
-          ct: chType(x, pm),
-          prevS: pm?.(x.cusip || x.name)?.shares || 0,
+          ct_: ct(x, pm),
+          prevS: pm?.[x.cusip || x.name]?.shares || 0,
         }));
-        const newCnt = enriched.filter((x) => x.ct === "new").length;
+        const newCnt = enr.filter((x) => x.ct_ === "new").length;
         const exitCnt = mv?.closed?.length || 0;
-        const top10 = enriched.slice(0, 10).reduce((s, x) => s + x.weight, 0);
-        const mvTotal = mv
+        const top10 = enr.slice(0, 10).reduce((s, x) => s + x.weight, 0);
+        const mvTot = mv
           ? mv.newP.length + mv.closed.length + mv.inc.length + mv.red.length
           : 0;
         const counts = {
-          all: enriched.length,
-          new: enriched.filter((x) => x.ct === "new").length,
-          added: enriched.filter((x) => x.ct === "inc").length,
-          reduced: enriched.filter((x) => x.ct === "red").length,
-          unchanged: enriched.filter((x) => x.ct === "unch").length,
+          all: enr.length,
+          new: enr.filter((x) => x.ct_ === "new").length,
+          added: enr.filter((x) => x.ct_ === "inc").length,
+          reduced: enr.filter((x) => x.ct_ === "red").length,
+          unchanged: enr.filter((x) => x.ct_ === "unch").length,
         };
 
         $("main").innerHTML = `<div class="fade">
     <div class="inv-hdr">
       <div class="hdr-top">
-        <div class="hdr-left">
+        <div>
           <div class="hdr-fund">${inv.firm}</div>
           <div class="hdr-manager">Managed by ${inv.name}</div>
           <div class="hdr-meta">
-            <span class="hdr-pill">Latest report: Q${getQ(filing.period)} ${filing.period?.substring(0, 4) || ""}</span>
-            <span class="hdr-pill">Filed: ${filing.date}</span>
-            <span class="hdr-pill">Holdings: ${h.length}</span>
+            <span class="hdr-pill">Latest report: Q${getQ(f.period)} ${f.period?.substring(0, 4) || ""}</span>
+            <span class="hdr-pill">Filed: ${f.date}</span>
+            <span class="hdr-pill">Holdings ${h.length}</span>
           </div>
         </div>
-        <div class="hdr-right">
-          <a href="https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=${cikN(cik)}&type=13F-HR" target="_blank" class="hdr-btn">View on SEC EDGAR</a>
-          <button class="hdr-btn primary" onclick="switchTab('moves','${cik}',${idx})">View latest changes</button>
+        <div class="hdr-btns">
+          <a href="https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=${cikN(cik)}&type=13F-HR" target="_blank" class="btn">View on SEC</a>
+          <button class="btn primary" onclick="swTab('moves','${cik}',${idx})">View latest changes</button>
         </div>
       </div>
       <div class="kpi-row">
@@ -1614,211 +1643,161 @@
         <div class="kpi-card"><div class="kpi-lbl">New Exits</div><div class="kpi-val ${exitCnt > 0 ? "red" : ""}">${prevH ? exitCnt : "—"}</div><div class="kpi-sub">Fully sold this quarter</div></div>
       </div>
       <div class="q-nav">
-        ${FILINGS.map((f, i) => `<button class="q-btn ${i === idx ? "active" : ""}" onclick="go(${i})">Q${getQ(f.period)} ${f.period?.substring(0, 4) || ""}</button>`).join("")}
+        ${FILINGS.map((qf, i) => `<button class="q-btn ${i === idx ? "active" : ""}" onclick="go(${i})">Q${getQ(qf.period)} ${qf.period?.substring(0, 4) || ""}</button>`).join("")}
       </div>
       <div class="tab-row">
-        <div class="tab ${tab === "overview" ? "active" : ""}" onclick="switchTab('overview','${cik}',${idx})">Overview</div>
-        <div class="tab ${tab === "portfolio" ? "active" : ""}" onclick="switchTab('portfolio','${cik}',${idx})">Portfolio</div>
-        <div class="tab ${tab === "moves" ? "active" : ""}" onclick="switchTab('moves','${cik}',${idx})">Buys & Sells${mv ? ` (${mvTotal})` : ""}</div>
+        <div class="tab ${tab === "overview" ? "active" : ""}" onclick="swTab('overview','${cik}',${idx})">Overview</div>
+        <div class="tab ${tab === "portfolio" ? "active" : ""}" onclick="swTab('portfolio','${cik}',${idx})">Portfolio</div>
+        <div class="tab ${tab === "moves" ? "active" : ""}" onclick="swTab('moves','${cik}',${idx})">Buys & Sells${mv ? ` (${mvTot})` : ""}</div>
       </div>
     </div>
-    <div class="page" id="pageContent">
-      ${tab === "overview" ? renderOverview(enriched, total, mv, prevH) : tab === "moves" ? renderMoves(mv, prevH) : renderPortfolioFull(enriched, total, counts)}
+    <div class="page">
+      ${tab === "overview" ? renderOverview(enr, total, mv, prevH, counts) : tab === "moves" ? renderMoves(mv, prevH) : renderPortfolioFull(enr, total, counts)}
     </div>
   </div>`;
       }
 
-      // ─── OVERVIEW TAB ─────────────────────────────────────────────────────────────
-      function renderOverview(enriched, total, mv, prevH) {
-        const top8 = enriched.slice(0, 8);
-        const maxW = enriched[0]?.weight || 1;
+      // ─── OVERVIEW ─────────────────────────────────────────────────────────────────
+      function renderOverview(enr, total, mv, prevH, counts) {
+        const top8 = enr.slice(0, 8);
+        const maxW = enr[0]?.weight || 1;
+        const top5 = enr.slice(0, 5).reduce((s, h) => s + h.weight, 0);
+        const top10 = enr.slice(0, 10).reduce((s, h) => s + h.weight, 0);
 
-        // Portfolio at a glance table
         const glanceRows = top8
           .map((h) => {
-            const chgPct =
+            const chg =
               h.prevS > 0 ? ((h.shares - h.prevS) / h.prevS) * 100 : null;
             return `<tr>
-      <td><div class="ticker-cell">
-        ${logoImg(h.name, 22)}
-        <div><div class="ticker">${h.name.substring(0, 6).replace(/ .*/, "")}</div></div>
-      </div></td>
-      <td><div class="co-name" style="max-width:110px;overflow:hidden;text-overflow:ellipsis">${h.name.substring(0, 20)}</div></td>
-      <td><span class="num">${money(h.value)}</span></td>
-      <td>${actBadge(h.ct, chgPct)}</td>
+      <td><div class="ticker-wrap">${logoImg(h.name, 20)}<div class="ticker">${h.name.split(" ")[0].substring(0, 6)}</div></div></td>
+      <td><div class="co-name">${h.name.substring(0, 20)}</div></td>
+      <td class="val-cell">${money(h.value)}</td>
+      <td>${badge(h.ct_, chg)}</td>
     </tr>`;
           })
           .join("");
 
-        // Allocation bars
         const allocRows = top8
           .map(
             (h) => `
     <div class="alloc-row">
       <div class="alloc-name">${h.name.split(" ")[0]}</div>
-      <div class="alloc-bar-wrap"><div class="alloc-bar" style="width:${Math.round((h.weight / maxW) * 100)}%"></div></div>
+      <div class="alloc-bar-bg"><div class="alloc-bar" style="width:${Math.round((h.weight / maxW) * 100)}%"></div></div>
       <div class="alloc-pct">${h.weight.toFixed(1)}%</div>
     </div>`,
           )
           .join("");
 
-        const top5 = enriched.slice(0, 5).reduce((s, h) => s + h.weight, 0);
-        const top10 = enriched.slice(0, 10).reduce((s, h) => s + h.weight, 0);
+        // Changed this quarter
+        const changed = enr.filter((h) => h.ct_ !== "unch").slice(0, 10);
+        setTimeout(() => loadPrices(changed), 200);
 
-        // "What changed" table — top 10 with changes
-        const changed = enriched.filter((h) => h.ct !== "unch").slice(0, 10);
         const changedRows = changed.length
           ? changed
-              .map((h, i) => {
-                const chgPct =
+              .map((h) => {
+                const chg =
                   h.prevS > 0 ? ((h.shares - h.prevS) / h.prevS) * 100 : null;
+                const pid = "pr_" + (h.cusip || h.name.replace(/\W/g, ""));
                 return `<tr>
-      <td><div class="stock-cell">
-        ${logoImg(h.name, 22)}
-        <div><div class="stock-ticker">${h.name.split(" ").slice(0, 2).join(" ").substring(0, 12)}</div><div class="stock-name">${h.name.substring(0, 20)}</div></div>
-      </div></td>
-      <td><span class="num muted">${shares(h.shares)}</span></td>
-      <td><span class="num">${money(h.value)}</span></td>
-      <td><span class="num muted">${h.weight.toFixed(2)}%</span></td>
-      <td>${actBadge(h.ct, chgPct)}</td>
-      <td><span class="num muted" id="price-${h.cusip || i}">—</span></td>
-    </tr>`;
+          <td><div class="stock-wrap">${logoImg(h.name, 22)}<div><div class="s-ticker">${h.name.split(" ").slice(0, 2).join(" ").substring(0, 16)}</div><div class="s-name">${h.name.substring(0, 22)}</div></div></div></td>
+          <td><span class="num">${shs(h.shares)}</span></td>
+          <td><span class="num bold">${money(h.value)}</span></td>
+          <td><span class="num">${h.weight.toFixed(2)}%</span></td>
+          <td>${badge(h.ct_, chg)}</td>
+          <td><div class="price-block" id="${pid}"><div class="price-v" style="color:#9ca3af">—</div></div></td>
+        </tr>`;
               })
               .join("")
-          : `<tr><td colspan="6" style="padding:20px;text-align:center;font-family:var(--mono);font-size:11px;color:var(--text3)">${prevH ? "Nessun movimento questo quarter" : "Caricamento dati precedenti..."}</td></tr>`;
-
-        // Load prices async for changed items
-        setTimeout(() => loadPricesForRows(changed), 100);
+          : `<tr><td colspan="6" style="padding:20px;text-align:center;font-size:12px;color:var(--text3)">${prevH ? "Nessun movimento questo trimestre" : "Caricamento dati trimestre precedente..."}</td></tr>`;
 
         return `
     <div class="two-col">
-      <!-- Portfolio at a glance -->
       <div class="card">
-        <div class="card-hdr">
-          <div class="card-title">Portfolio at a glance</div>
-          <div class="card-sub">Largest reported positions by portfolio weight</div>
-        </div>
-        <table class="glance-table">
-          <thead><tr><th>Ticker</th><th>Company</th><th>Market Value</th><th>Activity</th></tr></thead>
-          <tbody>${glanceRows}</tbody>
-        </table>
-        <div class="view-all" onclick="switchTabDirect('portfolio')">View full portfolio →</div>
+        <div class="card-hdr"><div class="card-title">Portfolio at a glance</div><div class="card-sub">Largest reported positions by portfolio weight</div></div>
+        <table class="g-tbl"><thead><tr><th>Ticker</th><th>Company</th><th>Market Value</th><th>Activity</th></tr></thead><tbody>${glanceRows}</tbody></table>
+        <div class="view-all" onclick="swTabDirect('portfolio')">View full portfolio →</div>
       </div>
-
-      <!-- Top Holdings Allocation -->
       <div class="card">
-        <div class="card-hdr">
-          <div class="card-title">Top Holdings Allocation</div>
-          <div class="card-sub">Top 10 holdings as portfolio %</div>
-        </div>
-        <div class="alloc-list">${allocRows}</div>
-        <div class="alloc-footer">
-          <span>Top 5: <span>${top5.toFixed(1)}%</span></span>
-          <span>Top 10: <span>${top10.toFixed(1)}%</span></span>
-        </div>
+        <div class="card-hdr"><div class="card-title">Top Holdings Allocation</div><div class="card-sub">Top to holdings as portfolio %</div></div>
+        <div class="alloc-body">${allocRows}</div>
+        <div class="alloc-footer"><span>Top 5: <b>${top5.toFixed(1)}%</b></span><span>Top 10: <b>${top10.toFixed(1)}%</b></span></div>
       </div>
     </div>
 
-    <!-- What changed -->
-    <div class="section-hdr">
+    <div class="section-top">
       <div class="section-title">What changed this quarter</div>
-      <div class="filter-row" id="filterRow">
-        ${filterBtns(counts_from(enriched))}
-      </div>
+      <div class="filter-row">${filterBtns(counts, true)}</div>
     </div>
-    <div class="tbl-wrap">
+    <div class="tbl-card">
       <table>
         <thead><tr><th>Stock</th><th>Shares</th><th>Reported Value</th><th>% of Portfolio</th><th>Activity</th><th>Current Price</th></tr></thead>
-        <tbody id="changedBody">${changedRows}</tbody>
-      </table>
-    </div>
-  `;
-      }
-
-      function counts_from(enriched) {
-        return {
-          all: enriched.length,
-          new: enriched.filter((h) => h.ct === "new").length,
-          added: enriched.filter((h) => h.ct === "inc").length,
-          reduced: enriched.filter((h) => h.ct === "red").length,
-          unchanged: enriched.filter((h) => h.ct === "unch").length,
-        };
-      }
-
-      // ─── PORTFOLIO FULL TAB ───────────────────────────────────────────────────────
-      function renderPortfolioFull(enriched, total, counts) {
-        let filtered = enriched;
-        if (filter === "new") filtered = enriched.filter((h) => h.ct === "new");
-        else if (filter === "added")
-          filtered = enriched.filter((h) => h.ct === "inc");
-        else if (filter === "reduced")
-          filtered = enriched.filter((h) => h.ct === "red");
-        else if (filter === "unchanged")
-          filtered = enriched.filter((h) => h.ct === "unch");
-        const sorted = [...filtered].sort((a, b) => {
-          const av = a[sortK] ?? 0,
-            bv = b[sortK] ?? 0;
-          return sortD === "desc" ? bv - av : av - bv;
-        });
-        const maxV = enriched[0]?.value || 1;
-        const si = (k) =>
-          `<span style="opacity:.5;font-size:9px">${sortK === k ? (sortD === "desc" ? "↓" : "↑") : "↕"}</span>`;
-
-        setTimeout(() => loadPricesForRows(sorted.slice(0, 20)), 100);
-
-        return `
-    <div class="section-hdr" style="margin-bottom:14px">
-      <div class="section-title">Portfolio Holdings</div>
-      <div class="filter-row">${filterBtns(counts)}</div>
-    </div>
-    <div class="tbl-wrap">
-      <table>
-        <thead><tr>
-          <th style="width:28px">#</th>
-          <th>Stock</th>
-          <th onclick="srt('value')">Reported Value ${si("value")}</th>
-          <th onclick="srt('shares')">Shares ${si("shares")}</th>
-          <th onclick="srt('weight')">% Portfolio ${si("weight")}</th>
-          <th>Bar</th>
-          <th>Activity</th>
-          <th>Current Price</th>
-        </tr></thead>
-        <tbody>
-          ${sorted
-            .map((h, i) => {
-              const chgPct =
-                h.prevS > 0 ? ((h.shares - h.prevS) / h.prevS) * 100 : null;
-              return `<tr>
-              <td style="color:var(--text3);font-family:var(--mono);font-size:10px">${i + 1}</td>
-              <td><div class="stock-cell">
-                ${logoImg(h.name, 22)}
-                <div><div class="stock-ticker">${h.name.split(" ").slice(0, 2).join(" ").substring(0, 14)}</div>
-                ${h.cusip ? `<div class="stock-name">${h.cusip}</div>` : ""}
-                </div>
-              </div></td>
-              <td><span class="num">${money(h.value)}</span></td>
-              <td><span class="num muted">${shares(h.shares)}</span></td>
-              <td><span class="num muted">${h.weight.toFixed(2)}%</span></td>
-              <td><div style="background:var(--surface3);border-radius:2px;height:3px;width:70px"><div style="height:3px;border-radius:2px;background:var(--teal);width:${Math.round((h.value / maxV) * 70)}px"></div></div></td>
-              <td>${actBadge(h.ct, chgPct)}</td>
-              <td><span class="num muted" id="price-${h.cusip || i}">—</span></td>
-            </tr>`;
-            })
-            .join("")}
-        </tbody>
+        <tbody>${changedRows}</tbody>
       </table>
     </div>`;
       }
 
-      // ─── MOVES TAB ────────────────────────────────────────────────────────────────
+      // ─── PORTFOLIO FULL ───────────────────────────────────────────────────────────
+      function renderPortfolioFull(enr, total, counts) {
+        let fl = enr;
+        if (filt === "new") fl = enr.filter((h) => h.ct_ === "new");
+        else if (filt === "added") fl = enr.filter((h) => h.ct_ === "inc");
+        else if (filt === "reduced") fl = enr.filter((h) => h.ct_ === "red");
+        else if (filt === "unchanged") fl = enr.filter((h) => h.ct_ === "unch");
+        const sorted = [...fl].sort((a, b) => {
+          const av = a[sortK] ?? 0,
+            bv = b[sortK] ?? 0;
+          return sortD === "desc" ? bv - av : av - bv;
+        });
+        const maxV = enr[0]?.value || 1;
+        const si = (k) =>
+          `<span style="opacity:.5;font-size:9px;margin-left:2px">${sortK === k ? (sortD === "desc" ? "↓" : "↑") : "↕"}</span>`;
+        setTimeout(() => loadPrices(sorted.slice(0, 20)), 200);
+        return `
+    <div class="section-top" style="margin-bottom:14px">
+      <div class="section-title">Portfolio Holdings</div>
+      <div class="filter-row">${filterBtns(counts, false)}</div>
+    </div>
+    <div class="tbl-card">
+      <table>
+        <thead><tr>
+          <th style="width:30px">#</th>
+          <th>Stock</th>
+          <th onclick="srt('value')" class="${sortK === "value" ? "sorted" : ""}">Reported Value${si("value")}</th>
+          <th onclick="srt('shares')" class="${sortK === "shares" ? "sorted" : ""}">Shares${si("shares")}</th>
+          <th onclick="srt('weight')" class="${sortK === "weight" ? "sorted" : ""}">% Portfolio${si("weight")}</th>
+          <th>Bar</th>
+          <th>Activity</th>
+          <th>Current Price</th>
+        </tr></thead>
+        <tbody>${sorted
+          .map((h, i) => {
+            const chg =
+              h.prevS > 0 ? ((h.shares - h.prevS) / h.prevS) * 100 : null;
+            const pid = "pr_" + (h.cusip || h.name.replace(/\W/g, ""));
+            return `<tr>
+            <td style="color:var(--text3);font-size:11px">${i + 1}</td>
+            <td><div class="stock-wrap">${logoImg(h.name, 22)}<div><div class="s-ticker">${h.name.split(" ").slice(0, 2).join(" ").substring(0, 18)}</div>${h.cusip ? `<div class="s-name">${h.cusip}</div>` : ""}</div></div></td>
+            <td><span class="num bold">${money(h.value)}</span></td>
+            <td><span class="num">${shs(h.shares)}</span></td>
+            <td><span class="num">${h.weight.toFixed(2)}%</span></td>
+            <td><div class="mini-bar-bg"><div class="mini-bar" style="width:${Math.round((h.value / maxV) * 72)}px"></div></div></td>
+            <td>${badge(h.ct_, chg)}</td>
+            <td><div class="price-block" id="${pid}"><div class="price-v" style="color:#9ca3af">—</div></div></td>
+          </tr>`;
+          })
+          .join("")}</tbody>
+      </table>
+    </div>`;
+      }
+
+      // ─── MOVES ────────────────────────────────────────────────────────────────────
       function renderMoves(mv, prevH) {
         if (!prevH)
-          return `<div class="loading-row"><div class="spin-sm"></div>Caricamento trimestre precedente...</div>`;
+          return `<div class="load-prev"><div class="spin-sm"></div>Caricamento trimestre precedente in background...</div>`;
         if (!mv)
-          return `<div style="padding:24px;font-family:var(--mono);font-size:11px;color:var(--text3);text-align:center">Nessun dato disponibile.</div>`;
-
+          return `<div style="padding:24px;text-align:center;font-size:12px;color:var(--text3)">Nessun dato.</div>`;
         const mrow = (h, type) => {
-          const chgPct =
+          const chg =
             h.prevS > 0 ? ((h.shares - h.prevS) / h.prevS) * 100 : null;
           const delta =
             type === "new"
@@ -1826,83 +1805,67 @@
               : type === "closed"
                 ? `<div class="move-d neg">Full Exit</div>`
                 : type === "inc"
-                  ? `<div class="move-d pos">▲ ${chgPct !== null ? Math.abs(chgPct).toFixed(1) + "%" : ""}</div>`
-                  : `<div class="move-d neg">▼ ${chgPct !== null ? Math.abs(chgPct).toFixed(1) + "%" : ""}</div>`;
+                  ? `<div class="move-d pos">▲ ${chg != null ? Math.abs(chg).toFixed(1) + "%" : ""}</div>`
+                  : `<div class="move-d neg">▼ ${chg != null ? Math.abs(chg).toFixed(1) + "%" : ""}</div>`;
           const sub =
             type === "inc" || type === "red"
-              ? `${shares(h.prevS)} → ${shares(h.shares)} sh`
-              : `${shares(h.shares)} sh`;
-          return `<div class="move-row">
-      <div class="move-left">${logoImg(h.name, 26)}<div><div class="move-n">${h.name.substring(0, 22)}</div><div class="move-s">${sub}</div></div></div>
-      <div class="move-r"><div class="move-v">${money(h.value)}</div>${delta}</div>
-    </div>`;
+              ? `${shs(h.prevS)} → ${shs(h.shares)} sh`
+              : `${shs(h.shares)} sh`;
+          return `<div class="move-row"><div class="move-l">${logoImg(h.name, 26)}<div><div class="move-n">${h.name.substring(0, 24)}</div><div class="move-s">${sub}</div></div></div><div class="move-r"><div class="move-v">${money(h.value)}</div>${delta}</div></div>`;
         };
-        const card = (title, cls, items, type) => `<div class="move-card">
-    <div class="move-card-hdr"><div class="move-card-title ${cls}">${title}</div><div class="move-cnt">${items.length}</div></div>
-    ${
-      items.length
-        ? items
-            .slice(0, 12)
-            .map((h) => mrow(h, type))
-            .join("")
-        : '<div class="no-move">Nessun movimento</div>'
-    }
-  </div>`;
-
+        const card = (title, cls, items, type) =>
+          `<div class="move-card"><div class="move-hdr"><div class="move-title ${cls}">${title}</div><div class="move-cnt">${items.length}</div></div>${
+            items.length
+              ? items
+                  .slice(0, 12)
+                  .map((h) => mrow(h, type))
+                  .join("")
+              : '<div class="no-move">Nessun movimento</div>'
+          }</div>`;
         return `<div class="moves-grid">
     ${card("✦ New Positions", "c-new", mv.newP, "new")}
     ${card("✕ Full Exits", "c-sold", mv.closed, "closed")}
-    ${card("▲ Added", "c-added", mv.inc, "inc")}
-    ${card("▼ Reduced", "c-reduced", mv.red, "red")}
+    ${card("▲ Added", "c-buy", mv.inc, "inc")}
+    ${card("▼ Reduced", "c-sold", mv.red, "red")}
   </div>`;
       }
 
       // ─── HELPERS ──────────────────────────────────────────────────────────────────
-      function actBadge(ct, chgPct) {
-        if (ct === "new") return `<span class="badge b-new">✦ New</span>`;
-        if (ct === "inc")
-          return `<span class="badge b-added">▲ ${chgPct != null ? pct(chgPct) : "Added"}</span>`;
-        if (ct === "red")
-          return `<span class="badge b-reduced">▼ ${chgPct != null ? pct(chgPct) : "Reduced"}</span>`;
-        return `<span class="badge b-unchanged">— Unchanged</span>`;
+      function badge(ct_, chg) {
+        if (ct_ === "new") return `<span class="badge b-new">✦ New</span>`;
+        if (ct_ === "inc")
+          return `<span class="badge b-added">▲ ${chg != null ? pct(chg) : "Added"}</span>`;
+        if (ct_ === "red")
+          return `<span class="badge b-reduced">▼ ${chg != null ? pct(chg) : "Reduced"}</span>`;
+        return `<span class="badge b-unchanged">Unchanged</span>`;
       }
-
-      function filterBtns(counts) {
-        return `
-    <button class="f-btn ${filter === "all" ? "f-all" : ""}" onclick="setF('all')">All <span class="f-cnt">${counts.all}</span></button>
-    <button class="f-btn ${filter === "new" ? "f-new" : ""}" onclick="setF('new')">New <span class="f-cnt">${counts.new}</span></button>
-    <button class="f-btn ${filter === "added" ? "f-added" : ""}" onclick="setF('added')">Added <span class="f-cnt">${counts.added}</span></button>
-    <button class="f-btn ${filter === "reduced" ? "f-reduced" : ""}" onclick="setF('reduced')">Reduced <span class="f-cnt">${counts.reduced}</span></button>
-    <button class="f-btn ${filter === "unchanged" ? "f-unchanged" : ""}" onclick="setF('unchanged')">Unchanged <span class="f-cnt">${counts.unchanged}</span></button>`;
+      function filterBtns(counts, isOverview) {
+        const f = isOverview ? "all" : filt;
+        const btns = [
+          ["all", "f-all", counts.all],
+          ["new", "f-new", counts.new],
+          ["added", "f-added", counts.added],
+          ["reduced", "f-reduced", counts.reduced],
+          ["unchanged", "f-unchanged", counts.unchanged],
+        ];
+        return btns
+          .map(
+            ([k, cls, cnt]) =>
+              `<button class="f-btn ${f === k ? cls : ""}" onclick="setF('${k}')">${k.charAt(0).toUpperCase() + k.slice(1)} <span class="f-cnt">${cnt}</span></button>`,
+          )
+          .join("");
       }
-
-      async function loadPricesForRows(rows) {
-        for (const h of rows) {
-          const ticker = await findTicker(h.name);
-          if (ticker) {
-            const p = await fetchPrice(ticker);
-            const el = document.getElementById(
-              "price-" + (h.cusip || rows.indexOf(h)),
-            );
-            if (el && p) {
-              const up = p.chg >= 0;
-              el.innerHTML = `<span class="price-val">$${p.price.toFixed(2)}</span><div class="price-chg ${up ? "up" : "dn"}">${up ? "▲" : "▼"} ${Math.abs(p.chg).toFixed(2)}%</div>`;
-              el.className = "";
-            }
-          }
-        }
-      }
-
-      function switchTab(t, cik, idx) {
+      function swTab(t, cik, idx) {
         tab = t;
         render(cik, idx);
       }
-      function switchTabDirect(t) {
+      function swTabDirect(t) {
         tab = t;
         render(INV.cik, fidx);
       }
       function setF(f) {
-        filter = f;
+        filt = f;
+        tab = "portfolio";
         render(INV.cik, fidx);
       }
       function srt(k) {
@@ -1915,15 +1878,13 @@
       }
       async function go(idx) {
         tab = "overview";
-        filter = "all";
-        await loadHoldings(INV.cik, idx);
+        filt = "all";
+        await loadH(INV.cik, idx);
       }
 
       // ─── INIT ─────────────────────────────────────────────────────────────────────
-      $("searchBox").addEventListener("input", (e) =>
-        renderSidebar(e.target.value),
-      );
-      renderSidebar();
+      $("searchBox").addEventListener("input", (e) => renderSB(e.target.value));
+      renderSB();
     </script>
   </body>
 </html>
