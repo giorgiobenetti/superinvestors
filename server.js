@@ -25,7 +25,6 @@ async function rateLimitedFetch(url, method = 'GET') {
   return fetch(url, { method, headers: SEC_HEADERS });
 }
 
-// SEC PROXY
 app.get('/api/sec', async (req, res) => {
   const { url } = req.query;
   if (!url) return res.status(400).json({ error: 'Missing url' });
@@ -55,7 +54,6 @@ app.head('/api/sec', async (req, res) => {
   } catch { res.status(500).end(); }
 });
 
-// LOGO PROXY
 app.get('/api/logo', async (req, res) => {
   const { domain } = req.query;
   if (!domain) return res.status(400).end();
@@ -70,18 +68,16 @@ app.get('/api/logo', async (req, res) => {
   } catch { res.status(404).end(); }
 });
 
-// TEST
 app.get('/api/test', async (req, res) => {
   try {
     const r = await fetch('https://data.sec.gov/submissions/CIK0001067983.json', { headers: SEC_HEADERS });
     const d = await r.json();
-    res.json({ ok: true, name: d.name, logo_endpoint: true });
+    res.json({ ok: true, name: d.name });
   } catch (e) {
     res.json({ ok: false, error: e.message });
   }
 });
 
 app.listen(PORT, () => {
-  console.log(`\n✅ SuperInvestors running at http://localhost:${PORT}`);
-  console.log(`   /api/test  /api/sec  /api/logo\n`);
+  console.log(`\n✅ SuperInvestors -> http://localhost:${PORT}\n`);
 });
