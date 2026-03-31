@@ -8,26 +8,29 @@
     />
     <title>SuperInvestors — 13F Tracker</title>
     <link
-      href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@300;400;500&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&family=DM+Mono:wght@300;400;500&display=swap"
       rel="stylesheet"
     />
     <style>
       :root {
-        --bg: #080a0d;
-        --surface: #0e1117;
-        --surface2: #141820;
-        --surface3: #1a2030;
-        --border: #1e2535;
-        --border2: #263045;
-        --text: #e8edf5;
-        --text2: #8899b4;
-        --text3: #3d4f6b;
+        --bg: #07090e;
+        --surface: #0c0f18;
+        --surface2: #111520;
+        --surface3: #161c2c;
+        --border: #1c2338;
+        --border2: #222a40;
+        --text: #e4eaf6;
+        --text2: #7b8db0;
+        --text3: #384660;
         --accent: #3b82f6;
         --accent2: #60a5fa;
-        --buy: #10d98a;
+        --buy: #22c55e;
+        --buy2: #16a34a;
         --sell: #f43f5e;
+        --sell2: #e11d48;
         --new: #a78bfa;
-        --unchanged: #475569;
+        --gold: #f59e0b;
+        --teal: #14b8a6;
         --display: "Syne", sans-serif;
         --body: "DM Sans", sans-serif;
         --mono: "DM Mono", monospace;
@@ -42,134 +45,117 @@
         color: var(--text);
         font-family: var(--body);
         min-height: 100vh;
-        overflow-x: hidden;
       }
 
-      header {
-        height: 56px;
-        border-bottom: 1px solid var(--border);
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding: 0 24px;
-        position: sticky;
-        top: 0;
-        background: rgba(8, 10, 13, 0.92);
-        backdrop-filter: blur(16px);
-        z-index: 200;
-      }
-      .logo {
-        font-family: var(--display);
-        font-size: 15px;
-        font-weight: 700;
-        letter-spacing: 0.04em;
-        color: var(--text);
-        display: flex;
-        align-items: center;
-        gap: 10px;
-      }
-      .logo-mark {
-        width: 28px;
-        height: 28px;
-        background: linear-gradient(135deg, var(--accent), #818cf8);
-        border-radius: 8px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 13px;
-        font-weight: 800;
-        color: white;
-      }
-      .header-badge {
-        font-family: var(--mono);
-        font-size: 10px;
-        color: var(--text3);
-        letter-spacing: 0.06em;
-        padding: 3px 8px;
-        border: 1px solid var(--border);
-        border-radius: 4px;
-      }
-
-      .app {
+      /* ── APP SHELL ── */
+      .shell {
         display: grid;
-        grid-template-columns: 280px 1fr;
-        height: calc(100vh - 56px);
+        grid-template-columns: 260px 1fr;
+        height: 100vh;
+        overflow: hidden;
       }
 
+      /* ── SIDEBAR ── */
       .sidebar {
-        border-right: 1px solid var(--border);
         background: var(--surface);
+        border-right: 1px solid var(--border);
         display: flex;
         flex-direction: column;
         overflow: hidden;
       }
-      .sidebar-top {
+
+      .sidebar-brand {
         padding: 16px;
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        flex-shrink: 0;
+      }
+      .brand-mark {
+        width: 30px;
+        height: 30px;
+        background: linear-gradient(135deg, var(--accent), #818cf8);
+        border-radius: 9px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: var(--display);
+        font-size: 14px;
+        font-weight: 800;
+        color: white;
+      }
+      .brand-name {
+        font-family: var(--display);
+        font-size: 14px;
+        font-weight: 700;
+        letter-spacing: 0.03em;
+      }
+      .brand-sub {
+        font-family: var(--mono);
+        font-size: 9px;
+        color: var(--text3);
+        letter-spacing: 0.08em;
+      }
+
+      .sidebar-search {
+        padding: 12px;
         border-bottom: 1px solid var(--border);
         flex-shrink: 0;
       }
-      .sidebar-label {
-        font-family: var(--mono);
-        font-size: 9px;
-        letter-spacing: 0.14em;
-        text-transform: uppercase;
-        color: var(--text3);
-        margin-bottom: 10px;
-      }
-      .search-wrap {
-        position: relative;
-      }
-      .search {
+      .search-input {
         width: 100%;
         background: var(--surface2);
         border: 1px solid var(--border2);
         border-radius: 8px;
-        padding: 8px 12px 8px 32px;
+        padding: 7px 12px 7px 30px;
         color: var(--text);
         font-family: var(--body);
-        font-size: 13px;
+        font-size: 12px;
         outline: none;
         transition: border-color 0.2s;
       }
-      .search:focus {
+      .search-input:focus {
         border-color: var(--accent);
       }
-      .search::placeholder {
+      .search-input::placeholder {
         color: var(--text3);
       }
-      .search-icon {
+      .search-wrap {
+        position: relative;
+      }
+      .search-ico {
         position: absolute;
-        left: 10px;
+        left: 9px;
         top: 50%;
         transform: translateY(-50%);
         color: var(--text3);
-        font-size: 13px;
+        font-size: 12px;
         pointer-events: none;
       }
 
-      .investor-list {
+      .inv-list {
         overflow-y: auto;
         flex: 1;
       }
-      .investor-list::-webkit-scrollbar {
-        width: 3px;
+      .inv-list::-webkit-scrollbar {
+        width: 2px;
       }
-      .investor-list::-webkit-scrollbar-thumb {
+      .inv-list::-webkit-scrollbar-thumb {
         background: var(--border2);
-        border-radius: 2px;
       }
 
-      .inv-item {
-        padding: 12px 16px;
+      .inv-row {
+        padding: 10px 12px;
         border-bottom: 1px solid var(--border);
-        cursor: pointer;
-        transition: background 0.12s;
         display: flex;
         align-items: center;
-        gap: 12px;
+        gap: 10px;
+        cursor: pointer;
+        transition: background 0.1s;
         position: relative;
       }
-      .inv-item::before {
+      .inv-row::before {
         content: "";
         position: absolute;
         left: 0;
@@ -180,62 +166,64 @@
         opacity: 0;
         transition: opacity 0.15s;
       }
-      .inv-item:hover {
-        background: rgba(59, 130, 246, 0.04);
+      .inv-row:hover {
+        background: rgba(59, 130, 246, 0.05);
       }
-      .inv-item:hover::before {
-        opacity: 0.5;
+      .inv-row:hover::before {
+        opacity: 0.4;
       }
-      .inv-item.active {
-        background: rgba(59, 130, 246, 0.08);
+      .inv-row.active {
+        background: rgba(59, 130, 246, 0.1);
       }
-      .inv-item.active::before {
+      .inv-row.active::before {
         opacity: 1;
       }
-      .inv-avatar {
-        width: 36px;
-        height: 36px;
-        border-radius: 10px;
-        background: linear-gradient(135deg, var(--surface3), var(--border2));
+      .inv-ava {
+        width: 32px;
+        height: 32px;
+        border-radius: 9px;
+        background: var(--surface3);
         display: flex;
         align-items: center;
         justify-content: center;
         font-family: var(--display);
-        font-size: 13px;
+        font-size: 12px;
         font-weight: 700;
         color: var(--text2);
         flex-shrink: 0;
       }
-      .inv-info {
+      .inv-inf {
         flex: 1;
         min-width: 0;
       }
-      .inv-name {
-        font-family: var(--display);
-        font-size: 13px;
+      .inv-n {
+        font-size: 12px;
         font-weight: 600;
         color: var(--text);
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
       }
-      .inv-meta {
-        font-size: 11px;
-        color: var(--text3);
-        margin-top: 2px;
-        font-family: var(--mono);
-      }
-      .style-pill {
+      .inv-f {
         font-family: var(--mono);
         font-size: 9px;
-        padding: 2px 6px;
-        border-radius: 4px;
+        color: var(--text3);
+        margin-top: 1px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .tag {
+        font-family: var(--mono);
+        font-size: 8px;
+        padding: 1px 5px;
+        border-radius: 3px;
         background: var(--surface3);
         color: var(--text3);
-        letter-spacing: 0.04em;
         flex-shrink: 0;
       }
 
+      /* ── MAIN ── */
       .main {
         overflow-y: auto;
         background: var(--bg);
@@ -245,10 +233,10 @@
       }
       .main::-webkit-scrollbar-thumb {
         background: var(--border2);
-        border-radius: 2px;
       }
 
-      .empty {
+      /* ── STATES ── */
+      .centered {
         height: 100%;
         display: flex;
         flex-direction: column;
@@ -256,30 +244,12 @@
         justify-content: center;
         gap: 12px;
         color: var(--text3);
-      }
-      .empty-icon {
-        font-size: 40px;
-        opacity: 0.2;
-      }
-      .empty-text {
         font-family: var(--mono);
         font-size: 12px;
       }
-
-      .loading {
-        height: 100%;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        gap: 16px;
-        color: var(--text3);
-        font-family: var(--mono);
-        font-size: 11px;
-      }
       .spinner {
-        width: 28px;
-        height: 28px;
+        width: 26px;
+        height: 26px;
         border: 2px solid var(--border2);
         border-top-color: var(--accent);
         border-radius: 50%;
@@ -290,149 +260,155 @@
           transform: rotate(360deg);
         }
       }
-
-      .error-box {
-        margin: 32px;
+      .error {
+        margin: 24px;
         background: rgba(244, 63, 94, 0.08);
         border: 1px solid rgba(244, 63, 94, 0.2);
         border-radius: 10px;
-        padding: 20px 24px;
+        padding: 18px 20px;
         font-family: var(--mono);
-        font-size: 12px;
+        font-size: 11px;
         color: var(--sell);
-        line-height: 1.7;
+        line-height: 1.8;
       }
 
-      .inv-header {
-        padding: 24px 32px 0;
-        border-bottom: 1px solid var(--border);
+      /* ── INVESTOR HEADER ── */
+      .inv-hdr {
         background: var(--surface);
+        border-bottom: 1px solid var(--border);
+        padding: 20px 28px 0;
         position: sticky;
         top: 0;
         z-index: 100;
       }
-      .inv-header-top {
+
+      .hdr-top {
         display: flex;
         align-items: flex-start;
         justify-content: space-between;
-        margin-bottom: 16px;
-        gap: 16px;
+        margin-bottom: 14px;
       }
-      .inv-header-left {
-        display: flex;
-        align-items: center;
-        gap: 16px;
+      .hdr-left {
       }
-      .inv-big-avatar {
-        width: 48px;
-        height: 48px;
-        border-radius: 14px;
-        background: linear-gradient(135deg, var(--accent), #818cf8);
-        display: flex;
-        align-items: center;
-        justify-content: center;
+      .hdr-fund {
         font-family: var(--display);
-        font-size: 18px;
+        font-size: 26px;
         font-weight: 800;
-        color: white;
-        flex-shrink: 0;
-      }
-      .inv-header-name {
-        font-family: var(--display);
-        font-size: 22px;
-        font-weight: 700;
-        letter-spacing: -0.02em;
+        letter-spacing: -0.03em;
         color: var(--text);
-        line-height: 1.1;
+        line-height: 1;
       }
-      .inv-header-sub {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        margin-top: 4px;
-        flex-wrap: wrap;
-      }
-      .inv-header-firm {
+      .hdr-manager {
         font-size: 13px;
         color: var(--text2);
+        margin-top: 4px;
       }
-      .inv-header-right {
+      .hdr-meta {
         display: flex;
-        gap: 8px;
         align-items: center;
+        gap: 8px;
+        margin-top: 6px;
         flex-wrap: wrap;
       }
-      .sec-btn {
+      .hdr-pill {
+        font-family: var(--mono);
+        font-size: 9px;
+        color: var(--text3);
+        padding: 2px 7px;
+        border: 1px solid var(--border2);
+        border-radius: 4px;
+        letter-spacing: 0.05em;
+      }
+      .hdr-right {
+        display: flex;
+        gap: 8px;
+      }
+      .hdr-btn {
         font-family: var(--mono);
         font-size: 10px;
-        color: var(--text3);
+        padding: 6px 14px;
+        border-radius: 7px;
         border: 1px solid var(--border2);
-        border-radius: 6px;
-        padding: 5px 10px;
+        background: transparent;
+        color: var(--text2);
+        cursor: pointer;
         text-decoration: none;
         transition: all 0.15s;
         white-space: nowrap;
       }
-      .sec-btn:hover {
-        color: var(--accent2);
+      .hdr-btn:hover {
         border-color: var(--accent);
+        color: var(--accent2);
+      }
+      .hdr-btn.primary {
+        background: var(--accent);
+        border-color: var(--accent);
+        color: white;
+        font-weight: 500;
+      }
+      .hdr-btn.primary:hover {
+        background: #2563eb;
+        border-color: #2563eb;
       }
 
-      .kpi-strip {
+      /* ── KPI CARDS ── */
+      .kpi-row {
         display: grid;
-        grid-template-columns: repeat(5, 1fr);
+        grid-template-columns: repeat(4, 1fr);
+        gap: 1px;
+        background: var(--border);
         border-top: 1px solid var(--border);
+        border-bottom: 1px solid var(--border);
+        margin: 0 -28px;
       }
-      .kpi-item {
-        padding: 14px 16px;
-        border-right: 1px solid var(--border);
+      .kpi-card {
+        background: var(--surface);
+        padding: 16px 20px;
       }
-      .kpi-item:last-child {
-        border-right: none;
-      }
-      .kpi-label {
+      .kpi-lbl {
         font-family: var(--mono);
         font-size: 9px;
-        letter-spacing: 0.1em;
+        letter-spacing: 0.12em;
         text-transform: uppercase;
         color: var(--text3);
-        margin-bottom: 5px;
+        margin-bottom: 6px;
       }
-      .kpi-value {
+      .kpi-val {
         font-family: var(--display);
-        font-size: 18px;
-        font-weight: 700;
+        font-size: 28px;
+        font-weight: 800;
+        letter-spacing: -0.03em;
         color: var(--text);
         line-height: 1;
       }
       .kpi-sub {
-        font-size: 10px;
+        font-size: 11px;
         color: var(--text3);
-        margin-top: 3px;
-        font-family: var(--mono);
+        margin-top: 4px;
       }
-      .kpi-value.buy {
+      .kpi-val.green {
         color: var(--buy);
       }
-      .kpi-value.sell {
+      .kpi-val.red {
         color: var(--sell);
       }
 
-      .quarter-nav {
+      /* ── QUARTER NAV ── */
+      .q-nav {
         display: flex;
-        gap: 6px;
-        padding: 10px 16px;
+        gap: 5px;
+        padding: 10px 0;
         overflow-x: auto;
         border-top: 1px solid var(--border);
       }
-      .quarter-nav::-webkit-scrollbar {
+      .q-nav::-webkit-scrollbar {
         display: none;
       }
       .q-btn {
         font-family: var(--mono);
         font-size: 10px;
-        padding: 5px 12px;
-        border-radius: 6px;
+        padding: 4px 11px;
+        border-radius: 5px;
         border: 1px solid var(--border2);
         background: transparent;
         color: var(--text3);
@@ -449,52 +425,199 @@
         background: var(--accent);
         border-color: var(--accent);
         color: white;
-        font-weight: 500;
       }
 
-      .tabs {
+      /* ── TABS ── */
+      .tab-row {
         display: flex;
         border-top: 1px solid var(--border);
-        background: var(--surface);
-        padding: 0 20px;
+        padding: 0;
       }
-      .tab-btn {
+      .tab {
         font-family: var(--mono);
         font-size: 10px;
         font-weight: 500;
-        letter-spacing: 0.08em;
         text-transform: uppercase;
+        letter-spacing: 0.08em;
         color: var(--text3);
-        padding: 12px 16px;
+        padding: 11px 18px;
         cursor: pointer;
         border-bottom: 2px solid transparent;
-        margin-bottom: -1px;
         transition: all 0.15s;
         white-space: nowrap;
       }
-      .tab-btn:hover {
+      .tab:hover {
         color: var(--text2);
       }
-      .tab-btn.active {
+      .tab.active {
         color: var(--accent2);
         border-bottom-color: var(--accent);
       }
 
-      .content {
-        padding: 24px 32px;
+      /* ── PAGE CONTENT ── */
+      .page {
+        padding: 24px 28px;
       }
 
-      .filter-bar {
-        display: flex;
-        gap: 6px;
-        margin-bottom: 16px;
-        flex-wrap: wrap;
-        align-items: center;
+      /* ── TWO COL LAYOUT ── */
+      .two-col {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+        margin-bottom: 24px;
       }
-      .filter-btn {
+
+      .card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        overflow: hidden;
+      }
+      .card-hdr {
+        padding: 14px 18px;
+        border-bottom: 1px solid var(--border);
+      }
+      .card-title {
+        font-family: var(--display);
+        font-size: 13px;
+        font-weight: 700;
+        color: var(--text);
+      }
+      .card-sub {
+        font-size: 11px;
+        color: var(--text3);
+        margin-top: 2px;
+      }
+
+      /* ── GLANCE TABLE ── */
+      .glance-table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+      .glance-table th {
+        font-family: var(--mono);
+        font-size: 9px;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        color: var(--text3);
+        padding: 8px 14px;
+        text-align: left;
+        background: var(--surface2);
+        border-bottom: 1px solid var(--border);
+      }
+      .glance-table td {
+        padding: 10px 14px;
+        border-bottom: 1px solid var(--border);
+        font-size: 12px;
+        vertical-align: middle;
+      }
+      .glance-table tr:last-child td {
+        border-bottom: none;
+      }
+      .glance-table tbody tr:hover {
+        background: rgba(255, 255, 255, 0.02);
+      }
+
+      .ticker-cell {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .company-logo {
+        width: 22px;
+        height: 22px;
+        border-radius: 6px;
+        object-fit: contain;
+        background: var(--surface3);
+        flex-shrink: 0;
+      }
+      .ticker {
+        font-family: var(--mono);
+        font-size: 11px;
+        font-weight: 500;
+        color: var(--accent2);
+      }
+      .co-name {
+        font-size: 11px;
+        color: var(--text2);
+        margin-top: 1px;
+      }
+
+      /* ── ALLOCATION BARS ── */
+      .alloc-list {
+        padding: 8px 18px 14px;
+      }
+      .alloc-row {
+        display: grid;
+        grid-template-columns: 90px 1fr 52px;
+        align-items: center;
+        gap: 10px;
+        padding: 6px 0;
+      }
+      .alloc-name {
+        font-size: 11px;
+        color: var(--text);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .alloc-bar-wrap {
+        background: var(--surface3);
+        border-radius: 3px;
+        height: 6px;
+        position: relative;
+        overflow: hidden;
+      }
+      .alloc-bar {
+        height: 100%;
+        border-radius: 3px;
+        background: var(--teal);
+        transition: width 0.4s ease;
+      }
+      .alloc-pct {
+        font-family: var(--mono);
+        font-size: 11px;
+        color: var(--text2);
+        text-align: right;
+      }
+
+      .alloc-footer {
+        padding: 10px 18px;
+        border-top: 1px solid var(--border);
         font-family: var(--mono);
         font-size: 10px;
-        padding: 5px 12px;
+        color: var(--text3);
+        display: flex;
+        gap: 16px;
+      }
+      .alloc-footer span {
+        color: var(--text2);
+      }
+
+      /* ── CHANGED SECTION ── */
+      .section-hdr {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 14px;
+      }
+      .section-title {
+        font-family: var(--display);
+        font-size: 15px;
+        font-weight: 700;
+        color: var(--text);
+      }
+
+      .filter-row {
+        display: flex;
+        gap: 5px;
+        align-items: center;
+        flex-wrap: wrap;
+      }
+      .f-btn {
+        font-family: var(--mono);
+        font-size: 10px;
+        padding: 4px 12px;
         border-radius: 20px;
         border: 1px solid var(--border2);
         background: transparent;
@@ -502,115 +625,138 @@
         cursor: pointer;
         transition: all 0.15s;
       }
-      .filter-btn:hover {
+      .f-btn:hover {
         color: var(--text2);
       }
-      .filter-btn.active-all {
+      .f-btn.f-all {
         background: var(--surface3);
-        border-color: var(--border2);
         color: var(--text);
+        border-color: var(--border2);
       }
-      .filter-btn.active-new {
-        background: rgba(167, 139, 250, 0.15);
-        border-color: rgba(167, 139, 250, 0.4);
+      .f-btn.f-new {
+        background: rgba(167, 139, 250, 0.12);
         color: var(--new);
+        border-color: rgba(167, 139, 250, 0.3);
       }
-      .filter-btn.active-added {
-        background: rgba(16, 217, 138, 0.1);
-        border-color: rgba(16, 217, 138, 0.3);
+      .f-btn.f-added {
+        background: rgba(34, 197, 94, 0.1);
         color: var(--buy);
+        border-color: rgba(34, 197, 94, 0.25);
       }
-      .filter-btn.active-reduced {
-        background: rgba(244, 63, 94, 0.1);
-        border-color: rgba(244, 63, 94, 0.3);
+      .f-btn.f-reduced {
+        background: rgba(244, 63, 94, 0.08);
         color: var(--sell);
+        border-color: rgba(244, 63, 94, 0.2);
       }
-      .filter-btn.active-unchanged {
-        background: rgba(71, 85, 105, 0.2);
-        border-color: rgba(71, 85, 105, 0.4);
+      .f-btn.f-unchanged {
+        background: rgba(71, 85, 105, 0.15);
         color: var(--text3);
+        border-color: rgba(71, 85, 105, 0.3);
       }
-      .filter-count {
-        margin-left: 4px;
-        opacity: 0.6;
+      .f-cnt {
+        opacity: 0.5;
         font-size: 9px;
+        margin-left: 3px;
       }
 
-      .table-wrap {
+      /* ── MAIN TABLE ── */
+      .tbl-wrap {
+        background: var(--surface);
         border: 1px solid var(--border);
-        border-radius: 10px;
+        border-radius: 12px;
         overflow: hidden;
         overflow-x: auto;
+        margin-bottom: 24px;
       }
       table {
         width: 100%;
         border-collapse: collapse;
-        font-size: 12px;
       }
       thead {
         background: var(--surface2);
-        border-bottom: 1px solid var(--border2);
       }
       th {
-        padding: 10px 14px;
-        text-align: left;
         font-family: var(--mono);
         font-size: 9px;
         font-weight: 500;
         text-transform: uppercase;
         letter-spacing: 0.1em;
         color: var(--text3);
-        cursor: pointer;
+        padding: 10px 14px;
+        text-align: left;
         white-space: nowrap;
-        transition: color 0.15s;
+        cursor: pointer;
         user-select: none;
+        transition: color 0.15s;
       }
       th:hover {
         color: var(--text2);
       }
+      th.sorted {
+        color: var(--accent2);
+      }
       td {
         padding: 11px 14px;
         border-bottom: 1px solid var(--border);
+        font-size: 12px;
         vertical-align: middle;
         white-space: nowrap;
       }
       tr:last-child td {
         border-bottom: none;
       }
-      tbody tr {
-        transition: background 0.1s;
-      }
       tbody tr:hover {
         background: rgba(255, 255, 255, 0.02);
       }
 
-      .holding-name {
-        font-weight: 500;
-        font-size: 13px;
-        color: var(--text);
+      .stock-cell {
         display: flex;
         align-items: center;
         gap: 8px;
       }
-      .holding-logo {
-        width: 20px;
-        height: 20px;
-        border-radius: 5px;
-        background: var(--surface3);
+      .stock-logo {
+        width: 22px;
+        height: 22px;
+        border-radius: 6px;
         object-fit: contain;
+        background: var(--surface3);
         flex-shrink: 0;
       }
-      .holding-cusip {
+      .stock-ticker {
         font-family: var(--mono);
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--text);
+      }
+      .stock-name {
         font-size: 10px;
         color: var(--text3);
-        margin-top: 2px;
+        margin-top: 1px;
       }
 
+      .price-cell {
+        font-family: var(--mono);
+        font-size: 12px;
+      }
+      .price-val {
+        color: var(--text);
+      }
+      .price-chg {
+        font-size: 10px;
+        margin-top: 1px;
+      }
+      .price-chg.up {
+        color: var(--buy);
+      }
+      .price-chg.dn {
+        color: var(--sell);
+      }
+
+      /* ── BADGES ── */
       .badge {
         display: inline-flex;
         align-items: center;
-        gap: 3px;
+        gap: 2px;
         padding: 2px 8px;
         border-radius: 20px;
         font-family: var(--mono);
@@ -619,77 +765,101 @@
         letter-spacing: 0.04em;
         text-transform: uppercase;
       }
-      .badge-new {
-        background: rgba(167, 139, 250, 0.15);
+      .b-new {
+        background: rgba(167, 139, 250, 0.12);
         color: var(--new);
-        border: 1px solid rgba(167, 139, 250, 0.3);
+        border: 1px solid rgba(167, 139, 250, 0.25);
       }
-      .badge-added {
-        background: rgba(16, 217, 138, 0.1);
+      .b-added {
+        background: rgba(34, 197, 94, 0.1);
         color: var(--buy);
-        border: 1px solid rgba(16, 217, 138, 0.25);
+        border: 1px solid rgba(34, 197, 94, 0.2);
       }
-      .badge-reduced {
+      .b-reduced {
         background: rgba(244, 63, 94, 0.08);
         color: var(--sell);
-        border: 1px solid rgba(244, 63, 94, 0.2);
+        border: 1px solid rgba(244, 63, 94, 0.18);
       }
-      .badge-unchanged {
-        background: rgba(71, 85, 105, 0.15);
+      .b-unchanged {
+        background: rgba(71, 85, 105, 0.12);
         color: var(--text3);
-        border: 1px solid rgba(71, 85, 105, 0.3);
+        border: 1px solid rgba(71, 85, 105, 0.25);
+      }
+      .b-sold {
+        background: rgba(244, 63, 94, 0.15);
+        color: var(--sell);
+        border: 1px solid rgba(244, 63, 94, 0.3);
       }
 
-      .bar-bg {
-        background: var(--surface3);
-        border-radius: 2px;
-        height: 3px;
-        width: 80px;
+      .num {
+        font-family: var(--mono);
+        font-size: 12px;
       }
-      .bar-fill {
-        height: 3px;
-        border-radius: 2px;
-        background: var(--accent);
+      .num.muted {
+        color: var(--text2);
+      }
+      .num.green {
+        color: var(--buy);
+      }
+      .num.red {
+        color: var(--sell);
       }
 
+      /* ── VIEW ALL ── */
+      .view-all {
+        text-align: right;
+        padding: 10px 18px;
+        border-top: 1px solid var(--border);
+        font-family: var(--mono);
+        font-size: 10px;
+        color: var(--text3);
+        cursor: pointer;
+        transition: color 0.15s;
+      }
+      .view-all:hover {
+        color: var(--accent2);
+      }
+
+      /* ── MOVES GRID ── */
       .moves-grid {
         display: grid;
         grid-template-columns: 1fr 1fr;
         gap: 20px;
+        margin-bottom: 24px;
       }
-      .moves-card {
+      .move-card {
         background: var(--surface);
         border: 1px solid var(--border);
-        border-radius: 10px;
+        border-radius: 12px;
         overflow: hidden;
       }
-      .moves-card-header {
+      .move-card-hdr {
         padding: 12px 16px;
         border-bottom: 1px solid var(--border);
         display: flex;
         align-items: center;
         justify-content: space-between;
       }
-      .moves-card-title {
+      .move-card-title {
         font-family: var(--mono);
         font-size: 10px;
         font-weight: 600;
         text-transform: uppercase;
-        letter-spacing: 0.1em;
-        display: flex;
-        align-items: center;
-        gap: 6px;
+        letter-spacing: 0.08em;
       }
-      .moves-card-title.buy {
-        color: var(--buy);
-      }
-      .moves-card-title.sell {
-        color: var(--sell);
-      }
-      .moves-card-title.new-pos {
+      .move-card-title.c-new {
         color: var(--new);
       }
-      .moves-count {
+      .move-card-title.c-sold {
+        color: var(--sell);
+      }
+      .move-card-title.c-added {
+        color: var(--buy);
+      }
+      .move-card-title.c-reduced {
+        color: var(--sell);
+      }
+      .move-cnt {
         font-family: var(--mono);
         font-size: 10px;
         color: var(--text3);
@@ -714,82 +884,62 @@
         gap: 8px;
       }
       .move-logo {
-        width: 24px;
-        height: 24px;
-        border-radius: 6px;
-        background: var(--surface3);
+        width: 26px;
+        height: 26px;
+        border-radius: 7px;
         object-fit: contain;
+        background: var(--surface3);
         flex-shrink: 0;
       }
-      .move-name {
+      .move-n {
         font-size: 12px;
         font-weight: 500;
         color: var(--text);
       }
-      .move-sub {
+      .move-s {
         font-family: var(--mono);
         font-size: 10px;
         color: var(--text3);
         margin-top: 1px;
       }
-      .move-right {
+      .move-r {
         text-align: right;
       }
-      .move-value {
+      .move-v {
         font-family: var(--mono);
         font-size: 12px;
         color: var(--text);
       }
-      .move-delta {
+      .move-d {
         font-family: var(--mono);
         font-size: 10px;
         margin-top: 1px;
       }
-      .move-delta.pos {
+      .move-d.pos {
         color: var(--buy);
       }
-      .move-delta.neg {
+      .move-d.neg {
         color: var(--sell);
       }
-      .move-delta.neutral {
+      .move-d.neu {
         color: var(--new);
       }
-      .no-moves {
-        padding: 24px 16px;
+      .no-move {
+        padding: 20px 16px;
         text-align: center;
         font-family: var(--mono);
         font-size: 11px;
         color: var(--text3);
       }
 
-      .spinner-sm {
-        width: 14px;
-        height: 14px;
-        border: 1px solid var(--border2);
-        border-top-color: var(--accent);
-        border-radius: 50%;
-        animation: spin 0.7s linear infinite;
-        flex-shrink: 0;
+      /* ── ANIMATIONS ── */
+      .fade {
+        animation: fi 0.25s ease-out;
       }
-      .loading-prev {
-        padding: 20px 16px;
-        text-align: center;
-        font-family: var(--mono);
-        font-size: 10px;
-        color: var(--text3);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 8px;
-      }
-
-      .fade-in {
-        animation: fadeIn 0.25s ease-out;
-      }
-      @keyframes fadeIn {
+      @keyframes fi {
         from {
           opacity: 0;
-          transform: translateY(6px);
+          transform: translateY(5px);
         }
         to {
           opacity: 1;
@@ -797,70 +947,92 @@
         }
       }
 
-      @media (max-width: 860px) {
-        .app {
+      .spin-sm {
+        width: 12px;
+        height: 12px;
+        border: 1px solid var(--border2);
+        border-top-color: var(--accent);
+        border-radius: 50%;
+        animation: spin 0.7s linear infinite;
+      }
+      .loading-row {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 16px;
+        font-family: var(--mono);
+        font-size: 10px;
+        color: var(--text3);
+      }
+
+      /* ── RESPONSIVE ── */
+      @media (max-width: 900px) {
+        .shell {
           grid-template-columns: 1fr;
         }
         .sidebar {
-          height: 220px;
+          height: 200px;
+        }
+        .two-col {
+          grid-template-columns: 1fr;
         }
         .moves-grid {
           grid-template-columns: 1fr;
         }
-        .kpi-strip {
-          grid-template-columns: repeat(3, 1fr);
+        .kpi-row {
+          grid-template-columns: repeat(2, 1fr);
         }
-        .content {
+        .page {
           padding: 16px;
         }
-        .inv-header {
+        .inv-hdr {
           padding: 16px 16px 0;
         }
       }
     </style>
   </head>
   <body>
-    <header>
-      <div class="logo">
-        <div class="logo-mark">S</div>
-        SuperInvestors
-      </div>
-      <div class="header-badge">SEC EDGAR · 13F-HR · LIVE</div>
-    </header>
-
-    <div class="app">
+    <div class="shell">
+      <!-- SIDEBAR -->
       <aside class="sidebar">
-        <div class="sidebar-top">
-          <div class="sidebar-label">Institutional Managers</div>
+        <div class="sidebar-brand">
+          <div class="brand-mark">S</div>
+          <div>
+            <div class="brand-name">SuperInvestors</div>
+            <div class="brand-sub">SEC 13F · LIVE DATA</div>
+          </div>
+        </div>
+        <div class="sidebar-search">
           <div class="search-wrap">
-            <span class="search-icon">⌕</span>
+            <span class="search-ico">⌕</span>
             <input
-              type="text"
-              class="search"
+              class="search-input"
               id="searchBox"
+              type="text"
               placeholder="Cerca investitore..."
             />
           </div>
         </div>
         <div
-          class="investor-list"
-          id="investorList"
+          class="inv-list"
+          id="invList"
         ></div>
       </aside>
 
+      <!-- MAIN -->
       <main
         class="main"
-        id="mainPanel"
+        id="main"
       >
-        <div class="empty">
-          <div class="empty-icon">◈</div>
-          <div class="empty-text">Seleziona un investitore</div>
+        <div class="centered">
+          <div style="font-size: 36px; opacity: 0.15">◈</div>
+          <div>Seleziona un investitore</div>
         </div>
       </main>
     </div>
-
     <script>
-      const FMP_KEY = "gpuffaoLp9CqzZUWxUHMVPTvo3I9xQAq";
+      // ─── CONFIG ───────────────────────────────────────────────────────────────────
+      const FMP = "gpuffaoLp9CqzZUWxUHMVPTvo3I9xQAq";
 
       const INVESTORS = [
         {
@@ -871,7 +1043,7 @@
         },
         {
           name: "Bill Ackman",
-          firm: "Pershing Square Capital",
+          firm: "Pershing Square",
           cik: "0001336528",
           style: "Activist",
         },
@@ -903,7 +1075,7 @@
           name: "Ken Griffin",
           firm: "Citadel Advisors",
           cik: "0001423053",
-          style: "Quant/Multi",
+          style: "Quant",
         },
         {
           name: "David Tepper",
@@ -915,7 +1087,7 @@
           name: "Steve Cohen",
           firm: "Point72 Asset Mgmt",
           cik: "0001603466",
-          style: "Multi-Strategy",
+          style: "Multi-Strat",
         },
         {
           name: "Ray Dalio",
@@ -933,7 +1105,7 @@
           name: "Israel Englander",
           firm: "Millennium Management",
           cik: "0001273087",
-          style: "Multi-Strategy",
+          style: "Multi-Strat",
         },
         {
           name: "John Paulson",
@@ -967,258 +1139,304 @@
         },
       ];
 
-      let activeInvestor = null;
-      let activeFilingIdx = 0;
-      let filingHistory = [];
-      let allHoldings = {};
-      let currentTab = "portfolio";
-      let sortCol = "value";
-      let sortDir = "desc";
-      let activeFilter = "all";
+      // ─── STATE ────────────────────────────────────────────────────────────────────
+      let INV = null,
+        FILINGS = [],
+        HOLDINGS = {},
+        PRICES = {};
+      let fidx = 0,
+        tab = "overview",
+        filter = "all",
+        sortK = "value",
+        sortD = "desc";
 
-      const fmt = {
-        money: (v) => {
-          if (!v && v !== 0) return "—";
-          if (v >= 1e9) return `$${(v / 1e9).toFixed(2)}B`;
-          if (v >= 1e6) return `$${(v / 1e6).toFixed(1)}M`;
-          if (v >= 1e3) return `$${(v / 1e3).toFixed(0)}K`;
-          return `$${v}`;
-        },
-        shares: (v) => {
-          if (!v && v !== 0) return "—";
-          if (v >= 1e6) return `${(v / 1e6).toFixed(2)}M`;
-          if (v >= 1e3) return `${(v / 1e3).toFixed(1)}K`;
-          return `${v}`;
-        },
-        pct: (v) =>
-          v === null || v === undefined
-            ? "—"
-            : `${v > 0 ? "+" : ""}${v.toFixed(1)}%`,
+      // ─── UTILS ────────────────────────────────────────────────────────────────────
+      const $ = (id) => document.getElementById(id);
+      const money = (v) => {
+        if (!v && v !== 0) return "—";
+        if (v >= 1e9) return `$${(v / 1e9).toFixed(2)}B`;
+        if (v >= 1e6) return `$${(v / 1e6).toFixed(1)}M`;
+        if (v >= 1e3) return `$${(v / 1e3).toFixed(0)}K`;
+        return `$${v}`;
       };
-
-      function cikNum(cik) {
-        return cik.replace(/^0+/, "");
-      }
-      function formatAccession(a) {
-        return a.replace(/-/g, "");
-      }
-      function initials(name) {
-        return name
+      const shares = (v) => {
+        if (!v && v !== 0) return "—";
+        if (v >= 1e6) return `${(v / 1e6).toFixed(2)}M`;
+        if (v >= 1e3) return `${(v / 1e3).toFixed(1)}K`;
+        return `${v}`;
+      };
+      const pct = (v) =>
+        v == null ? "—" : `${v > 0 ? "+" : ""}${v.toFixed(1)}%`;
+      const cikN = (c) => c.replace(/^0+/, "");
+      const fmtAcc = (a) => a.replace(/-/g, "");
+      const ini = (n) =>
+        n
           .split(" ")
           .map((w) => w[0])
           .join("")
           .substring(0, 2)
           .toUpperCase();
-      }
-      function secFetch(url, method = "GET") {
-        return fetch(`/api/sec?url=${encodeURIComponent(url)}`, { method });
+      const getQ = (p) => {
+        if (!p) return "?";
+        const m = parseInt(p.substring(5, 7));
+        if (m <= 3) return 1;
+        if (m <= 6) return 2;
+        if (m <= 9) return 3;
+        return 4;
+      };
+
+      function sec(url, m = "GET") {
+        return fetch(`/api/sec?url=${encodeURIComponent(url)}`, { method: m });
       }
 
-      function logoUrl(name) {
-        const map = {
-          APPLE: "apple.com",
-          MICROSOFT: "microsoft.com",
-          AMAZON: "amazon.com",
-          ALPHABET: "google.com",
-          GOOGLE: "google.com",
-          META: "meta.com",
-          NVIDIA: "nvidia.com",
-          TESLA: "tesla.com",
-          BERKSHIRE: "berkshirehathaway.com",
-          JPMORGAN: "jpmorganchase.com",
-          "BANK OF AMERICA": "bankofamerica.com",
-          "WELLS FARGO": "wellsfargo.com",
-          GOLDMAN: "goldmansachs.com",
-          VISA: "visa.com",
-          MASTERCARD: "mastercard.com",
-          PAYPAL: "paypal.com",
-          NETFLIX: "netflix.com",
-          DISNEY: "disney.com",
-          UBER: "uber.com",
-          AIRBNB: "airbnb.com",
-          SALESFORCE: "salesforce.com",
-          ORACLE: "oracle.com",
-          INTEL: "intel.com",
-          AMD: "amd.com",
-          QUALCOMM: "qualcomm.com",
-          EXXON: "exxonmobil.com",
-          CHEVRON: "chevron.com",
-          "COCA-COLA": "coca-cola.com",
-          "COCA COLA": "coca-cola.com",
-          JOHNSON: "jnj.com",
-          PFIZER: "pfizer.com",
-          UNITEDHEALTH: "unitedhealthgroup.com",
-          "UNITED HEALTH": "unitedhealthgroup.com",
-          "HOME DEPOT": "homedepot.com",
-          WALMART: "walmart.com",
-          TARGET: "target.com",
-          COSTCO: "costco.com",
-          ALIBABA: "alibaba.com",
-          "TAIWAN SEMI": "tsmc.com",
-          "TAIWAN SEMICONDUCTOR": "tsmc.com",
-          BROOKFIELD: "brookfield.com",
-          HILTON: "hilton.com",
-          "RESTAURANT BRANDS": "rbi.com",
-          HERTZ: "hertz.com",
-          CITIGROUP: "citi.com",
-          "MORGAN STANLEY": "morganstanley.com",
-          BLACKROCK: "blackrock.com",
-          VERIZON: "verizon.com",
-          COMCAST: "comcast.com",
-          ADOBE: "adobe.com",
-          SPOTIFY: "spotify.com",
-          "AMERICAN EXPRESS": "americanexpress.com",
-          AMEX: "americanexpress.com",
-          DAVITA: "davita.com",
-          "CHARTER COMM": "charter.com",
-        };
-        const upper = name.toUpperCase();
-        for (const [k, v] of Object.entries(map)) {
-          if (upper.includes(k)) return `https://logo.clearbit.com/${v}`;
-        }
+      // ─── LOGO MAP ─────────────────────────────────────────────────────────────────
+      const LOGO_MAP = {
+        APPLE: "apple.com",
+        MICROSOFT: "microsoft.com",
+        AMAZON: "amazon.com",
+        ALPHABET: "google.com",
+        GOOGLE: "google.com",
+        "META PLATFORMS": "meta.com",
+        "META ": "meta.com",
+        NVIDIA: "nvidia.com",
+        TESLA: "tesla.com",
+        BERKSHIRE: "berkshirehathaway.com",
+        JPMORGAN: "jpmorganchase.com",
+        "JP MORGAN": "jpmorganchase.com",
+        "BANK OF AMERICA": "bankofamerica.com",
+        "WELLS FARGO": "wellsfargo.com",
+        "GOLDMAN SACHS": "goldmansachs.com",
+        GOLDMAN: "goldmansachs.com",
+        VISA: "visa.com",
+        MASTERCARD: "mastercard.com",
+        PAYPAL: "paypal.com",
+        NETFLIX: "netflix.com",
+        DISNEY: "disney.com",
+        UBER: "uber.com",
+        AIRBNB: "airbnb.com",
+        SALESFORCE: "salesforce.com",
+        ORACLE: "oracle.com",
+        INTEL: "intel.com",
+        AMD: "amd.com",
+        QUALCOMM: "qualcomm.com",
+        EXXON: "exxonmobil.com",
+        CHEVRON: "chevron.com",
+        "COCA-COLA": "coca-cola.com",
+        "COCA COLA": "coca-cola.com",
+        "JOHNSON & JOHNSON": "jnj.com",
+        PFIZER: "pfizer.com",
+        UNITEDHEALTH: "unitedhealthgroup.com",
+        "UNITED HEALTH": "unitedhealthgroup.com",
+        "HOME DEPOT": "homedepot.com",
+        WALMART: "walmart.com",
+        TARGET: "target.com",
+        COSTCO: "costco.com",
+        ALIBABA: "alibaba.com",
+        "TAIWAN SEMI": "tsmc.com",
+        "TAIWAN SEMICONDUCTOR": "tsmc.com",
+        BROOKFIELD: "brookfield.com",
+        HILTON: "hilton.com",
+        "RESTAURANT BRANDS": "rbi.com",
+        HERTZ: "hertz.com",
+        "HOWARD HUGHES": "howardhughes.com",
+        SEAPORT: "seaportentertainment.com",
+        CITIGROUP: "citi.com",
+        "MORGAN STANLEY": "morganstanley.com",
+        BLACKROCK: "blackrock.com",
+        VERIZON: "verizon.com",
+        COMCAST: "comcast.com",
+        ADOBE: "adobe.com",
+        SPOTIFY: "spotify.com",
+        "AMERICAN EXPRESS": "americanexpress.com",
+        "AMERICAN EXP": "americanexpress.com",
+        DAVITA: "davita.com",
+        "CHARTER COMM": "charter.com",
+        "AMAZON COM": "amazon.com",
+        "SEAPORT ENTMT": "seaportentertainment.com",
+      };
+
+      function logo(name) {
+        const u = name.toUpperCase();
+        for (const [k, v] of Object.entries(LOGO_MAP))
+          if (u.includes(k)) return `https://logo.clearbit.com/${v}`;
         return null;
       }
 
-      function renderList(filter = "") {
-        const list = document.getElementById("investorList");
+      function logoImg(name, sz = 22) {
+        const l = logo(name);
+        return l
+          ? `<img style="width:${sz}px;height:${sz}px;border-radius:${Math.round(sz * 0.27)}px;object-fit:contain;background:var(--surface3);flex-shrink:0" src="${l}" onerror="this.style.display='none'" loading="lazy">`
+          : `<div style="width:${sz}px;height:${sz}px;border-radius:${Math.round(sz * 0.27)}px;background:var(--surface3);flex-shrink:0"></div>`;
+      }
+
+      // ─── FMP PRICES ───────────────────────────────────────────────────────────────
+      async function fetchPrice(ticker) {
+        if (!ticker || PRICES[ticker] !== undefined)
+          return PRICES[ticker] || null;
+        try {
+          const r = await fetch(
+            `https://financialmodelingprep.com/api/v3/quote-short/${ticker}?apikey=${FMP}`,
+          );
+          const d = await r.json();
+          if (d && d[0]) {
+            PRICES[ticker] = { price: d[0].price, chg: d[0].changesPercentage };
+            return PRICES[ticker];
+          }
+        } catch {}
+        PRICES[ticker] = null;
+        return null;
+      }
+
+      // ─── TICKER EXTRACTION (best-effort from CUSIP/name) ─────────────────────────
+      // FMP allows search by company name
+      async function findTicker(name) {
+        const key = "TICKER_" + name;
+        if (PRICES[key] !== undefined) return PRICES[key];
+        try {
+          const r = await fetch(
+            `https://financialmodelingprep.com/api/v3/search?query=${encodeURIComponent(name)}&limit=1&apikey=${FMP}`,
+          );
+          const d = await r.json();
+          if (d && d[0] && d[0].symbol) {
+            PRICES[key] = d[0].symbol;
+            return d[0].symbol;
+          }
+        } catch {}
+        PRICES[key] = null;
+        return null;
+      }
+
+      // ─── SIDEBAR ──────────────────────────────────────────────────────────────────
+      function renderSidebar(f = "") {
+        const list = $("invList");
         const filtered = INVESTORS.filter(
-          (inv) =>
-            inv.name.toLowerCase().includes(filter.toLowerCase()) ||
-            inv.firm.toLowerCase().includes(filter.toLowerCase()),
+          (i) =>
+            i.name.toLowerCase().includes(f.toLowerCase()) ||
+            i.firm.toLowerCase().includes(f.toLowerCase()),
         );
         list.innerHTML = filtered
           .map(
-            (inv) => `
-    <div class="inv-item ${activeInvestor?.cik === inv.cik ? "active" : ""}" onclick="selectInvestor('${inv.cik}')">
-      <div class="inv-avatar">${initials(inv.name)}</div>
-      <div class="inv-info">
-        <div class="inv-name">${inv.name}</div>
-        <div class="inv-meta">${inv.firm}</div>
+            (i) => `
+    <div class="inv-row ${INV?.cik === i.cik ? "active" : ""}" onclick="pick('${i.cik}')">
+      <div class="inv-ava">${ini(i.name)}</div>
+      <div class="inv-inf">
+        <div class="inv-n">${i.name}</div>
+        <div class="inv-f">${i.firm}</div>
       </div>
-      <div class="style-pill">${inv.style}</div>
-    </div>
-  `,
+      <div class="tag">${i.style}</div>
+    </div>`,
           )
           .join("");
       }
 
-      async function selectInvestor(cik) {
-        activeInvestor = INVESTORS.find((i) => i.cik === cik);
-        activeFilingIdx = 0;
-        filingHistory = [];
-        allHoldings = {};
-        currentTab = "portfolio";
-        activeFilter = "all";
-        renderList(document.getElementById("searchBox").value);
-        showLoading(`Caricamento ${activeInvestor.name}...`);
+      // ─── SELECT ────────────────────────────────────────────────────────────────────
+      async function pick(cik) {
+        INV = INVESTORS.find((i) => i.cik === cik);
+        fidx = 0;
+        FILINGS = [];
+        HOLDINGS = {};
+        tab = "overview";
+        filter = "all";
+        sortK = "value";
+        sortD = "desc";
+        renderSidebar($("searchBox").value);
+        loading("Caricamento " + INV.name + "...");
         await loadFilings(cik);
       }
 
-      function showLoading(msg = "Caricamento...") {
-        document.getElementById("mainPanel").innerHTML =
-          `<div class="loading"><div class="spinner"></div><div>${msg}</div></div>`;
+      function loading(msg = "Caricamento...") {
+        $("main").innerHTML =
+          `<div class="centered"><div class="spinner"></div><div>${msg}</div></div>`;
+      }
+      function err(msg, cik) {
+        $("main").innerHTML =
+          `<div class="error">⚠ ${msg}<br><br><a href="https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=${cikN(cik)}&type=13F-HR" target="_blank" style="color:var(--accent2)">Apri su SEC EDGAR ↗</a></div>`;
       }
 
-      function showError(msg, cik) {
-        document.getElementById("mainPanel").innerHTML = `
-    <div class="error-box">⚠ ${msg}<br><br>
-    <a href="https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=${cikNum(cik)}&type=13F-HR" target="_blank" style="color:var(--accent2)">Apri su SEC EDGAR ↗</a></div>`;
-      }
-
+      // ─── LOAD FILINGS ─────────────────────────────────────────────────────────────
       async function loadFilings(cik) {
         try {
-          const paddedCik = "CIK" + cik.replace(/^0+/, "").padStart(10, "0");
-          const res = await secFetch(
-            `https://data.sec.gov/submissions/${paddedCik}.json`,
-          );
-          if (!res.ok) throw new Error(`HTTP ${res.status} — submissions API`);
-          const data = await res.json();
-          const forms = data.filings?.recent?.form || [];
-          const accNos = data.filings?.recent?.accessionNumber || [];
-          const dates = data.filings?.recent?.filingDate || [];
-          const periods = data.filings?.recent?.reportDate || [];
-          const filings13f = [];
-          for (let i = 0; i < forms.length; i++) {
+          const pk = "CIK" + cik.replace(/^0+/, "").padStart(10, "0");
+          const r = await sec(`https://data.sec.gov/submissions/${pk}.json`);
+          if (!r.ok) throw new Error(`HTTP ${r.status} — submissions API`);
+          const d = await r.json();
+          const forms = d.filings?.recent?.form || [],
+            acc = d.filings?.recent?.accessionNumber || [];
+          const dates = d.filings?.recent?.filingDate || [],
+            periods = d.filings?.recent?.reportDate || [];
+          const f13 = [];
+          for (let i = 0; i < forms.length; i++)
             if (forms[i] === "13F-HR")
-              filings13f.push({
-                accessionNo: accNos[i],
+              f13.push({
+                acc: acc[i],
                 date: dates[i],
                 period: periods[i] || dates[i],
               });
-          }
-          if (filings13f.length === 0) {
-            showError(
-              `Nessun filing 13F-HR trovato per ${activeInvestor.name}.`,
-              cik,
-            );
+          if (!f13.length) {
+            err("Nessun filing 13F-HR trovato.", cik);
             return;
           }
-          filingHistory = filings13f.slice(0, 8);
+          FILINGS = f13.slice(0, 8);
           await loadHoldings(cik, 0);
         } catch (e) {
-          showError(e.message, cik);
+          err(e.message, cik);
         }
       }
 
+      // ─── LOAD HOLDINGS ────────────────────────────────────────────────────────────
       async function loadHoldings(cik, idx) {
-        showLoading("Download holdings...");
-        const filing = filingHistory[idx];
-        if (allHoldings[filing.accessionNo]) {
-          renderInvestor(cik, idx, allHoldings[filing.accessionNo]);
+        loading("Download holdings...");
+        const f = FILINGS[idx];
+        if (HOLDINGS[f.acc]) {
+          fidx = idx;
+          render(cik, idx);
           return;
         }
         try {
-          const cleanAcc = formatAccession(filing.accessionNo);
-          const cidx = cikNum(cik);
-          const xmlUrl = await findXmlUrl(cidx, cleanAcc, filing.accessionNo);
-          if (!xmlUrl) throw new Error("File XML non trovato");
-          const xmlRes = await secFetch(xmlUrl);
-          if (!xmlRes.ok) throw new Error(`HTTP ${xmlRes.status}`);
-          const xmlText = await xmlRes.text();
-          const holdings = parseXML13F(xmlText);
-          if (holdings.length === 0)
+          const ca = fmtAcc(f.acc),
+            ci = cikN(cik);
+          const xmlUrl = await findXml(ci, ca, f.acc);
+          const xr = await sec(xmlUrl);
+          if (!xr.ok) throw new Error(`HTTP ${xr.status}`);
+          const xt = await xr.text();
+          const h = parseXml(xt);
+          if (!h.length)
             throw new Error("Nessun holding trovato (formato non supportato)");
-          allHoldings[filing.accessionNo] = holdings;
-          activeFilingIdx = idx;
-          renderInvestor(cik, idx, holdings);
-          // Pre-carica trimestre precedente in background
-          if (
-            idx === 0 &&
-            filingHistory[1] &&
-            !allHoldings[filingHistory[1].accessionNo]
-          ) {
-            const prev = filingHistory[1];
-            const pClean = formatAccession(prev.accessionNo);
-            const capturedCik = cik;
-            const capturedHoldings = holdings;
-            findXmlUrl(cidx, pClean, prev.accessionNo)
-              .then((url) => secFetch(url))
+          HOLDINGS[f.acc] = h;
+          fidx = idx;
+          render(cik, idx);
+          // background prev quarter
+          if (idx === 0 && FILINGS[1] && !HOLDINGS[FILINGS[1].acc]) {
+            const pf = FILINGS[1],
+              pca = fmtAcc(pf.acc),
+              ci2 = cikN(cik),
+              cap = cik,
+              capH = h;
+            findXml(ci2, pca, pf.acc)
+              .then((u) => sec(u))
               .then((r) => r.text())
-              .then((txt) => {
-                const h = parseXML13F(txt);
-                if (h.length > 0) {
-                  allHoldings[prev.accessionNo] = h;
-                  if (
-                    activeInvestor?.cik === capturedCik &&
-                    activeFilingIdx === 0
-                  )
-                    renderInvestor(capturedCik, 0, capturedHoldings);
+              .then((t) => {
+                const ph = parseXml(t);
+                if (ph.length) {
+                  HOLDINGS[pf.acc] = ph;
+                  if (INV?.cik === cap && fidx === 0) render(cap, 0);
                 }
               })
               .catch(() => {});
           }
         } catch (e) {
-          showError(e.message, cik);
+          err(e.message, cik);
         }
       }
 
-      async function findXmlUrl(cidx, cleanAcc, accessionNo) {
-        const base = `https://www.sec.gov/Archives/edgar/data/${cidx}/${cleanAcc}`;
+      // ─── FIND XML ─────────────────────────────────────────────────────────────────
+      async function findXml(ci, ca, acc) {
+        const base = `https://www.sec.gov/Archives/edgar/data/${ci}/${ca}`;
         try {
-          const r = await secFetch(`${base}/${accessionNo}-index.json`);
+          const r = await sec(`${base}/${acc}-index.json`);
           if (r.ok) {
-            const data = await r.json();
-            const items = data.directory?.item || [];
+            const d = await r.json();
+            const items = d.directory?.item || [];
             let f = items.find((x) => x.type === "INFORMATION TABLE");
             if (!f)
               f = items.find(
@@ -1236,7 +1454,7 @@
             if (f?.name) return `${base}/${f.name}`;
           }
         } catch {}
-        for (const name of [
+        for (const n of [
           "infotable.xml",
           "form13fInfoTable.xml",
           "informationtable.xml",
@@ -1244,12 +1462,12 @@
           "xslForm13F_X02.xml",
         ]) {
           try {
-            const r = await secFetch(`${base}/${name}`, "HEAD");
-            if (r.ok) return `${base}/${name}`;
+            const r = await sec(`${base}/${n}`, "HEAD");
+            if (r.ok) return `${base}/${n}`;
           } catch {}
         }
         try {
-          const r = await secFetch(`${base}/${accessionNo}-index.htm`);
+          const r = await sec(`${base}/${acc}-index.htm`);
           if (r.ok) {
             const html = await r.text();
             const rows = [...html.matchAll(/<tr[^>]*>[\s\S]*?<\/tr>/gi)];
@@ -1259,239 +1477,331 @@
                 if (m) return `${base}/${m[1].split("/").pop()}`;
               }
             }
-            const allXml = [...html.matchAll(/href="([^"]*\.xml)"/gi)];
-            if (allXml.length > 1)
-              return `${base}/${allXml[1][1].split("/").pop()}`;
-            if (allXml.length === 1)
-              return `${base}/${allXml[0][1].split("/").pop()}`;
+            const ax = [...html.matchAll(/href="([^"]*\.xml)"/gi)];
+            if (ax.length > 1) return `${base}/${ax[1][1].split("/").pop()}`;
+            if (ax.length === 1) return `${base}/${ax[0][1].split("/").pop()}`;
           }
         } catch {}
-        return `${base}/${accessionNo}.txt`;
+        return `${base}/${acc}.txt`;
       }
 
-      function parseXML13F(rawText) {
-        let xmlText = rawText;
-        if (
-          rawText.includes("<SEQUENCE>") ||
-          rawText.includes("-----BEGIN PRIVACY-ENHANCED MESSAGE-----")
-        ) {
+      // ─── PARSE XML ────────────────────────────────────────────────────────────────
+      function parseXml(raw) {
+        let x = raw;
+        if (raw.includes("<SEQUENCE>") || raw.includes("-----BEGIN PRIVACY")) {
           const m =
-            rawText.match(/<informationTable[\s\S]*?<\/informationTable>/i) ||
-            rawText.match(/<infoTable[\s\S]*?<\/infoTable>/i);
-          if (m) xmlText = m[0];
+            raw.match(/<informationTable[\s\S]*?<\/informationTable>/i) ||
+            raw.match(/<infoTable[\s\S]*?<\/infoTable>/i);
+          if (m) x = m[0];
           else {
-            const starts = [...rawText.matchAll(/<\?xml/gi)].map(
-              (x) => x.index,
-            );
-            if (starts.length > 0)
-              xmlText = rawText.substring(
-                starts.length > 1 ? starts[starts.length - 1] : starts[0],
-              );
+            const s = [...raw.matchAll(/<\?xml/gi)].map((a) => a.index);
+            if (s.length)
+              x = raw.substring(s.length > 1 ? s[s.length - 1] : s[0]);
           }
         }
-        const clean = xmlText
+        const c = x
           .replace(/<\?xml[^>]*\?>/g, "")
           .replace(/\s+xmlns(?::[a-zA-Z0-9_]+)?="[^"]*"/g, "")
           .replace(/\s+xsi:[a-zA-Z:]+="[^"]*"/g, "")
           .replace(/<([a-zA-Z0-9_]+):/g, "<")
           .replace(/<\/([a-zA-Z0-9_]+):/g, "</");
-        const doc = new DOMParser().parseFromString(clean, "text/xml");
+        const doc = new DOMParser().parseFromString(c, "text/xml");
         const entries = doc.querySelectorAll("infoTable");
-        if (entries.length === 0) return [];
-        const holdings = [];
-        entries.forEach((entry) => {
-          const get = (tag) =>
-            entry.querySelector(tag)?.textContent?.trim() || "";
-          const name = get("nameOfIssuer");
-          const cusip = get("cusip");
-          const value = parseInt(get("value") || "0", 10) * 1000;
-          const shares = parseInt(get("sshPrnamt") || "0", 10);
-          const type = get("sshPrnamtType") || "SH";
-          const putcall = get("putCall") || "";
+        if (!entries.length) return [];
+        const h = [];
+        entries.forEach((e) => {
+          const g = (t) => e.querySelector(t)?.textContent?.trim() || "";
+          const name = g("nameOfIssuer"),
+            cusip = g("cusip");
+          const value = parseInt(g("value") || "0", 10) * 1000;
+          const shs = parseInt(g("sshPrnamt") || "0", 10);
+          const type = g("sshPrnamtType") || "SH",
+            pc = g("putCall") || "";
           if (name && value > 0)
-            holdings.push({ name, cusip, value, shares, type, putcall });
+            h.push({ name, cusip, value, shares: shs, type, pc });
         });
-        return holdings.sort((a, b) => b.value - a.value);
+        return h.sort((a, b) => b.value - a.value);
       }
 
-      function computeMoves(current, previous) {
-        if (!previous || previous.length === 0) return null;
-        const prevMap = {};
-        previous.forEach((h) => {
-          prevMap[h.cusip || h.name] = h;
+      // ─── COMPUTE MOVES ────────────────────────────────────────────────────────────
+      function moves(curr, prev) {
+        if (!prev || !prev.length) return null;
+        const pm = {},
+          cm = {};
+        prev.forEach((h) => {
+          pm[h.cusip || h.name] = h;
         });
-        const currMap = {};
-        current.forEach((h) => {
-          currMap[h.cusip || h.name] = h;
+        curr.forEach((h) => {
+          cm[h.cusip || h.name] = h;
         });
-        const newPos = current.filter((h) => !prevMap[h.cusip || h.name]);
-        const closed = previous.filter((h) => !currMap[h.cusip || h.name]);
-        const changed = current.filter((h) => {
-          const p = prevMap[h.cusip || h.name];
+        const newP = curr.filter((h) => !pm[h.cusip || h.name]);
+        const closed = prev.filter((h) => !cm[h.cusip || h.name]);
+        const changed = curr.filter((h) => {
+          const p = pm[h.cusip || h.name];
           return p && h.shares !== p.shares;
         });
-        const increased = changed
-          .filter((h) => h.shares > prevMap[h.cusip || h.name].shares)
-          .map((h) => ({
-            ...h,
-            prevShares: prevMap[h.cusip || h.name].shares,
-          }));
-        const reduced = changed
-          .filter((h) => h.shares < prevMap[h.cusip || h.name].shares)
-          .map((h) => ({
-            ...h,
-            prevShares: prevMap[h.cusip || h.name].shares,
-          }));
-        return { newPos, closed, increased, reduced };
+        const inc = changed
+          .filter((h) => h.shares > pm[h.cusip || h.name].shares)
+          .map((h) => ({ ...h, prevS: pm[h.cusip || h.name].shares }));
+        const red = changed
+          .filter((h) => h.shares < pm[h.cusip || h.name].shares)
+          .map((h) => ({ ...h, prevS: pm[h.cusip || h.name].shares }));
+        return { newP, closed, inc, red };
       }
 
-      function getChangeType(h, prevMap) {
-        const key = h.cusip || h.name;
-        if (!prevMap || !prevMap[key]) return "new";
-        if (h.shares > prevMap[key].shares) return "increased";
-        if (h.shares < prevMap[key].shares) return "reduced";
-        return "unchanged";
+      function chType(h, pm) {
+        if (!pm) return "new";
+        const k = h.cusip || h.name;
+        if (!pm[k]) return "new";
+        if (h.shares > pm[k].shares) return "inc";
+        if (h.shares < pm[k].shares) return "red";
+        return "unch";
       }
 
-      function renderInvestor(cik, idx, holdings) {
-        activeFilingIdx = idx;
-        const inv = activeInvestor;
-        const filing = filingHistory[idx];
-        const totalValue = holdings.reduce((s, h) => s + h.value, 0);
-        const prevFiling = filingHistory[idx + 1];
-        const prevHoldings = prevFiling
-          ? allHoldings[prevFiling.accessionNo]
+      // ─── RENDER ───────────────────────────────────────────────────────────────────
+      function render(cik, idx) {
+        const inv = INV,
+          filing = FILINGS[idx],
+          h = HOLDINGS[filing.acc];
+        const total = h.reduce((s, x) => s + x.value, 0);
+        const prevFiling = FILINGS[idx + 1],
+          prevH = prevFiling ? HOLDINGS[prevFiling.acc] : null;
+        const mv = moves(h, prevH);
+        const pm = prevH
+          ? Object.fromEntries(prevH.map((x) => [x.cusip || x.name, x]))
           : null;
-        const moves = computeMoves(holdings, prevHoldings);
-        const prevMap = prevHoldings
-          ? Object.fromEntries(prevHoldings.map((h) => [h.cusip || h.name, h]))
-          : null;
-        const enriched = holdings.map((h) => ({
-          ...h,
-          weight: totalValue > 0 ? (h.value / totalValue) * 100 : 0,
-          changeType: getChangeType(h, prevMap),
-          prevShares: prevMap?.[h.cusip || h.name]?.shares || 0,
+        const enriched = h.map((x) => ({
+          ...x,
+          weight: total > 0 ? (x.value / total) * 100 : 0,
+          ct: chType(x, pm),
+          prevS: pm?.(x.cusip || x.name)?.shares || 0,
         }));
-        const newCount = enriched.filter((h) => h.changeType === "new").length;
-        const exitCount = moves?.closed?.length || 0;
-        const top10 = enriched.slice(0, 10).reduce((s, h) => s + h.weight, 0);
+        const newCnt = enriched.filter((x) => x.ct === "new").length;
+        const exitCnt = mv?.closed?.length || 0;
+        const top10 = enriched.slice(0, 10).reduce((s, x) => s + x.weight, 0);
+        const mvTotal = mv
+          ? mv.newP.length + mv.closed.length + mv.inc.length + mv.red.length
+          : 0;
         const counts = {
           all: enriched.length,
-          new: enriched.filter((h) => h.changeType === "new").length,
-          added: enriched.filter((h) => h.changeType === "increased").length,
-          reduced: enriched.filter((h) => h.changeType === "reduced").length,
-          unchanged: enriched.filter((h) => h.changeType === "unchanged")
-            .length,
+          new: enriched.filter((x) => x.ct === "new").length,
+          added: enriched.filter((x) => x.ct === "inc").length,
+          reduced: enriched.filter((x) => x.ct === "red").length,
+          unchanged: enriched.filter((x) => x.ct === "unch").length,
         };
-        const movesTotal = moves
-          ? moves.newPos.length +
-            moves.closed.length +
-            moves.increased.length +
-            moves.reduced.length
-          : 0;
 
-        document.getElementById("mainPanel").innerHTML = `
-    <div class="fade-in">
-      <div class="inv-header">
-        <div class="inv-header-top">
-          <div class="inv-header-left">
-            <div class="inv-big-avatar">${initials(inv.name)}</div>
-            <div>
-              <div class="inv-header-name">${inv.name}</div>
-              <div class="inv-header-sub">
-                <span class="inv-header-firm">${inv.firm}</span>
-                <span class="style-pill">${inv.style}</span>
-                <span class="style-pill">CIK ${cikNum(cik)}</span>
-              </div>
-            </div>
-          </div>
-          <div class="inv-header-right">
-            <span style="font-family:var(--mono);font-size:10px;color:var(--text3)">Report ${filing.period || filing.date} · Filed ${filing.date}</span>
-            <a href="https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=${cikNum(cik)}&type=13F-HR" target="_blank" class="sec-btn">SEC EDGAR ↗</a>
+        $("main").innerHTML = `<div class="fade">
+    <div class="inv-hdr">
+      <div class="hdr-top">
+        <div class="hdr-left">
+          <div class="hdr-fund">${inv.firm}</div>
+          <div class="hdr-manager">Managed by ${inv.name}</div>
+          <div class="hdr-meta">
+            <span class="hdr-pill">Latest report: Q${getQ(filing.period)} ${filing.period?.substring(0, 4) || ""}</span>
+            <span class="hdr-pill">Filed: ${filing.date}</span>
+            <span class="hdr-pill">Holdings: ${h.length}</span>
           </div>
         </div>
-        <div class="kpi-strip">
-          <div class="kpi-item"><div class="kpi-label">Portfolio Value</div><div class="kpi-value">${fmt.money(totalValue)}</div><div class="kpi-sub">${enriched.length} posizioni</div></div>
-          <div class="kpi-item"><div class="kpi-label">Top Holding</div><div class="kpi-value" style="font-size:14px">${enriched[0]?.name?.substring(0, 16) || "—"}</div><div class="kpi-sub">${enriched[0]?.weight?.toFixed(1)}% del portafoglio</div></div>
-          <div class="kpi-item"><div class="kpi-label">New Entries</div><div class="kpi-value ${newCount > 0 ? "buy" : ""}">${newCount}</div><div class="kpi-sub">nuove posizioni</div></div>
-          <div class="kpi-item"><div class="kpi-label">Full Exits</div><div class="kpi-value ${exitCount > 0 ? "sell" : ""}">${prevHoldings ? exitCount : "—"}</div><div class="kpi-sub">${prevHoldings ? "posizioni chiuse" : "caricamento..."}</div></div>
-          <div class="kpi-item"><div class="kpi-label">Concentrazione</div><div class="kpi-value">${top10.toFixed(1)}%</div><div class="kpi-sub">top 10 holdings</div></div>
-        </div>
-        <div class="quarter-nav">
-          ${filingHistory.map((f, i) => `<button class="q-btn ${i === idx ? "active" : ""}" onclick="switchFiling(${i})">Q${getQ(f.period)} ${f.period?.substring(0, 4) || ""}</button>`).join("")}
-        </div>
-        <div class="tabs">
-          <div class="tab-btn ${currentTab === "portfolio" ? "active" : ""}" onclick="switchTab('portfolio','${cik}',${idx})">Portfolio</div>
-          <div class="tab-btn ${currentTab === "moves" ? "active" : ""}" onclick="switchTab('moves','${cik}',${idx})">Movimenti${moves ? ` (${movesTotal})` : ""}</div>
+        <div class="hdr-right">
+          <a href="https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=${cikN(cik)}&type=13F-HR" target="_blank" class="hdr-btn">View on SEC EDGAR</a>
+          <button class="hdr-btn primary" onclick="switchTab('moves','${cik}',${idx})">View latest changes</button>
         </div>
       </div>
-      <div class="content">
-        ${currentTab === "portfolio" ? renderPortfolio(enriched, totalValue, counts) : renderMoves(moves, prevHoldings)}
+      <div class="kpi-row">
+        <div class="kpi-card"><div class="kpi-lbl">Portfolio Value</div><div class="kpi-val">${money(total)}</div><div class="kpi-sub">Reported equity holdings</div></div>
+        <div class="kpi-card"><div class="kpi-lbl">Holdings</div><div class="kpi-val">${h.length}</div><div class="kpi-sub">Current reported positions</div></div>
+        <div class="kpi-card"><div class="kpi-lbl">New Entries</div><div class="kpi-val ${newCnt > 0 ? "green" : ""}">${prevH ? newCnt : "—"}</div><div class="kpi-sub">Opened this quarter</div></div>
+        <div class="kpi-card"><div class="kpi-lbl">New Exits</div><div class="kpi-val ${exitCnt > 0 ? "red" : ""}">${prevH ? exitCnt : "—"}</div><div class="kpi-sub">Fully sold this quarter</div></div>
       </div>
-    </div>`;
+      <div class="q-nav">
+        ${FILINGS.map((f, i) => `<button class="q-btn ${i === idx ? "active" : ""}" onclick="go(${i})">Q${getQ(f.period)} ${f.period?.substring(0, 4) || ""}</button>`).join("")}
+      </div>
+      <div class="tab-row">
+        <div class="tab ${tab === "overview" ? "active" : ""}" onclick="switchTab('overview','${cik}',${idx})">Overview</div>
+        <div class="tab ${tab === "portfolio" ? "active" : ""}" onclick="switchTab('portfolio','${cik}',${idx})">Portfolio</div>
+        <div class="tab ${tab === "moves" ? "active" : ""}" onclick="switchTab('moves','${cik}',${idx})">Buys & Sells${mv ? ` (${mvTotal})` : ""}</div>
+      </div>
+    </div>
+    <div class="page" id="pageContent">
+      ${tab === "overview" ? renderOverview(enriched, total, mv, prevH) : tab === "moves" ? renderMoves(mv, prevH) : renderPortfolioFull(enriched, total, counts)}
+    </div>
+  </div>`;
       }
 
-      function renderPortfolio(enriched, totalValue, counts) {
-        let filtered = enriched;
-        if (activeFilter === "new")
-          filtered = enriched.filter((h) => h.changeType === "new");
-        else if (activeFilter === "added")
-          filtered = enriched.filter((h) => h.changeType === "increased");
-        else if (activeFilter === "reduced")
-          filtered = enriched.filter((h) => h.changeType === "reduced");
-        else if (activeFilter === "unchanged")
-          filtered = enriched.filter((h) => h.changeType === "unchanged");
-        const sorted = [...filtered].sort((a, b) => {
-          const av = a[sortCol] ?? 0,
-            bv = b[sortCol] ?? 0;
-          return sortDir === "desc" ? bv - av : av - bv;
-        });
-        const maxValue = enriched[0]?.value || 1;
-        const si = (col) =>
-          `<span style="opacity:0.5;font-size:9px">${sortCol === col ? (sortDir === "desc" ? "↓" : "↑") : "↕"}</span>`;
+      // ─── OVERVIEW TAB ─────────────────────────────────────────────────────────────
+      function renderOverview(enriched, total, mv, prevH) {
+        const top8 = enriched.slice(0, 8);
+        const maxW = enriched[0]?.weight || 1;
+
+        // Portfolio at a glance table
+        const glanceRows = top8
+          .map((h) => {
+            const chgPct =
+              h.prevS > 0 ? ((h.shares - h.prevS) / h.prevS) * 100 : null;
+            return `<tr>
+      <td><div class="ticker-cell">
+        ${logoImg(h.name, 22)}
+        <div><div class="ticker">${h.name.substring(0, 6).replace(/ .*/, "")}</div></div>
+      </div></td>
+      <td><div class="co-name" style="max-width:110px;overflow:hidden;text-overflow:ellipsis">${h.name.substring(0, 20)}</div></td>
+      <td><span class="num">${money(h.value)}</span></td>
+      <td>${actBadge(h.ct, chgPct)}</td>
+    </tr>`;
+          })
+          .join("");
+
+        // Allocation bars
+        const allocRows = top8
+          .map(
+            (h) => `
+    <div class="alloc-row">
+      <div class="alloc-name">${h.name.split(" ")[0]}</div>
+      <div class="alloc-bar-wrap"><div class="alloc-bar" style="width:${Math.round((h.weight / maxW) * 100)}%"></div></div>
+      <div class="alloc-pct">${h.weight.toFixed(1)}%</div>
+    </div>`,
+          )
+          .join("");
+
+        const top5 = enriched.slice(0, 5).reduce((s, h) => s + h.weight, 0);
+        const top10 = enriched.slice(0, 10).reduce((s, h) => s + h.weight, 0);
+
+        // "What changed" table — top 10 with changes
+        const changed = enriched.filter((h) => h.ct !== "unch").slice(0, 10);
+        const changedRows = changed.length
+          ? changed
+              .map((h, i) => {
+                const chgPct =
+                  h.prevS > 0 ? ((h.shares - h.prevS) / h.prevS) * 100 : null;
+                return `<tr>
+      <td><div class="stock-cell">
+        ${logoImg(h.name, 22)}
+        <div><div class="stock-ticker">${h.name.split(" ").slice(0, 2).join(" ").substring(0, 12)}</div><div class="stock-name">${h.name.substring(0, 20)}</div></div>
+      </div></td>
+      <td><span class="num muted">${shares(h.shares)}</span></td>
+      <td><span class="num">${money(h.value)}</span></td>
+      <td><span class="num muted">${h.weight.toFixed(2)}%</span></td>
+      <td>${actBadge(h.ct, chgPct)}</td>
+      <td><span class="num muted" id="price-${h.cusip || i}">—</span></td>
+    </tr>`;
+              })
+              .join("")
+          : `<tr><td colspan="6" style="padding:20px;text-align:center;font-family:var(--mono);font-size:11px;color:var(--text3)">${prevH ? "Nessun movimento questo quarter" : "Caricamento dati precedenti..."}</td></tr>`;
+
+        // Load prices async for changed items
+        setTimeout(() => loadPricesForRows(changed), 100);
 
         return `
-    <div class="filter-bar">
-      <button class="filter-btn ${activeFilter === "all" ? "active-all" : ""}" onclick="setFilter('all')">Tutti <span class="filter-count">${counts.all}</span></button>
-      <button class="filter-btn ${activeFilter === "new" ? "active-new" : ""}" onclick="setFilter('new')">✦ New <span class="filter-count">${counts.new}</span></button>
-      <button class="filter-btn ${activeFilter === "added" ? "active-added" : ""}" onclick="setFilter('added')">▲ Added <span class="filter-count">${counts.added}</span></button>
-      <button class="filter-btn ${activeFilter === "reduced" ? "active-reduced" : ""}" onclick="setFilter('reduced')">▼ Reduced <span class="filter-count">${counts.reduced}</span></button>
-      <button class="filter-btn ${activeFilter === "unchanged" ? "active-unchanged" : ""}" onclick="setFilter('unchanged')">— Unchanged <span class="filter-count">${counts.unchanged}</span></button>
+    <div class="two-col">
+      <!-- Portfolio at a glance -->
+      <div class="card">
+        <div class="card-hdr">
+          <div class="card-title">Portfolio at a glance</div>
+          <div class="card-sub">Largest reported positions by portfolio weight</div>
+        </div>
+        <table class="glance-table">
+          <thead><tr><th>Ticker</th><th>Company</th><th>Market Value</th><th>Activity</th></tr></thead>
+          <tbody>${glanceRows}</tbody>
+        </table>
+        <div class="view-all" onclick="switchTabDirect('portfolio')">View full portfolio →</div>
+      </div>
+
+      <!-- Top Holdings Allocation -->
+      <div class="card">
+        <div class="card-hdr">
+          <div class="card-title">Top Holdings Allocation</div>
+          <div class="card-sub">Top 10 holdings as portfolio %</div>
+        </div>
+        <div class="alloc-list">${allocRows}</div>
+        <div class="alloc-footer">
+          <span>Top 5: <span>${top5.toFixed(1)}%</span></span>
+          <span>Top 10: <span>${top10.toFixed(1)}%</span></span>
+        </div>
+      </div>
     </div>
-    <div class="table-wrap">
+
+    <!-- What changed -->
+    <div class="section-hdr">
+      <div class="section-title">What changed this quarter</div>
+      <div class="filter-row" id="filterRow">
+        ${filterBtns(counts_from(enriched))}
+      </div>
+    </div>
+    <div class="tbl-wrap">
       <table>
-        <thead>
-          <tr>
-            <th style="width:28px">#</th>
-            <th>Azienda</th>
-            <th onclick="setSort('value')">Value ${si("value")}</th>
-            <th onclick="setSort('shares')">Shares ${si("shares")}</th>
-            <th onclick="setSort('weight')">Weight ${si("weight")}</th>
-            <th>Allocazione</th>
-            <th>Variazione QoQ</th>
-            <th>Tipo</th>
-          </tr>
-        </thead>
+        <thead><tr><th>Stock</th><th>Shares</th><th>Reported Value</th><th>% of Portfolio</th><th>Activity</th><th>Current Price</th></tr></thead>
+        <tbody id="changedBody">${changedRows}</tbody>
+      </table>
+    </div>
+  `;
+      }
+
+      function counts_from(enriched) {
+        return {
+          all: enriched.length,
+          new: enriched.filter((h) => h.ct === "new").length,
+          added: enriched.filter((h) => h.ct === "inc").length,
+          reduced: enriched.filter((h) => h.ct === "red").length,
+          unchanged: enriched.filter((h) => h.ct === "unch").length,
+        };
+      }
+
+      // ─── PORTFOLIO FULL TAB ───────────────────────────────────────────────────────
+      function renderPortfolioFull(enriched, total, counts) {
+        let filtered = enriched;
+        if (filter === "new") filtered = enriched.filter((h) => h.ct === "new");
+        else if (filter === "added")
+          filtered = enriched.filter((h) => h.ct === "inc");
+        else if (filter === "reduced")
+          filtered = enriched.filter((h) => h.ct === "red");
+        else if (filter === "unchanged")
+          filtered = enriched.filter((h) => h.ct === "unch");
+        const sorted = [...filtered].sort((a, b) => {
+          const av = a[sortK] ?? 0,
+            bv = b[sortK] ?? 0;
+          return sortD === "desc" ? bv - av : av - bv;
+        });
+        const maxV = enriched[0]?.value || 1;
+        const si = (k) =>
+          `<span style="opacity:.5;font-size:9px">${sortK === k ? (sortD === "desc" ? "↓" : "↑") : "↕"}</span>`;
+
+        setTimeout(() => loadPricesForRows(sorted.slice(0, 20)), 100);
+
+        return `
+    <div class="section-hdr" style="margin-bottom:14px">
+      <div class="section-title">Portfolio Holdings</div>
+      <div class="filter-row">${filterBtns(counts)}</div>
+    </div>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr>
+          <th style="width:28px">#</th>
+          <th>Stock</th>
+          <th onclick="srt('value')">Reported Value ${si("value")}</th>
+          <th onclick="srt('shares')">Shares ${si("shares")}</th>
+          <th onclick="srt('weight')">% Portfolio ${si("weight")}</th>
+          <th>Bar</th>
+          <th>Activity</th>
+          <th>Current Price</th>
+        </tr></thead>
         <tbody>
           ${sorted
             .map((h, i) => {
-              const logo = logoUrl(h.name);
               const chgPct =
-                h.prevShares > 0
-                  ? ((h.shares - h.prevShares) / h.prevShares) * 100
-                  : null;
+                h.prevS > 0 ? ((h.shares - h.prevS) / h.prevS) * 100 : null;
               return `<tr>
               <td style="color:var(--text3);font-family:var(--mono);font-size:10px">${i + 1}</td>
-              <td><div class="holding-name">
-                ${logo ? `<img class="holding-logo" src="${logo}" onerror="this.style.display='none'" loading="lazy">` : ""}
-                <div><div>${h.name}</div>${h.cusip ? `<div class="holding-cusip">${h.cusip}</div>` : ""}</div>
+              <td><div class="stock-cell">
+                ${logoImg(h.name, 22)}
+                <div><div class="stock-ticker">${h.name.split(" ").slice(0, 2).join(" ").substring(0, 14)}</div>
+                ${h.cusip ? `<div class="stock-name">${h.cusip}</div>` : ""}
+                </div>
               </div></td>
-              <td style="font-family:var(--mono);font-weight:500">${fmt.money(h.value)}</td>
-              <td style="font-family:var(--mono)">${fmt.shares(h.shares)}</td>
-              <td style="font-family:var(--mono)">${h.weight.toFixed(2)}%</td>
-              <td><div class="bar-bg"><div class="bar-fill" style="width:${Math.round((h.value / maxValue) * 80)}px"></div></div></td>
-              <td>${activityBadge(h.changeType, chgPct)}</td>
-              <td style="font-family:var(--mono);font-size:10px;color:var(--text3)">${h.type || "SH"}${h.putcall ? " " + h.putcall : ""}</td>
+              <td><span class="num">${money(h.value)}</span></td>
+              <td><span class="num muted">${shares(h.shares)}</span></td>
+              <td><span class="num muted">${h.weight.toFixed(2)}%</span></td>
+              <td><div style="background:var(--surface3);border-radius:2px;height:3px;width:70px"><div style="height:3px;border-radius:2px;background:var(--teal);width:${Math.round((h.value / maxV) * 70)}px"></div></div></td>
+              <td>${actBadge(h.ct, chgPct)}</td>
+              <td><span class="num muted" id="price-${h.cusip || i}">—</span></td>
             </tr>`;
             })
             .join("")}
@@ -1500,112 +1810,120 @@
     </div>`;
       }
 
-      function activityBadge(type, chgPct) {
-        if (type === "new") return `<span class="badge badge-new">✦ New</span>`;
-        if (type === "increased")
-          return `<span class="badge badge-added">▲ ${chgPct !== null ? fmt.pct(chgPct) : "Added"}</span>`;
-        if (type === "reduced")
-          return `<span class="badge badge-reduced">▼ ${chgPct !== null ? fmt.pct(chgPct) : "Reduced"}</span>`;
-        return `<span class="badge badge-unchanged">— Unchanged</span>`;
-      }
+      // ─── MOVES TAB ────────────────────────────────────────────────────────────────
+      function renderMoves(mv, prevH) {
+        if (!prevH)
+          return `<div class="loading-row"><div class="spin-sm"></div>Caricamento trimestre precedente...</div>`;
+        if (!mv)
+          return `<div style="padding:24px;font-family:var(--mono);font-size:11px;color:var(--text3);text-align:center">Nessun dato disponibile.</div>`;
 
-      function renderMoves(moves, prevHoldings) {
-        if (!prevHoldings)
-          return `<div class="loading-prev"><div class="spinner-sm"></div>Caricamento trimestre precedente in background...</div>`;
-        if (!moves)
-          return `<div class="no-moves">Nessun dato disponibile.</div>`;
-
-        const row = (h, type) => {
-          const logo = logoUrl(h.name);
+        const mrow = (h, type) => {
           const chgPct =
-            h.prevShares > 0
-              ? ((h.shares - h.prevShares) / h.prevShares) * 100
-              : null;
-          const deltaHtml =
+            h.prevS > 0 ? ((h.shares - h.prevS) / h.prevS) * 100 : null;
+          const delta =
             type === "new"
-              ? `<div class="move-delta neutral">New Position</div>`
+              ? `<div class="move-d neu">New Position</div>`
               : type === "closed"
-                ? `<div class="move-delta neg">Full Exit</div>`
-                : type === "up"
-                  ? `<div class="move-delta pos">▲ ${chgPct !== null ? Math.abs(chgPct).toFixed(1) + "%" : ""}</div>`
-                  : `<div class="move-delta neg">▼ ${chgPct !== null ? Math.abs(chgPct).toFixed(1) + "%" : ""}</div>`;
+                ? `<div class="move-d neg">Full Exit</div>`
+                : type === "inc"
+                  ? `<div class="move-d pos">▲ ${chgPct !== null ? Math.abs(chgPct).toFixed(1) + "%" : ""}</div>`
+                  : `<div class="move-d neg">▼ ${chgPct !== null ? Math.abs(chgPct).toFixed(1) + "%" : ""}</div>`;
           const sub =
-            type === "closed"
-              ? `${fmt.shares(h.shares)} sh vendute`
-              : type === "up" || type === "down"
-                ? `${fmt.shares(h.prevShares)} → ${fmt.shares(h.shares)} sh`
-                : `${fmt.shares(h.shares)} sh`;
+            type === "inc" || type === "red"
+              ? `${shares(h.prevS)} → ${shares(h.shares)} sh`
+              : `${shares(h.shares)} sh`;
           return `<div class="move-row">
-      <div class="move-left">
-        ${logo ? `<img class="move-logo" src="${logo}" onerror="this.style.display='none'" loading="lazy">` : '<div class="move-logo"></div>'}
-        <div><div class="move-name">${h.name.substring(0, 24)}</div><div class="move-sub">${sub}</div></div>
-      </div>
-      <div class="move-right"><div class="move-value">${fmt.money(h.value)}</div>${deltaHtml}</div>
+      <div class="move-left">${logoImg(h.name, 26)}<div><div class="move-n">${h.name.substring(0, 22)}</div><div class="move-s">${sub}</div></div></div>
+      <div class="move-r"><div class="move-v">${money(h.value)}</div>${delta}</div>
     </div>`;
         };
-
-        const card = (title, cls, items, type) => `
-    <div class="moves-card">
-      <div class="moves-card-header">
-        <div class="moves-card-title ${cls}">${title}</div>
-        <div class="moves-count">${items.length}</div>
-      </div>
-      ${
-        items.length === 0
-          ? '<div class="no-moves">Nessun movimento</div>'
-          : items
-              .slice(0, 15)
-              .map((h) => row(h, type))
-              .join("")
-      }
-    </div>`;
+        const card = (title, cls, items, type) => `<div class="move-card">
+    <div class="move-card-hdr"><div class="move-card-title ${cls}">${title}</div><div class="move-cnt">${items.length}</div></div>
+    ${
+      items.length
+        ? items
+            .slice(0, 12)
+            .map((h) => mrow(h, type))
+            .join("")
+        : '<div class="no-move">Nessun movimento</div>'
+    }
+  </div>`;
 
         return `<div class="moves-grid">
-    ${card("✦ Nuove Posizioni", "new-pos", moves.newPos, "new")}
-    ${card("✕ Posizioni Chiuse", "sell", moves.closed, "closed")}
-    ${card("▲ Aumentate", "buy", moves.increased, "up")}
-    ${card("▼ Ridotte", "sell", moves.reduced, "down")}
+    ${card("✦ New Positions", "c-new", mv.newP, "new")}
+    ${card("✕ Full Exits", "c-sold", mv.closed, "closed")}
+    ${card("▲ Added", "c-added", mv.inc, "inc")}
+    ${card("▼ Reduced", "c-reduced", mv.red, "red")}
   </div>`;
       }
 
-      function getQ(period) {
-        if (!period) return "?";
-        const m = parseInt(period.substring(5, 7));
-        if (m <= 3) return 1;
-        if (m <= 6) return 2;
-        if (m <= 9) return 3;
-        return 4;
+      // ─── HELPERS ──────────────────────────────────────────────────────────────────
+      function actBadge(ct, chgPct) {
+        if (ct === "new") return `<span class="badge b-new">✦ New</span>`;
+        if (ct === "inc")
+          return `<span class="badge b-added">▲ ${chgPct != null ? pct(chgPct) : "Added"}</span>`;
+        if (ct === "red")
+          return `<span class="badge b-reduced">▼ ${chgPct != null ? pct(chgPct) : "Reduced"}</span>`;
+        return `<span class="badge b-unchanged">— Unchanged</span>`;
       }
 
-      function setFilter(f) {
-        activeFilter = f;
-        const h = allHoldings[filingHistory[activeFilingIdx].accessionNo];
-        if (h) renderInvestor(activeInvestor.cik, activeFilingIdx, h);
+      function filterBtns(counts) {
+        return `
+    <button class="f-btn ${filter === "all" ? "f-all" : ""}" onclick="setF('all')">All <span class="f-cnt">${counts.all}</span></button>
+    <button class="f-btn ${filter === "new" ? "f-new" : ""}" onclick="setF('new')">New <span class="f-cnt">${counts.new}</span></button>
+    <button class="f-btn ${filter === "added" ? "f-added" : ""}" onclick="setF('added')">Added <span class="f-cnt">${counts.added}</span></button>
+    <button class="f-btn ${filter === "reduced" ? "f-reduced" : ""}" onclick="setF('reduced')">Reduced <span class="f-cnt">${counts.reduced}</span></button>
+    <button class="f-btn ${filter === "unchanged" ? "f-unchanged" : ""}" onclick="setF('unchanged')">Unchanged <span class="f-cnt">${counts.unchanged}</span></button>`;
       }
-      function setSort(col) {
-        if (sortCol === col) sortDir = sortDir === "desc" ? "asc" : "desc";
-        else {
-          sortCol = col;
-          sortDir = "desc";
+
+      async function loadPricesForRows(rows) {
+        for (const h of rows) {
+          const ticker = await findTicker(h.name);
+          if (ticker) {
+            const p = await fetchPrice(ticker);
+            const el = document.getElementById(
+              "price-" + (h.cusip || rows.indexOf(h)),
+            );
+            if (el && p) {
+              const up = p.chg >= 0;
+              el.innerHTML = `<span class="price-val">$${p.price.toFixed(2)}</span><div class="price-chg ${up ? "up" : "dn"}">${up ? "▲" : "▼"} ${Math.abs(p.chg).toFixed(2)}%</div>`;
+              el.className = "";
+            }
+          }
         }
-        const h = allHoldings[filingHistory[activeFilingIdx].accessionNo];
-        if (h) renderInvestor(activeInvestor.cik, activeFilingIdx, h);
-      }
-      function switchTab(tab, cik, idx) {
-        currentTab = tab;
-        const h = allHoldings[filingHistory[idx].accessionNo];
-        if (h) renderInvestor(cik, idx, h);
-      }
-      async function switchFiling(idx) {
-        currentTab = "portfolio";
-        activeFilter = "all";
-        await loadHoldings(activeInvestor.cik, idx);
       }
 
-      document
-        .getElementById("searchBox")
-        .addEventListener("input", (e) => renderList(e.target.value));
-      renderList();
+      function switchTab(t, cik, idx) {
+        tab = t;
+        render(cik, idx);
+      }
+      function switchTabDirect(t) {
+        tab = t;
+        render(INV.cik, fidx);
+      }
+      function setF(f) {
+        filter = f;
+        render(INV.cik, fidx);
+      }
+      function srt(k) {
+        if (sortK === k) sortD = sortD === "desc" ? "asc" : "desc";
+        else {
+          sortK = k;
+          sortD = "desc";
+        }
+        render(INV.cik, fidx);
+      }
+      async function go(idx) {
+        tab = "overview";
+        filter = "all";
+        await loadHoldings(INV.cik, idx);
+      }
+
+      // ─── INIT ─────────────────────────────────────────────────────────────────────
+      $("searchBox").addEventListener("input", (e) =>
+        renderSidebar(e.target.value),
+      );
+      renderSidebar();
     </script>
   </body>
 </html>
