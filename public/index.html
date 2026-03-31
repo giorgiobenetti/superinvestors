@@ -700,24 +700,23 @@
 <script>
 // ─── SUPERINVESTORS DATA ───────────────────────────────────────────────────
 const INVESTORS = [
-  { name: "Warren Buffett",    firm: "Berkshire Hathaway",     cik: "0001067983", style: "Value" },
-  { name: "Bill Ackman",       firm: "Pershing Square Capital", cik: "0001336528", style: "Activist" },
-  { name: "David Einhorn",     firm: "Greenlight Capital",     cik: "0001079114", style: "Value/Short" },
-  { name: "Seth Klarman",      firm: "Baupost Group",          cik: "0000786347", style: "Value" },
-  { name: "Stanley Druckenmiller", firm: "Duquesne Family Office", cik: "0000813672", style: "Macro" },
-  { name: "Michael Burry",     firm: "Scion Asset Mgmt",       cik: "0001649339", style: "Contrarian" },
-  { name: "George Soros",      firm: "Soros Fund Mgmt",        cik: "0000823768", style: "Macro" },
-  { name: "Ken Griffin",       firm: "Citadel Advisors",       cik: "0001423298", style: "Quant/Multi" },
-  { name: "David Tepper",      firm: "Appaloosa Mgmt",         cik: "0001656456", style: "Macro/Value" },
-  { name: "Steve Cohen",       firm: "Point72 Asset Mgmt",     cik: "0001603466", style: "Multi-Strategy" },
-  { name: "Ray Dalio",         firm: "Bridgewater Associates", cik: "0001350694", style: "Macro" },
-  { name: "Carl Icahn",        firm: "Icahn Capital Mgmt",     cik: "0000813414", style: "Activist" },
-  { name: "Israel Englander",  firm: "Millennium Management",  cik: "0001273931", style: "Multi-Strategy" },
-  { name: "John Paulson",      firm: "Paulson & Co.",          cik: "0001035674", style: "Event-Driven" },
-  { name: "Dan Loeb",          firm: "Third Point",            cik: "0001040273", style: "Activist" },
-  { name: "Jeff Yass",         firm: "Susquehanna Int'l",      cik: "0001388771", style: "Quant" },
-  { name: "Chase Coleman",     firm: "Tiger Global Mgmt",      cik: "0001167483", style: "Growth/Tech" },
-  { name: "Philippe Laffont",  firm: "Coatue Management",      cik: "0001418819", style: "Tech/Growth" },
+  { name: "Warren Buffett",        firm: "Berkshire Hathaway",      cik: "0001067983", style: "Value" },
+  { name: "Bill Ackman",           firm: "Pershing Square Capital",  cik: "0001336528", style: "Activist" },
+  { name: "Seth Klarman",          firm: "Baupost Group",            cik: "0001061768", style: "Value" },
+  { name: "Stanley Druckenmiller", firm: "Duquesne Family Office",   cik: "0001536411", style: "Macro" },
+  { name: "Michael Burry",         firm: "Scion Asset Mgmt",         cik: "0001649339", style: "Contrarian" },
+  { name: "George Soros",          firm: "Soros Fund Management",    cik: "0001029160", style: "Macro" },
+  { name: "Ken Griffin",           firm: "Citadel Advisors",         cik: "0001423053", style: "Quant/Multi" },
+  { name: "David Tepper",          firm: "Appaloosa Mgmt",           cik: "0001656456", style: "Macro/Value" },
+  { name: "Steve Cohen",           firm: "Point72 Asset Mgmt",       cik: "0001603466", style: "Multi-Strategy" },
+  { name: "Ray Dalio",             firm: "Bridgewater Associates",   cik: "0001350694", style: "Macro" },
+  { name: "Carl Icahn",            firm: "Icahn Capital Mgmt",       cik: "0000921669", style: "Activist" },
+  { name: "Israel Englander",      firm: "Millennium Management",    cik: "0001273087", style: "Multi-Strategy" },
+  { name: "John Paulson",          firm: "Paulson & Co.",            cik: "0001035674", style: "Event-Driven" },
+  { name: "Dan Loeb",              firm: "Third Point",              cik: "0001040273", style: "Activist" },
+  { name: "David Einhorn",         firm: "Greenlight Capital",       cik: "0001079114", style: "Value/Short" },
+  { name: "Chase Coleman",         firm: "Tiger Global Mgmt",        cik: "0001167483", style: "Growth/Tech" },
+  { name: "Philippe Laffont",      firm: "Coatue Management",        cik: "0001135730", style: "Tech/Growth" },
 ];
 
 // ─── STATE ─────────────────────────────────────────────────────────────────
@@ -807,8 +806,9 @@ function showError(msg) {
 async function loadFilings(cik) {
   try {
     // CORS: SEC allows direct fetch
-    const url = `/api/sec?url=https://data.sec.gov/submissions/${cik}.json`;
-    const res = await fetch(url, { headers: { 'User-Agent': 'SuperinvestorTracker admin@example.com' } });
+    const paddedCik = 'CIK' + cik.replace(/^0+/, '').padStart(10, '0');
+    const url = `/api/sec?url=https://data.sec.gov/submissions/${paddedCik}.json`;
+    const res = await fetch(url);
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const data = await res.json();
 
