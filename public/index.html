@@ -1,0 +1,1633 @@
+<!doctype html>
+<html lang="it">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0"
+    />
+    <title>SuperInvestors — 13F Tracker</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --bg: #0a0b0d;
+        --surface: #111316;
+        --surface2: #161a1f;
+        --border: #1e2429;
+        --border2: #252d35;
+        --text: #e2e8f0;
+        --text2: #8b9aaa;
+        --text3: #4a5568;
+        --accent: #00d4aa;
+        --accent2: #0095ff;
+        --buy: #00d4aa;
+        --sell: #ff4757;
+        --hold: #f5a623;
+        --mono: "IBM Plex Mono", monospace;
+        --sans: "IBM Plex Sans", sans-serif;
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        background: var(--bg);
+        color: var(--text);
+        font-family: var(--sans);
+        min-height: 100vh;
+        overflow-x: hidden;
+      }
+
+      /* Subtle scanline texture */
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        background: repeating-linear-gradient(
+          0deg,
+          transparent,
+          transparent 2px,
+          rgba(0, 0, 0, 0.03) 2px,
+          rgba(0, 0, 0, 0.03) 4px
+        );
+        pointer-events: none;
+        z-index: 9999;
+      }
+
+      /* HEADER */
+      header {
+        border-bottom: 1px solid var(--border);
+        padding: 20px 32px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        position: sticky;
+        top: 0;
+        background: rgba(10, 11, 13, 0.95);
+        backdrop-filter: blur(12px);
+        z-index: 100;
+      }
+
+      .logo {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-family: var(--mono);
+        font-size: 13px;
+        font-weight: 500;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--accent);
+      }
+
+      .logo-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: var(--accent);
+        animation: pulse 2s ease-in-out infinite;
+      }
+
+      @keyframes pulse {
+        0%,
+        100% {
+          opacity: 1;
+          transform: scale(1);
+        }
+        50% {
+          opacity: 0.5;
+          transform: scale(0.8);
+        }
+      }
+
+      .header-meta {
+        font-family: var(--mono);
+        font-size: 11px;
+        color: var(--text3);
+        letter-spacing: 0.05em;
+      }
+
+      /* LAYOUT */
+      .container {
+        display: grid;
+        grid-template-columns: 300px 1fr;
+        height: calc(100vh - 62px);
+      }
+
+      /* SIDEBAR */
+      .sidebar {
+        border-right: 1px solid var(--border);
+        overflow-y: auto;
+        background: var(--surface);
+      }
+
+      .sidebar::-webkit-scrollbar {
+        width: 4px;
+      }
+      .sidebar::-webkit-scrollbar-track {
+        background: transparent;
+      }
+      .sidebar::-webkit-scrollbar-thumb {
+        background: var(--border2);
+        border-radius: 2px;
+      }
+
+      .sidebar-header {
+        padding: 20px 20px 12px;
+        border-bottom: 1px solid var(--border);
+        position: sticky;
+        top: 0;
+        background: var(--surface);
+        z-index: 10;
+      }
+
+      .sidebar-title {
+        font-family: var(--mono);
+        font-size: 10px;
+        color: var(--text3);
+        text-transform: uppercase;
+        letter-spacing: 0.12em;
+        margin-bottom: 12px;
+      }
+
+      .search-box {
+        width: 100%;
+        background: var(--bg);
+        border: 1px solid var(--border2);
+        border-radius: 4px;
+        padding: 8px 12px;
+        color: var(--text);
+        font-family: var(--mono);
+        font-size: 12px;
+        outline: none;
+        transition: border-color 0.2s;
+      }
+      .search-box:focus {
+        border-color: var(--accent);
+      }
+      .search-box::placeholder {
+        color: var(--text3);
+      }
+
+      /* INVESTOR CARD */
+      .investor-item {
+        padding: 16px 20px;
+        border-bottom: 1px solid var(--border);
+        cursor: pointer;
+        transition: all 0.15s;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .investor-item::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        width: 2px;
+        background: var(--accent);
+        transform: scaleY(0);
+        transition: transform 0.2s;
+      }
+
+      .investor-item:hover {
+        background: rgba(0, 212, 170, 0.04);
+      }
+      .investor-item:hover::before {
+        transform: scaleY(1);
+      }
+      .investor-item.active {
+        background: rgba(0, 212, 170, 0.08);
+      }
+      .investor-item.active::before {
+        transform: scaleY(1);
+      }
+
+      .inv-name {
+        font-weight: 500;
+        font-size: 14px;
+        margin-bottom: 3px;
+        color: var(--text);
+      }
+
+      .inv-firm {
+        font-size: 11px;
+        color: var(--text2);
+        font-family: var(--mono);
+        margin-bottom: 8px;
+      }
+
+      .inv-stats {
+        display: flex;
+        gap: 12px;
+      }
+
+      .inv-stat {
+        font-family: var(--mono);
+        font-size: 10px;
+        color: var(--text3);
+      }
+
+      .inv-stat span {
+        color: var(--text2);
+        font-weight: 500;
+      }
+
+      /* MAIN PANEL */
+      .main {
+        overflow-y: auto;
+        background: var(--bg);
+      }
+
+      .main::-webkit-scrollbar {
+        width: 4px;
+      }
+      .main::-webkit-scrollbar-track {
+        background: transparent;
+      }
+      .main::-webkit-scrollbar-thumb {
+        background: var(--border2);
+        border-radius: 2px;
+      }
+
+      /* EMPTY STATE */
+      .empty-state {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100%;
+        gap: 16px;
+        color: var(--text3);
+        font-family: var(--mono);
+        font-size: 12px;
+        text-align: center;
+      }
+
+      .empty-icon {
+        font-size: 48px;
+        opacity: 0.3;
+      }
+
+      /* INVESTOR DETAIL */
+      .detail-header {
+        padding: 32px 40px 24px;
+        border-bottom: 1px solid var(--border);
+        position: sticky;
+        top: 0;
+        background: rgba(10, 11, 13, 0.95);
+        backdrop-filter: blur(12px);
+        z-index: 10;
+      }
+
+      .detail-name {
+        font-size: 28px;
+        font-weight: 600;
+        margin-bottom: 4px;
+        letter-spacing: -0.02em;
+      }
+
+      .detail-meta {
+        display: flex;
+        gap: 24px;
+        align-items: center;
+        flex-wrap: wrap;
+      }
+
+      .detail-firm {
+        font-family: var(--mono);
+        font-size: 12px;
+        color: var(--accent);
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+      }
+
+      .detail-cik {
+        font-family: var(--mono);
+        font-size: 11px;
+        color: var(--text3);
+      }
+
+      .quarter-badge {
+        background: var(--surface2);
+        border: 1px solid var(--border2);
+        border-radius: 3px;
+        padding: 3px 8px;
+        font-family: var(--mono);
+        font-size: 10px;
+        color: var(--text2);
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+      }
+
+      .filing-nav {
+        display: flex;
+        gap: 8px;
+        margin-top: 16px;
+        overflow-x: auto;
+        padding-bottom: 4px;
+      }
+
+      .filing-btn {
+        background: var(--surface);
+        border: 1px solid var(--border2);
+        border-radius: 4px;
+        padding: 6px 14px;
+        font-family: var(--mono);
+        font-size: 11px;
+        color: var(--text2);
+        cursor: pointer;
+        transition: all 0.15s;
+        white-space: nowrap;
+        flex-shrink: 0;
+      }
+
+      .filing-btn:hover {
+        border-color: var(--accent);
+        color: var(--accent);
+      }
+      .filing-btn.active {
+        background: var(--accent);
+        border-color: var(--accent);
+        color: var(--bg);
+        font-weight: 600;
+      }
+
+      /* TABS */
+      .tabs {
+        display: flex;
+        gap: 0;
+        border-bottom: 1px solid var(--border);
+        padding: 0 40px;
+        background: var(--surface);
+      }
+
+      .tab {
+        padding: 14px 20px;
+        font-family: var(--mono);
+        font-size: 11px;
+        font-weight: 500;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: var(--text3);
+        cursor: pointer;
+        border-bottom: 2px solid transparent;
+        margin-bottom: -1px;
+        transition: all 0.15s;
+      }
+
+      .tab:hover {
+        color: var(--text2);
+      }
+      .tab.active {
+        color: var(--accent);
+        border-bottom-color: var(--accent);
+      }
+
+      /* CONTENT AREA */
+      .content-area {
+        padding: 32px 40px;
+      }
+
+      /* SUMMARY CARDS */
+      .summary-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 16px;
+        margin-bottom: 32px;
+      }
+
+      .summary-card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        padding: 20px;
+      }
+
+      .summary-label {
+        font-family: var(--mono);
+        font-size: 10px;
+        color: var(--text3);
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        margin-bottom: 8px;
+      }
+
+      .summary-value {
+        font-family: var(--mono);
+        font-size: 22px;
+        font-weight: 600;
+        color: var(--text);
+      }
+
+      .summary-sub {
+        font-family: var(--mono);
+        font-size: 11px;
+        color: var(--text3);
+        margin-top: 4px;
+      }
+
+      /* TABLE */
+      .table-wrap {
+        overflow-x: auto;
+        border: 1px solid var(--border);
+        border-radius: 6px;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        font-family: var(--mono);
+        font-size: 12px;
+      }
+
+      thead {
+        background: var(--surface2);
+        border-bottom: 1px solid var(--border2);
+      }
+
+      th {
+        padding: 12px 16px;
+        text-align: left;
+        font-size: 10px;
+        font-weight: 500;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        color: var(--text3);
+        white-space: nowrap;
+        cursor: pointer;
+        user-select: none;
+        transition: color 0.15s;
+      }
+      th:hover {
+        color: var(--text2);
+      }
+
+      td {
+        padding: 12px 16px;
+        border-bottom: 1px solid var(--border);
+        vertical-align: middle;
+        white-space: nowrap;
+      }
+
+      tr:last-child td {
+        border-bottom: none;
+      }
+
+      tbody tr {
+        transition: background 0.1s;
+      }
+      tbody tr:hover {
+        background: rgba(255, 255, 255, 0.02);
+      }
+
+      /* CHANGE BADGES */
+      .badge-new {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        background: rgba(0, 212, 170, 0.12);
+        color: var(--buy);
+        border: 1px solid rgba(0, 212, 170, 0.25);
+        border-radius: 3px;
+        padding: 2px 7px;
+        font-size: 10px;
+        font-weight: 600;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+      }
+
+      .badge-sold {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        background: rgba(255, 71, 87, 0.12);
+        color: var(--sell);
+        border: 1px solid rgba(255, 71, 87, 0.25);
+        border-radius: 3px;
+        padding: 2px 7px;
+        font-size: 10px;
+        font-weight: 600;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+      }
+
+      .badge-increased {
+        background: rgba(0, 212, 170, 0.08);
+        color: var(--buy);
+        border: 1px solid rgba(0, 212, 170, 0.15);
+        border-radius: 3px;
+        padding: 2px 6px;
+        font-size: 10px;
+      }
+
+      .badge-reduced {
+        background: rgba(255, 71, 87, 0.08);
+        color: var(--sell);
+        border: 1px solid rgba(255, 71, 87, 0.15);
+        border-radius: 3px;
+        padding: 2px 6px;
+        font-size: 10px;
+      }
+
+      .badge-unchanged {
+        color: var(--text3);
+        font-size: 10px;
+      }
+
+      /* VALUE BAR */
+      .value-bar-wrap {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .value-bar {
+        height: 3px;
+        background: var(--accent);
+        border-radius: 2px;
+        opacity: 0.6;
+        min-width: 2px;
+      }
+
+      /* TICKER */
+      .ticker-symbol {
+        color: var(--accent2);
+        font-weight: 600;
+      }
+
+      /* LOADING */
+      .loading {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 80px 40px;
+        gap: 16px;
+        color: var(--text3);
+        font-family: var(--mono);
+        font-size: 12px;
+      }
+
+      .spinner {
+        width: 32px;
+        height: 32px;
+        border: 2px solid var(--border2);
+        border-top-color: var(--accent);
+        border-radius: 50%;
+        animation: spin 0.8s linear infinite;
+      }
+
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      .loading-log {
+        font-size: 11px;
+        color: var(--text3);
+        text-align: center;
+        max-width: 320px;
+        line-height: 1.6;
+      }
+
+      /* ERROR */
+      .error-box {
+        background: rgba(255, 71, 87, 0.08);
+        border: 1px solid rgba(255, 71, 87, 0.2);
+        border-radius: 6px;
+        padding: 20px 24px;
+        margin: 32px 40px;
+        font-family: var(--mono);
+        font-size: 12px;
+        color: var(--sell);
+        line-height: 1.7;
+      }
+
+      /* MOVES */
+      .moves-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 24px;
+        margin-bottom: 32px;
+      }
+
+      .moves-section {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        overflow: hidden;
+      }
+
+      .moves-header {
+        padding: 14px 20px;
+        border-bottom: 1px solid var(--border);
+        font-family: var(--mono);
+        font-size: 11px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .moves-header.buy {
+        color: var(--buy);
+      }
+      .moves-header.sell {
+        color: var(--sell);
+      }
+
+      .moves-dot {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+      }
+      .buy .moves-dot {
+        background: var(--buy);
+      }
+      .sell .moves-dot {
+        background: var(--sell);
+      }
+
+      .move-item {
+        padding: 12px 20px;
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        transition: background 0.1s;
+      }
+
+      .move-item:last-child {
+        border-bottom: none;
+      }
+      .move-item:hover {
+        background: rgba(255, 255, 255, 0.02);
+      }
+
+      .move-ticker {
+        font-weight: 600;
+        font-size: 13px;
+        font-family: var(--mono);
+      }
+      .move-ticker.buy {
+        color: var(--buy);
+      }
+      .move-ticker.sell {
+        color: var(--sell);
+      }
+
+      .move-name {
+        font-size: 11px;
+        color: var(--text2);
+        margin-top: 1px;
+      }
+      .move-value {
+        font-family: var(--mono);
+        font-size: 11px;
+        color: var(--text2);
+        text-align: right;
+      }
+      .move-shares {
+        font-size: 10px;
+        color: var(--text3);
+      }
+
+      .no-data {
+        padding: 24px 20px;
+        font-family: var(--mono);
+        font-size: 11px;
+        color: var(--text3);
+        text-align: center;
+      }
+
+      /* RESPONSIVE */
+      @media (max-width: 900px) {
+        .container {
+          grid-template-columns: 1fr;
+        }
+        .sidebar {
+          height: 260px;
+        }
+        .summary-grid {
+          grid-template-columns: repeat(2, 1fr);
+        }
+        .moves-grid {
+          grid-template-columns: 1fr;
+        }
+        .content-area {
+          padding: 20px;
+        }
+        .detail-header {
+          padding: 20px;
+        }
+      }
+
+      /* ANIMATIONS */
+      .fade-in {
+        animation: fadeIn 0.3s ease-out;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(8px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .stagger > * {
+        animation: fadeIn 0.3s ease-out both;
+      }
+      .stagger > *:nth-child(1) {
+        animation-delay: 0ms;
+      }
+      .stagger > *:nth-child(2) {
+        animation-delay: 50ms;
+      }
+      .stagger > *:nth-child(3) {
+        animation-delay: 100ms;
+      }
+      .stagger > *:nth-child(4) {
+        animation-delay: 150ms;
+      }
+
+      .sec-link {
+        color: var(--text3);
+        font-size: 10px;
+        text-decoration: none;
+        font-family: var(--mono);
+        padding: 2px 6px;
+        border: 1px solid var(--border2);
+        border-radius: 3px;
+        transition: all 0.15s;
+      }
+      .sec-link:hover {
+        color: var(--accent);
+        border-color: var(--accent);
+      }
+
+      .sort-indicator {
+        opacity: 0.5;
+        font-size: 9px;
+      }
+      .sort-indicator.active {
+        opacity: 1;
+        color: var(--accent);
+      }
+
+      /* Tooltip */
+      .tooltip {
+        position: relative;
+      }
+      .tooltip::after {
+        content: attr(data-tip);
+        position: absolute;
+        bottom: calc(100% + 6px);
+        left: 50%;
+        transform: translateX(-50%);
+        background: var(--surface2);
+        border: 1px solid var(--border2);
+        color: var(--text2);
+        font-size: 10px;
+        padding: 4px 8px;
+        border-radius: 4px;
+        white-space: nowrap;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.2s;
+        font-family: var(--mono);
+      }
+      .tooltip:hover::after {
+        opacity: 1;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="logo">
+        <div class="logo-dot"></div>
+        SuperInvestors 13F
+      </div>
+      <div class="header-meta">SEC EDGAR · LIVE DATA · 13F-HR</div>
+    </header>
+
+    <div class="container">
+      <aside class="sidebar">
+        <div class="sidebar-header">
+          <div class="sidebar-title">Institutional Managers</div>
+          <input
+            type="text"
+            class="search-box"
+            placeholder="Cerca investitore..."
+            id="searchBox"
+          />
+        </div>
+        <div id="investorList"></div>
+      </aside>
+
+      <main
+        class="main"
+        id="mainPanel"
+      >
+        <div class="empty-state">
+          <div class="empty-icon">◈</div>
+          <div>Seleziona un superinvestor</div>
+          <div style="font-size: 10px; color: var(--text3); margin-top: 4px">
+            Dati live da SEC EDGAR 13F filings
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <script>
+      // ─── SUPERINVESTORS DATA ───────────────────────────────────────────────────
+      const INVESTORS = [
+        {
+          name: "Warren Buffett",
+          firm: "Berkshire Hathaway",
+          cik: "0001067983",
+          style: "Value",
+        },
+        {
+          name: "Bill Ackman",
+          firm: "Pershing Square Capital",
+          cik: "0001336528",
+          style: "Activist",
+        },
+        {
+          name: "Seth Klarman",
+          firm: "Baupost Group",
+          cik: "0001061768",
+          style: "Value",
+        },
+        {
+          name: "Stanley Druckenmiller",
+          firm: "Duquesne Family Office",
+          cik: "0001536411",
+          style: "Macro",
+        },
+        {
+          name: "Michael Burry",
+          firm: "Scion Asset Mgmt",
+          cik: "0001649339",
+          style: "Contrarian",
+        },
+        {
+          name: "George Soros",
+          firm: "Soros Fund Management",
+          cik: "0001029160",
+          style: "Macro",
+        },
+        {
+          name: "Ken Griffin",
+          firm: "Citadel Advisors",
+          cik: "0001423053",
+          style: "Quant/Multi",
+        },
+        {
+          name: "David Tepper",
+          firm: "Appaloosa Mgmt",
+          cik: "0001656456",
+          style: "Macro/Value",
+        },
+        {
+          name: "Steve Cohen",
+          firm: "Point72 Asset Mgmt",
+          cik: "0001603466",
+          style: "Multi-Strategy",
+        },
+        {
+          name: "Ray Dalio",
+          firm: "Bridgewater Associates",
+          cik: "0001350694",
+          style: "Macro",
+        },
+        {
+          name: "Carl Icahn",
+          firm: "Icahn Capital Mgmt",
+          cik: "0000921669",
+          style: "Activist",
+        },
+        {
+          name: "Israel Englander",
+          firm: "Millennium Management",
+          cik: "0001273087",
+          style: "Multi-Strategy",
+        },
+        {
+          name: "John Paulson",
+          firm: "Paulson & Co.",
+          cik: "0001035674",
+          style: "Event-Driven",
+        },
+        {
+          name: "Dan Loeb",
+          firm: "Third Point",
+          cik: "0001040273",
+          style: "Activist",
+        },
+        {
+          name: "David Einhorn",
+          firm: "Greenlight Capital",
+          cik: "0001079114",
+          style: "Value/Short",
+        },
+        {
+          name: "Chase Coleman",
+          firm: "Tiger Global Mgmt",
+          cik: "0001167483",
+          style: "Growth/Tech",
+        },
+        {
+          name: "Philippe Laffont",
+          firm: "Coatue Management",
+          cik: "0001135730",
+          style: "Tech/Growth",
+        },
+      ];
+
+      // ─── STATE ─────────────────────────────────────────────────────────────────
+      let activeInvestor = null;
+      let activeFilingIdx = 0;
+      let filingHistory = [];
+      let allHoldings = {}; // cache: accessionNo -> holdings array
+      let currentTab = "portfolio";
+      let sortCol = "value";
+      let sortDir = "desc";
+
+      // ─── UTILS ────────────────────────────────────────────────────────────────
+      const fmt = {
+        money: (v) => {
+          if (!v && v !== 0) return "—";
+          if (v >= 1e9) return `$${(v / 1e9).toFixed(2)}B`;
+          if (v >= 1e6) return `$${(v / 1e6).toFixed(1)}M`;
+          if (v >= 1e3) return `$${(v / 1e3).toFixed(0)}K`;
+          return `$${v}`;
+        },
+        shares: (v) => {
+          if (!v && v !== 0) return "—";
+          if (v >= 1e6) return `${(v / 1e6).toFixed(2)}M`;
+          if (v >= 1e3) return `${(v / 1e3).toFixed(0)}K`;
+          return `${v}`;
+        },
+        pct: (v) => (v === null ? "—" : `${v > 0 ? "+" : ""}${v.toFixed(1)}%`),
+      };
+
+      function cikNum(cik) {
+        return cik.replace(/^0+/, "");
+      }
+
+      function formatAccession(accNo) {
+        return accNo.replace(/-/g, "");
+      }
+
+      // ─── RENDER INVESTOR LIST ─────────────────────────────────────────────────
+      function renderList(filter = "") {
+        const list = document.getElementById("investorList");
+        const filtered = INVESTORS.filter(
+          (inv) =>
+            inv.name.toLowerCase().includes(filter.toLowerCase()) ||
+            inv.firm.toLowerCase().includes(filter.toLowerCase()),
+        );
+        list.innerHTML = filtered
+          .map(
+            (inv, i) => `
+    <div class="investor-item ${activeInvestor?.cik === inv.cik ? "active" : ""}"
+         onclick="selectInvestor('${inv.cik}')">
+      <div class="inv-name">${inv.name}</div>
+      <div class="inv-firm">${inv.firm}</div>
+      <div class="inv-stats">
+        <div class="inv-stat">CIK <span>${cikNum(inv.cik)}</span></div>
+        <div class="inv-stat">Style <span>${inv.style}</span></div>
+      </div>
+    </div>
+  `,
+          )
+          .join("");
+      }
+
+      // ─── SELECT INVESTOR ──────────────────────────────────────────────────────
+      async function selectInvestor(cik) {
+        activeInvestor = INVESTORS.find((i) => i.cik === cik);
+        activeFilingIdx = 0;
+        filingHistory = [];
+        allHoldings = {};
+        currentTab = "portfolio";
+        renderList(document.getElementById("searchBox").value);
+        showLoading(`Caricamento filing di ${activeInvestor.name}...`);
+        await loadFilings(cik);
+      }
+
+      function showLoading(msg = "Caricamento...") {
+        document.getElementById("mainPanel").innerHTML = `
+    <div class="loading">
+      <div class="spinner"></div>
+      <div class="loading-log">${msg}</div>
+    </div>`;
+      }
+
+      function showError(msg) {
+        document.getElementById("mainPanel").innerHTML = `
+    <div class="error-box">
+      ⚠ Errore SEC EDGAR:<br><br>${msg}<br><br>
+      <span style="color:var(--text3)">La SEC applica rate limiting (10 req/s). Aspetta qualche secondo e riprova.</span>
+    </div>`;
+      }
+
+      // ─── PROXY HELPER ────────────────────────────────────────────────────────
+      function secFetch(secUrl, method = "GET") {
+        const proxied = `/api/sec?url=${encodeURIComponent(secUrl)}`;
+        return fetch(proxied, { method });
+      }
+
+      // ─── LOAD FILINGS (SUBMISSIONS API) ──────────────────────────────────────
+      async function loadFilings(cik) {
+        try {
+          const paddedCik = "CIK" + cik.replace(/^0+/, "").padStart(10, "0");
+          const res = await secFetch(
+            `https://data.sec.gov/submissions/${paddedCik}.json`,
+          );
+          if (!res.ok) throw new Error(`HTTP ${res.status} — submissions API`);
+          const data = await res.json();
+
+          const forms = data.filings?.recent?.form || [];
+          const accNos = data.filings?.recent?.accessionNumber || [];
+          const dates = data.filings?.recent?.filingDate || [];
+          const periods = data.filings?.recent?.reportDate || [];
+
+          const filings13f = [];
+          for (let i = 0; i < forms.length; i++) {
+            if (forms[i] === "13F-HR") {
+              filings13f.push({
+                accessionNo: accNos[i],
+                date: dates[i],
+                period: periods[i] || dates[i],
+                primaryDoc:
+                  (data.filings?.recent?.primaryDocument || [])[i] || "",
+              });
+            }
+          }
+
+          if (filings13f.length === 0) {
+            showError(
+              `Nessun filing 13F-HR trovato per ${activeInvestor.name}.<br>CIK: ${cikNum(cik)}`,
+            );
+            return;
+          }
+
+          filingHistory = filings13f.slice(0, 8);
+          activeFilingIdx = 0;
+          await loadHoldings(cik, activeFilingIdx);
+        } catch (e) {
+          showError(e.message);
+        }
+      }
+
+      // ─── LOAD HOLDINGS ────────────────────────────────────────────────────────
+      async function loadHoldings(cik, idx) {
+        showLoading(`Parsing 13F-HR filing...`);
+        const filing = filingHistory[idx];
+        const cached = allHoldings[filing.accessionNo];
+        if (cached) {
+          renderDetail(cik, idx, cached);
+          return;
+        }
+
+        try {
+          const cleanAcc = formatAccession(filing.accessionNo);
+          const cidx = cikNum(cik);
+
+          const xmlUrl = await findXmlUrl(cidx, cleanAcc, filing.accessionNo);
+          if (!xmlUrl)
+            throw new Error("Impossibile trovare il file XML del 13F");
+
+          showLoading(`Download dati holdings...`);
+          const xmlRes = await secFetch(xmlUrl);
+          if (!xmlRes.ok)
+            throw new Error(`Fetch XML fallito (HTTP ${xmlRes.status})`);
+          const xmlText = await xmlRes.text();
+
+          const holdings = parseXML13F(xmlText);
+          if (holdings.length === 0)
+            throw new Error(
+              "Nessun holding trovato (formato non riconosciuto)",
+            );
+
+          allHoldings[filing.accessionNo] = holdings;
+          renderDetail(cik, idx, holdings);
+
+          // Pre-carica il trimestre precedente in background per i movimenti
+          if (
+            idx === 0 &&
+            filingHistory[1] &&
+            !allHoldings[filingHistory[1].accessionNo]
+          ) {
+            const prevFiling = filingHistory[1];
+            const prevCidx = cikNum(cik);
+            const prevCleanAcc = formatAccession(prevFiling.accessionNo);
+            const capturedCik = cik;
+            const capturedHoldings = holdings;
+            findXmlUrl(prevCidx, prevCleanAcc, prevFiling.accessionNo)
+              .then((prevUrl) => secFetch(prevUrl))
+              .then((r) => r.text())
+              .then((txt) => {
+                const h = parseXML13F(txt);
+                if (h.length > 0) {
+                  allHoldings[prevFiling.accessionNo] = h;
+                  // Re-render solo se siamo ancora sullo stesso investitore/trimestre
+                  if (
+                    activeInvestor?.cik === capturedCik &&
+                    activeFilingIdx === 0
+                  ) {
+                    renderDetail(capturedCik, 0, capturedHoldings);
+                  }
+                }
+              })
+              .catch(() => {});
+          }
+        } catch (e) {
+          showError(`${e.message}<br><br>
+      <a href="https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=${cikNum(cik)}&type=13F-HR"
+         target="_blank" style="color:var(--accent2)">Apri filing su EDGAR ↗</a>`);
+        }
+      }
+
+      // ─── FIND XML URL ─────────────────────────────────────────────────────────
+      async function findXmlUrl(cidx, cleanAcc, accessionNo) {
+        const base = `https://www.sec.gov/Archives/edgar/data/${cidx}/${cleanAcc}`;
+
+        // Strategy 1: EDGAR index JSON
+        try {
+          const r = await secFetch(`${base}/${accessionNo}-index.json`);
+          if (r.ok) {
+            const data = await r.json();
+            const items = data.directory?.item || [];
+            let xmlFile = items.find((f) => f.type === "INFORMATION TABLE");
+            if (!xmlFile)
+              xmlFile = items.find(
+                (f) =>
+                  f.name?.toLowerCase().endsWith(".xml") &&
+                  (f.name.toLowerCase().includes("infotable") ||
+                    f.name.toLowerCase().includes("information") ||
+                    f.name.toLowerCase().includes("13f")),
+              );
+            if (!xmlFile)
+              xmlFile = items.find(
+                (f) =>
+                  f.name?.toLowerCase().endsWith(".xml") &&
+                  !f.name.toLowerCase().includes("primary"),
+              );
+            if (xmlFile?.name) return `${base}/${xmlFile.name}`;
+          }
+        } catch {}
+
+        // Strategy 2: Common filenames
+        const commonNames = [
+          "infotable.xml",
+          "form13fInfoTable.xml",
+          "informationtable.xml",
+          "InfoTable.xml",
+          "information_table.xml",
+          "xslForm13F_X02.xml",
+        ];
+        for (const name of commonNames) {
+          try {
+            const r = await secFetch(`${base}/${name}`, "HEAD");
+            if (r.ok) return `${base}/${name}`;
+          } catch {}
+        }
+
+        // Strategy 3: HTML index page
+        try {
+          const r = await secFetch(`${base}/${accessionNo}-index.htm`);
+          if (r.ok) {
+            const html = await r.text();
+            const rows = [...html.matchAll(/<tr[^>]*>[\s\S]*?<\/tr>/gi)];
+            for (const row of rows) {
+              const txt = row[0];
+              if (/information.?table|infotable/i.test(txt)) {
+                const m = txt.match(/href="([^"]+\.xml)"/i);
+                if (m) return `${base}/${m[1].split("/").pop()}`;
+              }
+            }
+            const allXml = [...html.matchAll(/href="([^"]*\.xml)"/gi)];
+            if (allXml.length > 1)
+              return `${base}/${allXml[1][1].split("/").pop()}`;
+            if (allXml.length === 1)
+              return `${base}/${allXml[0][1].split("/").pop()}`;
+          }
+        } catch {}
+
+        // Strategy 4: Full bundle
+        return `${base}/${accessionNo}.txt`;
+      }
+
+      // ─── PARSE 13F XML ─────────────────────────────────────────────────────────
+      function parseXML13F(rawText) {
+        let xmlText = rawText;
+
+        // If full submission bundle, extract XML section
+        if (
+          rawText.includes("<SEQUENCE>") ||
+          rawText.includes("-----BEGIN PRIVACY-ENHANCED MESSAGE-----")
+        ) {
+          const infoMatch =
+            rawText.match(/<informationTable[\s\S]*?<\/informationTable>/i) ||
+            rawText.match(/<infoTable[\s\S]*?<\/infoTable>/i);
+          if (infoMatch) {
+            xmlText = infoMatch[0];
+          } else {
+            const allStarts = [...rawText.matchAll(/<\?xml/gi)].map(
+              (m) => m.index,
+            );
+            if (allStarts.length > 0)
+              xmlText = rawText.substring(
+                allStarts.length > 1
+                  ? allStarts[allStarts.length - 1]
+                  : allStarts[0],
+              );
+          }
+        }
+
+        // Strip ALL namespaces and xmlns attributes so querySelector works uniformly
+        const clean = xmlText
+          .replace(/<\?xml[^>]*\?>/g, "")
+          .replace(/\s+xmlns(?::[a-zA-Z0-9_]+)?="[^"]*"/g, "")
+          .replace(/\s+xsi:[a-zA-Z:]+="[^"]*"/g, "")
+          .replace(/<([a-zA-Z0-9_]+):/g, "<")
+          .replace(/<\/([a-zA-Z0-9_]+):/g, "</");
+
+        const doc = new DOMParser().parseFromString(clean, "text/xml");
+        const entries = doc.querySelectorAll("infoTable");
+        if (entries.length === 0) return [];
+
+        const holdings = [];
+        entries.forEach((entry) => {
+          const get = (tag) =>
+            entry.querySelector(tag)?.textContent?.trim() || "";
+          const name = get("nameOfIssuer");
+          const cusip = get("cusip");
+          const value = parseInt(get("value") || "0", 10) * 1000;
+          const shares = parseInt(get("sshPrnamt") || "0", 10);
+          const type = get("sshPrnamtType") || "SH";
+          const putcall = get("putCall") || "";
+          if (name && value > 0)
+            holdings.push({
+              name,
+              cusip,
+              value,
+              shares,
+              type,
+              putcall,
+              ticker: "",
+            });
+        });
+
+        return holdings.sort((a, b) => b.value - a.value);
+      }
+      // ─── COMPUTE MOVES ─────────────────────────────────────────────────────────
+      function computeMoves(current, previous) {
+        if (!previous || previous.length === 0)
+          return { newPos: [], closed: [], increased: [], reduced: [] };
+
+        const prevMap = {};
+        previous.forEach((h) => {
+          prevMap[h.cusip || h.name] = h;
+        });
+        const currMap = {};
+        current.forEach((h) => {
+          currMap[h.cusip || h.name] = h;
+        });
+
+        const newPos = current.filter((h) => !prevMap[h.cusip || h.name]);
+        const closed = previous.filter((h) => !currMap[h.cusip || h.name]);
+        const changed = current.filter((h) => {
+          const prev = prevMap[h.cusip || h.name];
+          return prev && h.shares !== prev.shares;
+        });
+        const increased = changed
+          .filter((h) => h.shares > prevMap[h.cusip || h.name].shares)
+          .map((h) => ({
+            ...h,
+            prevShares: prevMap[h.cusip || h.name].shares,
+            prevValue: prevMap[h.cusip || h.name].value,
+          }));
+        const reduced = changed
+          .filter((h) => h.shares < prevMap[h.cusip || h.name].shares)
+          .map((h) => ({
+            ...h,
+            prevShares: prevMap[h.cusip || h.name].shares,
+            prevValue: prevMap[h.cusip || h.name].value,
+          }));
+
+        return { newPos, closed, increased, reduced };
+      }
+
+      // ─── RENDER DETAIL ─────────────────────────────────────────────────────────
+      function renderDetail(cik, idx, holdings) {
+        activeFilingIdx = idx;
+        const inv = activeInvestor;
+        const filing = filingHistory[idx];
+        const totalValue = holdings.reduce((s, h) => s + h.value, 0);
+
+        // Compare with previous quarter
+        const prevFiling = filingHistory[idx + 1];
+        const prevHoldings = prevFiling
+          ? allHoldings[prevFiling.accessionNo]
+          : null;
+        const moves = computeMoves(holdings, prevHoldings);
+
+        // Add portfolio weight + change info to each holding
+        const enriched = holdings.map((h) => {
+          const weight = totalValue > 0 ? (h.value / totalValue) * 100 : 0;
+          const prev = prevHoldings?.find(
+            (p) => (p.cusip && p.cusip === h.cusip) || p.name === h.name,
+          );
+          let change = null;
+          let changeType = "unchanged";
+          if (!prev) changeType = "new";
+          else if (h.shares > prev.shares) {
+            change = ((h.shares - prev.shares) / prev.shares) * 100;
+            changeType = "increased";
+          } else if (h.shares < prev.shares) {
+            change = ((h.shares - prev.shares) / prev.shares) * 100;
+            changeType = "reduced";
+          }
+          return { ...h, weight, change, changeType };
+        });
+
+        const maxValue = enriched[0]?.value || 1;
+
+        const html = `
+    <div class="fade-in">
+      <div class="detail-header">
+        <div class="detail-name">${inv.name}</div>
+        <div class="detail-meta" style="margin-top:6px;">
+          <span class="detail-firm">${inv.firm}</span>
+          <span class="detail-cik">CIK: ${cikNum(cik)}</span>
+          <span class="quarter-badge">${inv.style}</span>
+          <a href="https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=${cikNum(cik)}&type=13F-HR" target="_blank" class="sec-link">SEC EDGAR ↗</a>
+        </div>
+        <div class="filing-nav">
+          ${filingHistory
+            .map(
+              (f, i) => `
+            <button class="filing-btn ${i === idx ? "active" : ""}"
+                    onclick="switchFiling(${i})"
+                    title="${f.date}">
+              Q${getQuarter(f.period)} ${f.period?.substring(0, 4) || ""}
+            </button>
+          `,
+            )
+            .join("")}
+        </div>
+      </div>
+
+      <div class="tabs">
+        <div class="tab ${currentTab === "portfolio" ? "active" : ""}" onclick="switchTab('portfolio', ${cik ? `'${cik}'` : "null"}, ${idx})">Portfolio</div>
+        <div class="tab ${currentTab === "moves" ? "active" : ""}" onclick="switchTab('moves', '${cik}', ${idx})">Movimenti ${prevHoldings ? `(${moves.newPos.length + moves.closed.length + moves.increased.length + moves.reduced.length})` : ""}</div>
+      </div>
+
+      <div class="content-area">
+        ${currentTab === "portfolio" ? renderPortfolioTab(enriched, totalValue, maxValue, holdings.length) : renderMovesTab(moves, totalValue)}
+      </div>
+    </div>
+  `;
+
+        document.getElementById("mainPanel").innerHTML = html;
+      }
+
+      function getQuarter(period) {
+        if (!period) return "?";
+        const m = parseInt(period.substring(5, 7));
+        if (m <= 3) return 1;
+        if (m <= 6) return 2;
+        if (m <= 9) return 3;
+        return 4;
+      }
+
+      function switchTab(tab, cik, idx) {
+        currentTab = tab;
+        const holdings = allHoldings[filingHistory[idx].accessionNo];
+        if (holdings) renderDetail(cik, idx, holdings);
+      }
+
+      async function switchFiling(idx) {
+        await loadHoldings(activeInvestor.cik, idx);
+      }
+
+      // ─── RENDER PORTFOLIO TAB ──────────────────────────────────────────────────
+      function renderPortfolioTab(enriched, totalValue, maxValue, count) {
+        const sorted = [...enriched].sort((a, b) => {
+          const av = a[sortCol] ?? 0,
+            bv = b[sortCol] ?? 0;
+          return sortDir === "desc" ? bv - av : av - bv;
+        });
+
+        const si = (
+          col,
+        ) => `<span class="sort-indicator ${sortCol === col ? "active" : ""}">
+    ${sortCol === col ? (sortDir === "desc" ? "↓" : "↑") : "↕"}</span>`;
+
+        return `
+    <div class="summary-grid stagger">
+      <div class="summary-card">
+        <div class="summary-label">Portfolio Value</div>
+        <div class="summary-value">${fmt.money(totalValue)}</div>
+        <div class="summary-sub">${count} posizioni</div>
+      </div>
+      <div class="summary-card">
+        <div class="summary-label">Top Holding</div>
+        <div class="summary-value" style="font-size:16px">${enriched[0]?.name?.substring(0, 18) || "—"}</div>
+        <div class="summary-sub">${fmt.money(enriched[0]?.value)} · ${enriched[0]?.weight?.toFixed(1)}%</div>
+      </div>
+      <div class="summary-card">
+        <div class="summary-label">Top 5 Concentration</div>
+        <div class="summary-value">${enriched
+          .slice(0, 5)
+          .reduce((s, h) => s + h.weight, 0)
+          .toFixed(1)}%</div>
+        <div class="summary-sub">prime 5 posizioni</div>
+      </div>
+      <div class="summary-card">
+        <div class="summary-label">Top 10 Concentration</div>
+        <div class="summary-value">${enriched
+          .slice(0, 10)
+          .reduce((s, h) => s + h.weight, 0)
+          .toFixed(1)}%</div>
+        <div class="summary-sub">prime 10 posizioni</div>
+      </div>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th style="width:32px">#</th>
+            <th>Emittente</th>
+            <th onclick="setSort('value')" class="tooltip" data-tip="Market value $">Value ${si("value")}</th>
+            <th onclick="setSort('shares')" class="tooltip" data-tip="Numero azioni">Shares ${si("shares")}</th>
+            <th onclick="setSort('weight')" class="tooltip" data-tip="Peso % portafoglio">Weight ${si("weight")}</th>
+            <th>Barra</th>
+            <th>Var. QoQ</th>
+            <th>Tipo</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${sorted
+            .map(
+              (h, i) => `
+            <tr>
+              <td style="color:var(--text3);font-size:11px">${i + 1}</td>
+              <td>
+                <div style="font-weight:500;font-size:13px">${h.name}</div>
+                ${h.cusip ? `<div style="font-size:10px;color:var(--text3);font-family:var(--mono)">${h.cusip}</div>` : ""}
+              </td>
+              <td style="font-weight:500">${fmt.money(h.value)}</td>
+              <td>${fmt.shares(h.shares)}</td>
+              <td style="color:${h.weight > 5 ? "var(--text)" : "var(--text2)"}">${h.weight.toFixed(2)}%</td>
+              <td>
+                <div class="value-bar" style="width:${Math.round((h.value / maxValue) * 120)}px"></div>
+              </td>
+              <td>${changeCell(h)}</td>
+              <td style="color:var(--text3);font-size:10px">${h.type || "SH"}</td>
+            </tr>
+          `,
+            )
+            .join("")}
+        </tbody>
+      </table>
+    </div>
+  `;
+      }
+
+      function changeCell(h) {
+        switch (h.changeType) {
+          case "new":
+            return '<span class="badge-new">▲ NEW</span>';
+          case "increased":
+            return `<span class="badge-increased">▲ ${fmt.pct(h.change)}</span>`;
+          case "reduced":
+            return `<span class="badge-reduced">▼ ${fmt.pct(h.change)}</span>`;
+          default:
+            return '<span class="badge-unchanged">—</span>';
+        }
+      }
+
+      function setSort(col) {
+        if (sortCol === col) sortDir = sortDir === "desc" ? "asc" : "desc";
+        else {
+          sortCol = col;
+          sortDir = "desc";
+        }
+        const holdings =
+          allHoldings[filingHistory[activeFilingIdx].accessionNo];
+        if (holdings)
+          renderDetail(activeInvestor.cik, activeFilingIdx, holdings);
+      }
+
+      // ─── RENDER MOVES TAB ─────────────────────────────────────────────────────
+      function renderMovesTab(moves, totalValue) {
+        const hasPrev = moves.newPos || moves.closed;
+
+        if (!hasPrev) {
+          return `<div class="no-data" style="padding:60px">
+      Seleziona un quarter precedente per vedere i movimenti comparati.
+    </div>`;
+        }
+
+        const moveCard = (title, items, cls) => `
+    <div class="moves-section">
+      <div class="moves-header ${cls}">
+        <div class="moves-dot"></div>
+        ${title} <span style="opacity:0.5">(${items.length})</span>
+      </div>
+      ${
+        items.length === 0
+          ? '<div class="no-data">Nessun movimento</div>'
+          : items
+              .map(
+                (h) => `
+          <div class="move-item">
+            <div>
+              <div class="move-ticker ${cls}">${h.ticker || h.name?.substring(0, 8) || "—"}</div>
+              <div class="move-name">${h.name?.substring(0, 30) || ""}</div>
+            </div>
+            <div class="move-value">
+              <div>${fmt.money(h.value)}</div>
+              <div class="move-shares">${fmt.shares(h.shares)} sh</div>
+            </div>
+          </div>
+        `,
+              )
+              .join("")
+      }
+    </div>
+  `;
+
+        const changeCard = (title, items, cls) => `
+    <div class="moves-section">
+      <div class="moves-header ${cls}">
+        <div class="moves-dot"></div>
+        ${title} <span style="opacity:0.5">(${items.length})</span>
+      </div>
+      ${
+        items.length === 0
+          ? '<div class="no-data">Nessun movimento</div>'
+          : items
+              .map((h) => {
+                const chg = ((h.shares - h.prevShares) / h.prevShares) * 100;
+                return `
+              <div class="move-item">
+                <div>
+                  <div class="move-ticker ${cls}">${h.name?.substring(0, 16) || "—"}</div>
+                  <div class="move-name">${fmt.shares(h.prevShares)} → ${fmt.shares(h.shares)} sh</div>
+                </div>
+                <div class="move-value">
+                  <div>${fmt.money(h.value)}</div>
+                  <div class="move-shares">${cls === "buy" ? "▲" : "▼"} ${Math.abs(chg).toFixed(1)}%</div>
+                </div>
+              </div>
+            `;
+              })
+              .join("")
+      }
+    </div>
+  `;
+
+        return `
+    <div style="margin-bottom:32px;font-family:var(--mono);font-size:11px;color:var(--text3)">
+      Confronto con il quarter precedente. I dati vengono caricati automaticamente in background.
+    </div>
+    <div class="moves-grid">
+      ${moveCard("NUOVE POSIZIONI", moves.newPos, "buy")}
+      ${moveCard("POSIZIONI CHIUSE", moves.closed, "sell")}
+      ${changeCard("AUMENTATE", moves.increased, "buy")}
+      ${changeCard("RIDOTTE", moves.reduced, "sell")}
+    </div>
+  `;
+      }
+
+      // ─── INIT ──────────────────────────────────────────────────────────────────
+      document.getElementById("searchBox").addEventListener("input", (e) => {
+        renderList(e.target.value);
+      });
+
+      renderList();
+    </script>
+  </body>
+</html>
