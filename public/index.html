@@ -1285,7 +1285,7 @@
       function getLogo(name) {
         const u = name.toUpperCase();
         for (const [k, v] of Object.entries(LOGOS))
-          if (u.includes(k)) return `https://logo.clearbit.com/${v}`;
+          if (u.includes(k)) return `/api/logo?domain=${v}`;
         return null;
       }
       function logoImg(name, sz = 22) {
@@ -1302,7 +1302,7 @@
         if (PRICES[k] !== undefined) return PRICES[k];
         try {
           const r = await fetch(
-            `https://financialmodelingprep.com/api/v3/search?query=${encodeURIComponent(name)}&limit=1&apikey=${FMP}`,
+            `/api/fmp/search?query=${encodeURIComponent(name)}`,
           );
           const d = await r.json();
           if (d && d[0]?.symbol) {
@@ -1317,9 +1317,7 @@
         if (!ticker || PRICES[ticker] !== undefined)
           return PRICES[ticker] || null;
         try {
-          const r = await fetch(
-            `https://financialmodelingprep.com/api/v3/quote-short/${ticker}?apikey=${FMP}`,
-          );
+          const r = await fetch(`/api/fmp/quote/${ticker}`);
           const d = await r.json();
           if (d && d[0]) {
             PRICES[ticker] = { price: d[0].price, chg: d[0].changesPercentage };
@@ -1462,6 +1460,33 @@
       // ─── FIND XML ─────────────────────────────────────────────────────────────────
       async function findXml(ci, ca, acc) {
         const base = `https://www.sec.gov/Archives/edgar/data/${ci}/${ca}`;
+
+        // Strategy 1: HTML index page (most reliable - always lists actual filenames)
+        try {
+          const r = await sec(`${base}/${acc}-index.htm`);
+          if (r.ok) {
+            const html = await r.text();
+            // Find row with "INFORMATION TABLE" type and extract XML link
+            const rows = [...html.matchAll(/<tr[^>]*>[\s\S]*?<\/tr>/gi)];
+            for (const row of rows) {
+              if (/INFORMATION TABLE/i.test(row[0])) {
+                const m = row[0].match(/href="([^"]+\.xml)"/i);
+                if (m) {
+                  const fname = m[1].split("/").pop();
+                  return `${base}/${fname}`;
+                }
+              }
+            }
+            // Fallback: any XML that is not the primary doc
+            const allXml = [...html.matchAll(/href="([^"]*\.xml)"/gi)];
+            const infoXml = allXml.find((m) => !/primary/i.test(m[1]));
+            if (infoXml) return `${base}/${infoXml[1].split("/").pop()}`;
+            if (allXml.length)
+              return `${base}/${allXml[allXml.length - 1][1].split("/").pop()}`;
+          }
+        } catch {}
+
+        // Strategy 2: JSON index
         try {
           const r = await sec(`${base}/${acc}-index.json`);
           if (r.ok) {
@@ -1472,18 +1497,13 @@
               f = it.find(
                 (x) =>
                   x.name?.toLowerCase().endsWith(".xml") &&
-                  (x.name.toLowerCase().includes("infotable") ||
-                    x.name.toLowerCase().includes("information")),
-              );
-            if (!f)
-              f = it.find(
-                (x) =>
-                  x.name?.toLowerCase().endsWith(".xml") &&
                   !x.name.toLowerCase().includes("primary"),
               );
             if (f?.name) return `${base}/${f.name}`;
           }
         } catch {}
+
+        // Strategy 3: Common names
         for (const n of [
           "infotable.xml",
           "form13fInfoTable.xml",
@@ -1496,22 +1516,8 @@
             if (r.ok) return `${base}/${n}`;
           } catch {}
         }
-        try {
-          const r = await sec(`${base}/${acc}-index.htm`);
-          if (r.ok) {
-            const html = await r.text();
-            const rows = [...html.matchAll(/<tr[^>]*>[\s\S]*?<\/tr>/gi)];
-            for (const row of rows) {
-              if (/information.?table|infotable/i.test(row[0])) {
-                const m = row[0].match(/href="([^"]+\.xml)"/i);
-                if (m) return `${base}/${m[1].split("/").pop()}`;
-              }
-            }
-            const ax = [...html.matchAll(/href="([^"]*\.xml)"/gi)];
-            if (ax.length > 1) return `${base}/${ax[1][1].split("/").pop()}`;
-            if (ax.length === 1) return `${base}/${ax[0][1].split("/").pop()}`;
-          }
-        } catch {}
+
+        // Strategy 4: Full bundle
         return `${base}/${acc}.txt`;
       }
 
